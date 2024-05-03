@@ -43,7 +43,8 @@
                             <td th:text="${produto.produto}"></td>
                             <td th:text="${produto.fornecedor}"></td>
                             <td th:text="${produto.quantidade}"></td>
-                            <td th:text="${produto.precoVenda}"></td>
+                            <td th:text="${#numbers.formatDecimal(produto.precoVenda, 1, 'COMMA', 2, 'POINT')}"></td>
+                            <!-- <span th:text="${#numbers.formatDecimal(produto.precoVenda, 2, 'COMMA', '.', 'R$')}"></span> -->
                             <td th:text="${produto.sku}"></td>
                             <td><a th:href="@{'/produtos/' + ${produto.id}}" class="fas fa-solid fa-pen d-flex align-items-center justify-content-center"></td>
                             <td><a href="#" th:onclick="'if(confirm(\'Confirma ?\')) { window.location.href = \'' + @{/produtos/{id}(id=${produto.id})} + '/excluir\' } '">

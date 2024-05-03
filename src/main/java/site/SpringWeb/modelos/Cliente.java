@@ -18,13 +18,13 @@ public class Cliente {
     @Column(name = "nome", length = 100, nullable = true)
     private String nome;
 
-    @Column(name = "cpf", length = 100, nullable = false)
+    @Column(name = "cpf", length = 100)
     private String cpf;
 
-    @Column(name = "telefone", length = 20)
+    @Column(name = "telefone", length = 20, nullable = true)
     private String telefone;
 
-    @Column(name = "email", length = 180, nullable = false)
+    @Column(name = "email", length = 180)
     private String email;
 
     @Column(name = "cep", length = 255)

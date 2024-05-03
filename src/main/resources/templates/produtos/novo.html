@@ -1,6 +1,7 @@
 <div th:replace="~{compartilhado/topo}"></div>
 <!-- Begin Page Content -->
 <div class="container-fluid">
+    <!-- Inclua o script JavaScript no final do seu arquivo HTML -->
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Novo Produto</h1>
@@ -29,7 +30,8 @@
                         <select class="form-control" id="fornecedor" name="fornecedor">
                             <option value="">Selecione o fornecedor</option>
                             <!-- Aqui você irá iterar sobre a lista de fornecedores para criar as opções -->
-                            <option th:each="fornecedor : ${listaFornecedores}" th:value="${fornecedor.id}" th:text="${fornecedor.nome}"></option>
+                            <option th:each="fornecedor : ${listaFornecedores}" th:value="${fornecedor.id}"
+                                th:text="${fornecedor.nome}"></option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -39,12 +41,12 @@
                     </div>
                     <div class="form-group">
                         <label for="precoVenda">Preço Venda</label>
-                        <input type="number" class="form-control" required id="precoVenda" name="precoVenda"
+                        <input type="text" class="form-control" required id="precoVenda" name="precoVenda"
                             placeholder="Digite o preço de venda do produto">
                     </div>
                     <div class="form-group">
                         <label for="precoCusto">Preço Custo</label>
-                        <input type="number" class="form-control" required id="precoCusto" name="precoCusto"
+                        <input type="text" class="form-control" required id="precoCusto" name="precoCusto"
                             placeholder="Digite o preço de custo do produto">
                     </div>
                     <div class="form-group">

@@ -15,20 +15,24 @@
                 <!-- Coluna 1 -->
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="nome">Nome</label>
-                        <input type="text" class="form-control" required id="nome" name="nome" placeholder="Digite o nome do cliente">
+                        <label for="nome" class="required-field" title="* Campo obrigatório">Nome</label>
+                        <input type="text" class="form-control" required id="nome" name="nome"
+                            placeholder="Digite o nome do cliente">
                     </div>
                     <div class="form-group">
                         <label for="cpf">CPF</label>
-                        <input type="text" class="form-control" id="cpf" name="cpf" placeholder="Digite o CPF do cliente">
+                        <input type="text" class="form-control" oninput="formatarCPF()" id="cpf" name="cpf"
+                            maxlength="14" placeholder="Digite o CPF do cliente">
                     </div>
                     <div class="form-group">
-                        <label for="telefone">Telefone</label>
-                        <input type="text" class="form-control" id="telefone" name="telefone" placeholder="Digite o telefone do cliente">
+                        <label for="telefone" class="required-field" title="* Campo obrigatório">Telefone</label>
+                        <input type="text" class="form-control" oninput="formatarTelefone()" required id="telefone"
+                            name="telefone" maxlength="15" placeholder="Digite o telefone do cliente">
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" required id="email" name="email" placeholder="Digite o email do cliente">
+                        <input type="email" class="form-control" id="email" name="email"
+                            placeholder="Digite o email do cliente">
                     </div>
                     <!-- <div class="form-group">
                         <label for="placa">Placa do veículo</label>
@@ -37,29 +41,35 @@
                 </div>
                 <!-- Coluna 2 -->
                 <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="cep">CEP</label>
-                            <input type="text" class="form-control" id="cep" name="cep" placeholder="Digite o CEP do cliente">
-                        </div>
+                    <div class="form-group">
+                        <label for="cep">CEP</label>
+                        <input type="text" class="form-control" onblur="pesquisacep(this.value);" id="cep" name="cep"
+                            maxlength="9" placeholder="Digite o CEP do cliente">
+                    </div>
                     <div class="form-group">
                         <label for="endereco">Endereço</label>
-                        <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Digite o endereço do cliente">
+                        <input type="text" class="form-control" id="endereco" name="endereco"
+                            placeholder="Digite o endereço do cliente">
                     </div>
                     <div class="form-group">
                         <label for="numero">Número</label>
-                        <input type="text" class="form-control" id="numero" name="numero" placeholder="Digite o número do endereço">
+                        <input type="number" class="form-control" id="numero" name="numero"
+                            placeholder="Digite o número do endereço">
                     </div>
                     <div class="form-group">
                         <label for="cidade">Cidade</label>
-                        <input type="text" class="form-control" id="cidade" name="cidade" placeholder="Digite a cidade do cliente">
+                        <input type="text" class="form-control" id="cidade" name="cidade"
+                            placeholder="Digite a cidade do cliente">
                     </div>
                     <div class="form-group">
                         <label for="bairro">Bairro</label>
-                        <input type="text" class="form-control" id="bairro" name="bairro" placeholder="Digite o bairro do cliente">
+                        <input type="text" class="form-control" id="bairro" name="bairro"
+                            placeholder="Digite o bairro do cliente">
                     </div>
                     <div class="form-group">
                         <label for="complemento">Complemento</label>
-                        <input type="text" class="form-control" id="complemento" name="complemento" placeholder="Digite o complemento">
+                        <input type="text" class="form-control" id="complemento" name="complemento"
+                            placeholder="Digite o complemento">
                     </div>
                 </div>
             </div>
@@ -70,5 +80,17 @@
     </div>
 
 </div>
+
+
+<script src="/js/scriptsCliente.js"></script>
+<script src="/js/scriptsCEP.js"></script>
+<!-- <script src="/js/APIs/apiSinesp.js"></script> -->
+
+<style>
+    .required-field::after {
+        content: " *";
+        color: red;
+    }
+</style>
 <!-- /.container-fluid -->
 <div th:replace="~{compartilhado/baixo}"></div>
