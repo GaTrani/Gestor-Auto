@@ -1,17 +1,26 @@
 package site.SpringWeb.controllers;
 
+import java.beans.PropertyEditorSupport;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import site.SpringWeb.modelos.ContasApagar;
+import site.SpringWeb.modelos.Fornecedor;
 import site.SpringWeb.repositorio.ContasApagarRepo;
+import site.SpringWeb.servicos.FornecedorService;
 
 @Controller
 public class ContasApagarController {
@@ -27,13 +36,31 @@ public class ContasApagarController {
     }
 
     @GetMapping("/contasapagar/novo")
-    public String novo() {
+    public String novo(Model model) {
+        List<Fornecedor> listaFornecedores = FornecedorService.buscarTodos();
+        model.addAttribute("listaFornecedores", listaFornecedores);
         return "contasapagar/novo";
     }
 
+    /*
+     * @PostMapping("/contasapagar/criar")
+     * public String criar(@RequestParam("dataVencimento") @DateTimeFormat(pattern =
+     * "dd/MM/yyyy") LocalDate dataVencimento, ContasApagar contasApagar) {
+     * // Formata a data para o formato 'yyyy-MM-dd' antes de salvar no banco
+     * DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+     * String dataFormatada = dataVencimento.format(formatter);
+     * contasApagar.setDataVencimento(LocalDate.parse(dataFormatada));
+     * repo.save(contasApagar);
+     * return "redirect:/contasapagar";
+     * }
+     */
+
     @PostMapping("/contasapagar/criar")
-    public String criar(ContasApagar contaApagar) {
-        repo.save(contaApagar);
+    public String criar(
+            @RequestParam("dataVencimento") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataVencimento,
+            ContasApagar contasApagar) {
+        contasApagar.setDataVencimento(dataVencimento);
+        repo.save(contasApagar);
         return "redirect:/contasapagar";
     }
 
@@ -64,5 +91,15 @@ public class ContasApagarController {
     public String excluir(@PathVariable int id) {
         repo.deleteById(id);
         return "redirect:/contasapagar";
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) throws IllegalArgumentException {
+                setValue(LocalDate.parse(text, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            }
+        });
     }
 }

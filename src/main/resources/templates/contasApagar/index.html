@@ -9,7 +9,7 @@
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <a href="/contasApagar/novo" class="btn btn-primary" style="margin-right: 20px;">Novo</a>
+            <a href="/contasapagar/novo" class="btn btn-primary" style="margin-right: 20px;">Novo</a>
             <h6 class="m-0 font-weight-bold text-primary" style="display: inline-block;">Fornecedores</h6>
         </div>
         <div class="card-body">
@@ -36,23 +36,23 @@
                         </tr>
                     </tfoot>
                     <tbody>
-                        <tr th:each="fornecedor : ${fornecedores}">
-                            <td th:text="${fornecedor.id}"></td>
-                            <td th:text="${fornecedor.nome}"></td>
-                            <td th:text="${fornecedor.cnpj}"></td>
-                            <td th:text="${fornecedor.dataVencimento}"></td>
-                            <td th:text="${fornecedor.valor}"></td>
+                        <tr th:each="conta : ${contasApagar}">
+                            <td th:text="${conta.id}"></td>
+                            <td th:text="${conta.cnpj}"></td>
+                            <td th:text="${conta.fornecedor}"></td>
+                            <td th:text="${#dates.format(conta.data_vencimento, 'dd/MM/yyyy')}"></td> <!-- <td th:text="${#dates.format(conta.dataVencimento, 'dd/MM/yyyy')}"></td> -->
+                            <td th:text="${conta.valor}"></td>
                             <td>
-                                <button class="btn btn-success">Pagar</button>
+                                <a class="fas fa-fw fa-money-bill"></a> <!-- th:href="@{'/clientes/' + ${cliente.id}}" -->
                             </td>
-                            <td>
-                                <a th:href="@{'/fornecedores/editar/' + ${fornecedor.id}}" class="btn btn-info">Editar</a>
+                            <td><a class="fas fa-fw fa-solid fa-pen"></a> <!-- th:href="@{'/contasapagar/' + ${contasapagar.id}}"  -->
                             </td>
-                            <td>
-                                <a href="#" th:onclick="'if(confirm(\'Confirma ?\')) { window.location.href = \'' + @{/fornecedores/excluir/{id}(id=${fornecedor.id})} + '\' } '">
-                                    <button class="btn btn-danger">Deletar</button>
-                                </a>
-                            </td>
+                            <td><a href="#" th:onclick="'if(confirm(\'Confirma ?\')) { window.location.href = \'' + @{/contasapagar/{id}(id=${contasapagar.id})} + '/excluir\' } '">
+                                    <i class="fas fa-trash-alt d-flex align-items-center justify-content-center"
+                                        style="color: #E74A3B"></i>
+                                    <!--style="color: #E74A3B"
+                                        class="align-items-center"-->
+                                </a></td>
                         </tr>
                     </tbody>
                 </table>

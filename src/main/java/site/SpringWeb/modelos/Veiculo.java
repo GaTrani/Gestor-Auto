@@ -1,4 +1,3 @@
-
 package site.SpringWeb.modelos;
 
 //import java.util.List;
@@ -28,7 +27,7 @@ public class Veiculo {
     private String marca;
 
     @Column(name = "modelo", length = 50)
-    private String modelo;
+    private Long modelo;
 
     @Column(name = "placa", length = 10, unique = true)
     private String placa;
@@ -49,7 +48,7 @@ public class Veiculo {
         return marca;
     }
 
-    public String getModelo() {
+    public Long getModelo() {
         return modelo;
     }
 
@@ -74,8 +73,8 @@ public class Veiculo {
         this.marca = marca;
     }
 
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
+    public void setModelo(Long modeloId) {
+        this.modelo = modeloId;
     }
 
     public void setPlaca(String placa) {

@@ -17,7 +17,7 @@
                 <select class="form-control" id="cliente" name="cliente">
                     <option value="">Selecione o cliente</option>
                     <!-- Aqui você irá iterar sobre a lista de cliente para criar as opções -->
-                    <option th:each="cliente : ${listaClientes}" th:value="${cliente.nome}" th:text="${cliente.nome}"></option>
+                    <option th:each="cliente : ${listaClientes}" th:value="${cliente.id}" th:text="${cliente.nome}"></option>
                 </select>
             </div>
             <div class="form-group">

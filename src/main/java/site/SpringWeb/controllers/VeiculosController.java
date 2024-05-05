@@ -1,16 +1,13 @@
 package site.SpringWeb.controllers;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-//import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-//simport org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,21 +18,16 @@ import site.SpringWeb.modelos.Cliente;
 import site.SpringWeb.modelos.MarcaCarro;
 import site.SpringWeb.modelos.ModeloCarro;
 import site.SpringWeb.modelos.Veiculo;
-//import site.SpringWeb.repositorio.ModelosRepo;
 import site.SpringWeb.repositorio.VeiculosRepo;
 import site.SpringWeb.servicos.ClienteService;
 import site.SpringWeb.servicos.MarcaCarroService;
 import site.SpringWeb.servicos.ModeloCarroService;
-//import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class VeiculosController {
 
     @Autowired
-    private VeiculosRepo repo;
-
-    // @Autowired
-    // private VeiculosRepo veiculosRepo;
+    public VeiculosRepo repo;
 
     @GetMapping("/veiculos")
     public String index(Model model) {
@@ -55,19 +47,31 @@ public class VeiculosController {
         return "veiculos/novo";
     }
 
-    @PostMapping("/veiculos/criar")
-    public String criar(Veiculo veiculo, RedirectAttributes redirectAttributes) {
-        try {
-            repo.save(veiculo);
-            return "redirect:/veiculos";
-        } catch (DataIntegrityViolationException e) {
-            // Se ocorrer uma violação de restrição de integridade, significa que a placa já
-            // existe
-            redirectAttributes.addFlashAttribute("erro", "A placa do veículo já está em uso.");
-            return "redirect:/veiculos/novo"; // Redireciona de volta para a página de criação de veículos
-        }
+    @GetMapping("/buscarPorMarca")
+    @ResponseBody
+    public List<ModeloCarro> buscarModelosPorMarca(@RequestParam Long marca) {
+        return ModeloCarroService.buscarModelosPorMarca(marca);
     }
 
+    /*
+     * @PostMapping("/veiculos/criar")
+     * public String criar(Veiculo veiculo, RedirectAttributes redirectAttributes) {
+     * try {
+     * repo.save(veiculo);
+     * return "redirect:/veiculos";
+     * } catch (DataIntegrityViolationException e) {
+     * // Se ocorrer uma violação de restrição de integridade, significa que a placa
+     * já
+     * // existe
+     * redirectAttributes.addFlashAttribute("erro",
+     * "A placa do veículo já está em uso.");
+     * return "redirect:/veiculos/novo"; // Redireciona de volta para a página de
+     * criação de veículos
+     * }
+     * }
+     */
+
+    @PostMapping("/veiculos/criar")
     public String criar(@RequestParam("cliente") String clienteId,
             @RequestParam("marca") Long marcaId,
             @RequestParam("modelo") Long modeloId,
@@ -79,16 +83,17 @@ public class VeiculosController {
             // Cliente cliente = ClienteService.buscarPorId(clienteId);
             // Busca a marca pelo ID
             MarcaCarro marca = MarcaCarroService.buscarPorId(marcaId);
-            // Busca o modelo pelo ID
-            ModeloCarro modelo = ModeloCarroService.buscarPorId(modeloId);
 
-            // Verifica se o modelo foi encontrado
-            if (modelo != null) {
+            // Busca os modelos de carro pela marca selecionada
+            List<ModeloCarro> modelos = ModeloCarroService.buscarModelosPorMarca(marcaId);
+
+            // Verifica se a marca e os modelos foram encontrados
+            if (marca != null && modelos != null) {
                 // Cria o objeto Veiculo e associa o cliente, marca e modelo
                 Veiculo veiculo = new Veiculo();
                 // veiculo.setCliente(cliente.getNome());
                 veiculo.setMarca(marca.getNome());
-                veiculo.setModelo(modelo.getModelo());
+                veiculo.setModelo(modeloId); // Aqui você pode definir o modelo selecionado
                 veiculo.setPlaca(placa);
                 veiculo.setKm(km);
 
@@ -97,9 +102,10 @@ public class VeiculosController {
 
                 return "redirect:/veiculos";
             } else {
-                // Se o modelo não foi encontrado, redireciona de volta para a página de criação
+                // Se a marca ou os modelos não foram encontrados, redireciona de volta para a
+                // página de criação
                 // de veículos
-                redirectAttributes.addFlashAttribute("erro", "Modelo de carro não encontrado.");
+                redirectAttributes.addFlashAttribute("erro", "Marca de carro ou modelos não encontrados.");
                 return "redirect:/veiculos/novo";
             }
         } catch (DataIntegrityViolationException e) {
@@ -137,29 +143,6 @@ public class VeiculosController {
     public String excluir(@PathVariable int id) {
         repo.deleteById((long) id);
         return "redirect:/veiculos";
-    }
-
-    // @Autowired
-    // private Veiculo veiculoService;
-
-    // @GetMapping("/marcas")
-    // public ResponseEntity<List<MarcaCarro>> obterMarcasCarro() {
-    // List<MarcaCarro> marcas = veiculoService.obterMarcasCarro();
-    // return ResponseEntity.ok(marcas);
-    // }
-
-    @GetMapping("/buscarPorMarca")
-    @ResponseBody
-    public static List<ModeloCarro> buscarPorMarca(Long marcaId) {
-        // Busca a marca pelo ID
-        MarcaCarro marca = MarcaCarroService.buscarPorId(marcaId);
-        if (marca != null) {
-            // Se a marca for encontrada, retorna os modelos associados a essa marca
-            return ModeloCarroService.buscarPorMarca();
-        } else {
-            // Se a marca não for encontrada, retorna uma lista vazia
-            return Collections.emptyList();
-        }
     }
 
 }

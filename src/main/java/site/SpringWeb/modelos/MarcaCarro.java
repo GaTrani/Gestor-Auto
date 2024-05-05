@@ -42,5 +42,10 @@ public class MarcaCarro {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findByVeiculo'");
     }
+
+    /* public static List<MarcaCarro> findByVeiculo(MarcaCarroService marcaCarroService) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findByVeiculo'");
+    } */
 }
 

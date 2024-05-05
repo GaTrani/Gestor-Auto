@@ -5,33 +5,36 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-//import net.bytebuddy.dynamic.DynamicType.Builder.FieldDefinition.Optional;
-import site.SpringWeb.repositorio.ModelosRepo;
 import site.SpringWeb.modelos.ModeloCarro;
+import site.SpringWeb.repositorio.ModelosRepo;
 
 @Service
 public class ModeloCarroService {
 
-    private static ModelosRepo modelosRepo;
+    private static ModelosRepo modelosRepo = null;
+
+    public static List<ModeloCarro> buscarModelosPorMarca(Long marcaId) {
+        // Aqui você precisa implementar a lógica para buscar os modelos de carro por
+        // marca
+        // Por exemplo, você pode usar o método findByMarcaId do repositório
+        return modelosRepo.findByMarcaId(marcaId);
+    }
 
     public ModeloCarroService(ModelosRepo modelosRepo) {
         ModeloCarroService.modelosRepo = modelosRepo;
     }
 
     public static List<ModeloCarro> buscarTodos() {
-        return (List<ModeloCarro>) modelosRepo.findAll();
+        return modelosRepo.findAll();
     }
 
-    public static List<ModeloCarro> buscarPorMarca() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'buscarPorMarca'");
+    public List<ModeloCarro> buscarPorMarca(Long marcaId) {
+        return modelosRepo.findByMarcaId(marcaId);
     }
 
-    public static Optional<ModeloCarro> buscarPorMarca(Long marcaId) {
-        return modelosRepo.buscaPorId(marcaId);
+    public static Optional<ModeloCarro> buscarPorId(Long id) {
+        return modelosRepo.findById(id);
     }
 
-    public static ModeloCarro buscarPorId(Long id) {
-        return modelosRepo.buscaPorId(id).orElse(null);
-    }
+    // Outros métodos do serviço podem ser adicionados conforme necessário
 }

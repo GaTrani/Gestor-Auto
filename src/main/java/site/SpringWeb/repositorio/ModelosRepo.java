@@ -18,12 +18,20 @@ public interface ModelosRepo extends JpaRepository<ModeloCarro, Long> {
   // joao
   // @Query(value = "SELECT m FROM modelo m WHERE m.marca =: marca")
   // public List<ModeloCarro> carModels(String marca);
-  @Query(value = "SELECT m FROM ModeloCarro m WHERE m.marca.id = :marcaId")
-  public List<ModeloCarro> findByMarcaId(Long marcaId);
+
+  /* @Query(value = "SELECT m FROM ModeloCarro m WHERE m.marca.id = :marcaId")
+  public List<ModeloCarro> findByMarcaId(Long marcaId); */
+
+  @Query("SELECT m FROM ModeloCarro m WHERE m.marca.id = :marcaId")
+    List<ModeloCarro> findByMarcaId(Long marcaId);
 
   @Query("SELECT m FROM ModeloCarro m WHERE m.marca.id = :marcaId")
   public List<ModeloCarro> findByMarca(String marca);
 
+  @Query("SELECT m FROM ModeloCarro m WHERE m.marca.id = :marcaId")
+  public List<ModeloCarro> findById(String marca);
+
+  @SuppressWarnings("null")
   @Query(value = "SELECT m FROM ModeloCarro m WHERE m.id = :id")
-  Optional<ModeloCarro> buscaPorId(Long id); // Corrigido para esperar um Long como parâmetro
+  Optional<ModeloCarro> findById(Long id);; // Corrigido para esperar um Long como parâmetro
 }

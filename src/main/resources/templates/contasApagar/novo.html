@@ -1,0 +1,71 @@
+<div th:replace="~{compartilhado/topo}"></div>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Nova Conta a Pagar</h1>
+    <p class="mb-4">Aqui você pode cadastrar uma nova conta a pagar.</p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4" style="padding: 30px;">
+        <form method="POST" action="/contasapagar/criar" onsubmit="return confirm('Confirma ação')">
+            <div class="row">
+                <!-- Coluna 1 -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="fornecedor">Fornecedor</label>
+                        <select class="form-control" id="fornecedor" name="fornecedor">
+                            <option value="">Selecione o fornecedor</option>
+                            <!-- Aqui você irá iterar sobre a lista de fornecedores para criar as opções -->
+                            <option th:each="fornecedor : ${listaFornecedores}" th:value="${fornecedor.id}"
+                                th:text="${fornecedor.nome}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cnpj" class="required-field" title="* Campo obrigatório">CNPJ</label>
+                        <input type="text" class="form-control" required id="cnpj" name="cnpj" maxlength="14"
+                            placeholder="Digite o CNPJ do fornecedor">
+                    </div>
+                    <div class="form-group">
+                        <label for="valor" class="required-field" title="* Campo obrigatório">Valor</label>
+                        <input type="text" class="form-control" required id="valor" name="valor"
+                            placeholder="Digite o valor da conta a pagar">
+                    </div>
+                    <div class="form-group">
+                        <label for="dataVencimento" class="required-field" title="* Campo obrigatório">Data de
+                            Vencimento</label>
+                        <input type="date" class="form-control" id="dataVencimento" name="dataVencimento">
+                    </div>    <!-- required -->
+                </div>
+                <!-- Coluna 2 -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="recorrencia">Recorrência</label>
+                        <input type="text" class="form-control" id="recorrencia" name="recorrencia"
+                            placeholder="Digite a recorrência da conta a pagar">
+                    </div>
+                    <div class="form-group">
+                        <label for="parcelas">Parcelas</label>
+                        <input type="number" class="form-control" id="parcelas" name="parcelas"
+                            placeholder="Digite o número de parcelas">
+                    </div>
+                    <!-- <div class="form-group">
+                        <label for="valorPago">Valor Pago</label>
+                        <input type="text" class="form-control" id="valorPago" name="valorPago"
+                            placeholder="Digite o valor pago">
+                    </div>
+                    <div class="form-group">
+                        <label for="dataPagamento">Data de Pagamento</label>
+                        <input type="date" class="form-control" id="dataPagamento" name="dataPagamento">
+                    </div> -->
+                </div>
+            </div>
+            <div class="text-right">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+<div th:replace="~{compartilhado/baixo}"></div>
