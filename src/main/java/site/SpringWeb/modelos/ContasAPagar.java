@@ -36,6 +36,7 @@ public class ContasApagar {
   @Column(name = "parcelas")
   private Integer parcelas;
 
+  /* @Temporal(TemporalType.DATE) */
   @DateTimeFormat(pattern = "dd/MM/yyyy")
   @Column(name = "data_vencimento")
   private LocalDate dataVencimento;
