@@ -17,7 +17,7 @@
                         <select class="form-control" id="fornecedor" name="fornecedor">
                             <option value="">Selecione o fornecedor</option>
                             <!-- Aqui você irá iterar sobre a lista de fornecedores para criar as opções -->
-                            <option th:each="fornecedor : ${listaFornecedores}" th:value="${fornecedor.id}"
+                            <option th:each="fornecedor : ${listaFornecedores}" th:value="${fornecedor.nome}"
                                 th:text="${fornecedor.nome}"></option>
                         </select>
                     </div>
@@ -35,7 +35,7 @@
                         <label for="dataVencimento" class="required-field" title="* Campo obrigatório">Data de
                             Vencimento</label>
                         <input type="date" class="form-control" id="dataVencimento" name="dataVencimento">
-                    </div>    <!-- required -->
+                    </div> <!-- required -->
                 </div>
                 <!-- Coluna 2 -->
                 <div class="col-md-6">

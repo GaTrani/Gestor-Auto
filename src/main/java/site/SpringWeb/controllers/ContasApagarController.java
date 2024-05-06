@@ -66,6 +66,11 @@ public class ContasApagarController {
 
     @GetMapping("/contasapagar/{id}")
     public String busca(@PathVariable int id, Model model) {
+
+        // Busca a lista de fornecedores
+        List<Fornecedor> listaFornecedores = FornecedorService.buscarTodos();
+        model.addAttribute("listaFornecedores", listaFornecedores);
+
         Optional<ContasApagar> contaApagar = repo.findById(id);
         try {
             model.addAttribute("contaApagar", contaApagar.get());

@@ -38,8 +38,8 @@
                     <tbody>
                         <tr th:each="conta : ${contasApagar}">
                             <td th:text="${conta.id}"></td>
-                            <td th:text="${conta.cnpj}"></td>
                             <td th:text="${conta.fornecedor}"></td>
+                            <td th:text="${conta.cnpj}"></td>
                             <td th:text="${conta.dataVencimento}"></td>
                             <!-- <td th:text="${#dates.format(conta.dataVencimento, 'dd/MM/yyyy')}"></td> -->
                             <td th:text="${conta.valor}"></td>
@@ -47,11 +47,10 @@
                                 <a class="fas fa-fw fa-money-bill"></a>
                                 <!-- th:href="@{'/clientes/' + ${cliente.id}}" -->
                             </td>
-                            <td><a class="fas fa-fw fa-solid fa-pen"></a>
-                                <!-- th:href="@{'/contasapagar/' + ${contasapagar.id}}"  -->
+                            <td><a class="fas fa-fw fa-solid fa-pen" th:href="@{'/contasapagar/' + ${conta.id}}"></a>
                             </td>
                             <td><a href="#"
-                                    th:onclick="'if(confirm(\'Confirma ?\')) { window.location.href = \'' + @{/contasapagar/{id}(id=${contasapagar.id})} + '/excluir\' } '">
+                                    th:onclick="'if(confirm(\'Confirma ?\')) { window.location.href = \'' + @{/contasapagar/{id}(id=${conta.id})} + '/excluir\' } '">
                                     <i class="fas fa-trash-alt d-flex align-items-center justify-content-center"
                                         style="color: #E74A3B"></i>
                                     <!--style="color: #E74A3B"

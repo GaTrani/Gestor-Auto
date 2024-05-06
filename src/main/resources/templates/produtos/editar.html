@@ -22,9 +22,9 @@
                     <div class="form-group">
                         <label for="fornecedor">Fornecedor</label>
                         <select class="form-control" id="fornecedor" name="fornecedor">
-                            <option value="">Selecione o fornecedor</option>
+                            <!-- <option value="">Selecione o fornecedor</option> -->
                             <!-- Aqui você irá iterar sobre a lista de fornecedores para criar as opções -->
-                            <option th:each="fornecedor : ${listaFornecedores}" th:value="${fornecedor.id}" th:text="${fornecedor.nome}"></option>
+                            <option th:each="fornecedor : ${listaFornecedores}" th:value="${produto.fornecedor}" th:text="${produto.fornecedor}"></option>
                         </select>
                     </div>
                     <div class="form-group">
