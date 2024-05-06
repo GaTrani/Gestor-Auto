@@ -1,0 +1,73 @@
+<div th:replace="~{compartilhado/topo}"></div>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Novo PDV</h1>
+    <p class="mb-4">
+        Aqui iremos criar um novo ponto de venda.
+    </p>
+
+    <!-- Two columns layout -->
+    <div class="row">
+        <!-- Left column -->
+        <div class="col-md-8"> <!-- md-6 -->
+            <!-- Product insertion and list -->
+            <div class="card shadow mb-4" style="padding: 30px;">
+                <h4 class="mb-4">Inserir Produto</h4>
+                <!-- Product insertion form -->
+                <form method="POST" action="/pdv/criar" onsubmit="return confirm('Confirma ação')">
+                    <div class="form-group">
+                        <label for="produto">Produto</label>
+                        <input type="text" class="form-control" id="produto" name="produto" placeholder="Nome do produto">
+                    </div>
+                    <div class="form-group">
+                        <label for="quantidade">Quantidade</label>
+                        <input type="number" class="form-control" id="quantidade" name="quantidade" placeholder="Quantidade">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                </form>
+                <!-- List of chosen products -->
+                <h4 class="mt-4">Itens Escolhidos</h4>
+                <ul class="list-group mt-2" id="listaProdutos">
+                    <!-- List items will be dynamically added here -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="col-md-4">
+            <!-- Customer data, payment methods, total, print and delete buttons -->
+            <div class="card shadow mb-4" style="padding: 30px;">
+                <h4>Dados do Cliente</h4>
+                <!-- Customer data form -->
+                <form method="POST" action="/pdv/salvar" onsubmit="return confirm('Confirma ação')">
+                    <!-- Customer data fields here -->
+                </form>
+                <hr>
+                <h4>Formas de Pagamento</h4>
+                <!-- Payment methods options here -->
+                <hr>
+                <h4>Total da Nota</h4>
+                <!-- Total amount calculation here -->
+                <hr>
+                <div class="text-right">
+                    <button type="button" class="btn btn-success">Imprimir</button>
+                    <button type="button" class="btn btn-danger">Excluir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="/js/scriptsPDV.js"></script>
+
+<style>
+    .required-field::after {
+        content: " *";
+        color: red;
+    }
+</style>
+<!-- /.container-fluid -->
+<div th:replace="~{compartilhado/baixo}"></div>

@@ -1,0 +1,57 @@
+<div th:replace="~{compartilhado/topo}"></div>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Pontos de Venda</h1>
+    <p class="mb-4">Aqui terá uma tabela para mostrar os Pontos de Venda.</p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <a href="/pdv/novo" class="btn btn-primary" style="margin-right: 20px;">Novo</a>
+            <h6 class="m-0 font-weight-bold text-primary" style="display: inline-block;">Pontos de Venda</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Cliente</th>
+                            <th>Veículo</th>
+                            <th>Data de Entrada</th>
+                            <th>Total</th>
+                            <th colspan="2">Ações</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Id</th>
+                            <th>Cliente</th>
+                            <th>Veículo</th>
+                            <th>Data de Entrada</th>
+                            <th>Total</th>
+                            <th colspan="2">Ações</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        <tr th:each="pdv : ${pdvs}">
+                            <td th:text="${pdv.id}"></td>
+                            <td th:text="${pdv.cliente.nome}"></td>
+                            <td th:text="${pdv.veiculo.modelo}"></td>
+                            <td th:text="${#dates.format(pdv.dataEntrada, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${pdv.total}"></td>
+                            <td><a th:href="@{'/pdv/' + ${pdv.id}}" class="fas fa-fw fa-solid fa-pen"></td>
+                            <td><a href="#" th:onclick="'if(confirm(\'Confirma ?\')) { window.location.href = \'' + @{/pdv/{id}(id=${pdv.id})} + '/excluir\' } '">
+                                    <i class="fas fa-trash-alt d-flex align-items-center justify-content-center" style="color: #E74A3B"></i>
+                                </a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+<div th:replace="~{compartilhado/baixo}"></div>
