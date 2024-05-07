@@ -9,58 +9,60 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import site.SpringWeb.modelos.PDV;
+import site.SpringWeb.modelos.Produto;
 import site.SpringWeb.repositorio.PDVRepo;
+import site.SpringWeb.servicos.ProdutoService;
 
 @Controller
+@RequestMapping("/pdv")
 public class PDVController {
 
     @Autowired
     private PDVRepo pdvRepo;
 
-    @GetMapping("/pdv")
+    @Autowired
+    private ProdutoService produtoService;
+
+    @GetMapping
     public String index(Model model) {
-        List<PDV> pdv = (List<PDV>) pdvRepo.findAll();
-        model.addAttribute("pdv", pdv);
+        List<PDV> pdvList = (List<PDV>) pdvRepo.findAll();
+        model.addAttribute("pdv", pdvList);
         return "pdv/index";
     }
 
-    @GetMapping("/pdv/novo")
-    public String novo() {
+    @GetMapping("/novo")
+    public String exibirFormularioNovoProduto(Model model) {
+        List<Produto> listaProdutos = produtoService.listarProdutos();
+        model.addAttribute("produtos", listaProdutos);
         return "pdv/novo";
     }
 
-    @PostMapping("/pdv/criar")
+    @PostMapping("/criar")
     public String criar(PDV pdv) {
         pdvRepo.save(pdv);
         return "redirect:/pdv";
     }
 
-    @GetMapping("/pdv/{id}")
-    public String busca(@PathVariable int id, Model model) {
+    @GetMapping("/{id}")
+    public String buscarPdv(@PathVariable int id, Model model) {
         Optional<PDV> pdv = pdvRepo.findById(id);
-        try {
-            model.addAttribute("pdv", pdv.get());
-        } catch (Exception err) {
-            return "redirect:/pdv";
-        }
-
-        return "pdv/editar";
+        pdv.ifPresent(value -> model.addAttribute("pdv", value));
+        return pdv.map(pdv1 -> "pdv/editar").orElse("redirect:/pdv");
     }
 
-    @PostMapping("/pdv/{id}/atualizar")
+    @PostMapping("/{id}/atualizar")
     public String atualizar(@PathVariable int id, PDV pdv) {
         if (!pdvRepo.existsById(id)) {
             return "redirect:/pdv";
         }
-
         pdvRepo.save(pdv);
-
         return "redirect:/pdv";
     }
 
-    @GetMapping("/pdv/{id}/excluir")
+    @GetMapping("/{id}/excluir")
     public String excluir(@PathVariable int id) {
         pdvRepo.deleteById(id);
         return "redirect:/pdv";

@@ -25,11 +25,63 @@ public class PDV {
     @Column(name = "total")
     private double total;
 
-    @ManyToMany
-    @JoinTable(name = "pdv_produto",
-            joinColumns = @JoinColumn(name = "pdv_id"),
-            inverseJoinColumns = @JoinColumn(name = "produto_id"))
-    private List<Produto> produtos;
+    @OneToMany(mappedBy = "pdv", cascade = CascadeType.ALL)
+    private List<PDVVendas> vendas;
 
     // Getters e Setters
+    // Método para adicionar uma venda
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public String getVeiculo() {
+        return veiculo;
+    }
+
+    public void setVeiculo(String veiculo) {
+        this.veiculo = veiculo;
+    }
+
+    public Date getDataEntrada() {
+        return dataEntrada;
+    }
+
+    public void setDataEntrada(Date dataEntrada) {
+        this.dataEntrada = dataEntrada;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public List<PDVVendas> getVendas() {
+        return vendas;
+    }
+
+    public void setVendas(List<PDVVendas> vendas) {
+        this.vendas = vendas;
+    }
+
+    // Método para adicionar uma venda
+    public void adicionarVenda(PDVVendas venda) {
+        this.vendas.add(venda);
+        venda.setPdv(this); // Ajuste aqui para definir o PDV para a venda
+    }
 }

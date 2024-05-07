@@ -28,10 +28,6 @@ public class ProdutosController {
         return "produtos/index";
     }
 
-    /* @GetMapping("/produtos/novo")
-    public String novo() {
-        return "produtos/novo";
-    } */
 
     @GetMapping("/produtos/novo")
     public String exibirFormularioNovoProduto(Model model) {

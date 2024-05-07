@@ -1,5 +1,8 @@
 <div th:replace="~{compartilhado/topo}"></div>
 <!-- Begin Page Content -->
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+
 <div class="container-fluid">
 
     <!-- Page Heading -->
@@ -11,27 +14,46 @@
     <!-- Two columns layout -->
     <div class="row">
         <!-- Left column -->
-        <div class="col-md-8"> <!-- md-6 -->
+        <div class="col-md-8">
             <!-- Product insertion and list -->
             <div class="card shadow mb-4" style="padding: 30px;">
-                <h4 class="mb-4">Inserir Produto</h4>
-                <!-- Product insertion form -->
-                <form method="POST" action="/pdv/criar" onsubmit="return confirm('Confirma ação')">
-                    <div class="form-group">
-                        <label for="produto">Produto</label>
-                        <input type="text" class="form-control" id="produto" name="produto" placeholder="Nome do produto">
+                <label>Inserir Produto</h4>
+                    <!-- Product insertion form -->
+                    <!-- Product insertion form -->
+                    <form method="POST" action="/pdv/criar" onsubmit="return confirm('Confirma ação')">
+                        <div class="form-group">
+                            <label for="produto">Produto</label>
+                            <!-- Dropdown para selecionar o produto -->
+                            <select class="form-control" id="produto" name="produto">
+                                <option value="">Selecione o produto</option>
+                                <!-- Aqui você irá iterar sobre a lista de produtos para criar as opções -->
+                                <option th:each="produto : ${produtos}" th:value="${produto.id}" th:text="${produto.produto}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="inputBusca" placeholder="Buscar produto" class="form-control" oninput="filtrarProdutos()">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Adicionar</button>
+                    </form>
+                    <!-- List of chosen products -->
+                    <h4 class="mt-4">Itens Escolhidos</h4>
+                    <!-- Tabela de produtos escolhidos -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="tabelaProdutos">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Valor Unitário</th>
+                                    <th>Quantidade</th>
+                                    <th>Valor Total</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Linhas da tabela serão adicionadas dinamicamente aqui -->
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="form-group">
-                        <label for="quantidade">Quantidade</label>
-                        <input type="number" class="form-control" id="quantidade" name="quantidade" placeholder="Quantidade">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Adicionar</button>
-                </form>
-                <!-- List of chosen products -->
-                <h4 class="mt-4">Itens Escolhidos</h4>
-                <ul class="list-group mt-2" id="listaProdutos">
-                    <!-- List items will be dynamically added here -->
-                </ul>
             </div>
         </div>
 
@@ -42,14 +64,14 @@
                 <h4>Dados do Cliente</h4>
                 <!-- Customer data form -->
                 <form method="POST" action="/pdv/salvar" onsubmit="return confirm('Confirma ação')">
-                    <!-- Customer data fields here -->
+                    <!-- Campos de dados do cliente aqui -->
                 </form>
                 <hr>
                 <h4>Formas de Pagamento</h4>
-                <!-- Payment methods options here -->
+                <!-- Opções de formas de pagamento aqui -->
                 <hr>
                 <h4>Total da Nota</h4>
-                <!-- Total amount calculation here -->
+                <!-- Cálculo do valor total aqui -->
                 <hr>
                 <div class="text-right">
                     <button type="button" class="btn btn-success">Imprimir</button>
@@ -61,7 +83,9 @@
 
 </div>
 
-<script src="/js/scriptsPDV.js"></script>
+
+<!-- <script src="/js/scriptsPDV.js"></script> -->
+<script src="/js/filtrarProdutosPDV.js"></script>
 
 <style>
     .required-field::after {
