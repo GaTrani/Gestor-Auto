@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import site.SpringWeb.modelos.PDV;
 import site.SpringWeb.modelos.Produto;
@@ -38,6 +39,13 @@ public class PDVController {
         List<Produto> listaProdutos = produtoService.listarProdutos();
         model.addAttribute("produtos", listaProdutos);
         return "pdv/novo";
+    }
+
+    @GetMapping("/produtos")
+    @ResponseBody
+    public List<Produto> exibirListaProduto(Model model) {
+        List<Produto> listaProdutos = produtoService.listarProdutos();
+        return listaProdutos;
     }
 
     @PostMapping("/criar")

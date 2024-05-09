@@ -1,110 +1,130 @@
-// Função para filtrar os itens do dropdown com base no texto digitado
-function filtrarProdutos() {
-    console.log('chamando a funcao.')
-    var filtro = $('#inputBusca').val().toLowerCase(); // Obter o texto digitado e converter para minúsculas
-    $('#produto option').each(function() { // Iterar sobre cada opção do dropdown
-        var nomeProduto = $(this).text().toLowerCase(); // Obter o nome do produto da opção e converter para minúsculas
-        console.log('item: ', nomeProduto)
-        if (nomeProduto.indexOf(filtro) > -1 || filtro === "") { // Verificar se o nome do produto contém o texto digitado ou se o filtro está vazio
-            $(this).show(); // Mostrar a opção se corresponder ao filtro ou se o filtro estiver vazio
-        } else {
-            $(this).hide(); // Ocultar a opção se não corresponder ao filtro
-        }
-    });
-}
+// Lista de produtos inicialmente vazia
+var produtos = [];
 
-// Adicionar um evento de digitação ao campo de entrada
-$('#inputBusca').on('input', function() {
-    filtrarProdutos(); // Chamar a função de filtragem ao digitar algo
-});
+// Função para exibir o dropdown de produtos
+function exibirDropdownProdutos() {
+    var listaDropdown = $('#listaProdutos'); // Selecionar o elemento da lista de produtos
+    listaDropdown.empty(); // Limpar a lista de produtos
 
-// Adicionar um evento de foco ao dropdown para mostrar todas as opções ao clicar
-$('#produto').on('click', function() {
-    $(this).find('option').show(); // Mostrar todas as opções do dropdown
-});
-
-// Adicionar um evento de saída do dropdown para filtrar novamente ao sair
-$('#produto').on('blur', function() {
-    console.log('chamando a funcao.2')
-    filtrarProdutos(); // Chamar a função de filtragem ao sair do dropdown
-});
-
-
-/*
-
-function filtrarProdutosPDV() {
-    $('#produto').on('input', function () {
-        var input = $(this).val();
-
-        // Verifica se o campo de entrada tem pelo menos 3 caracteres
-        if (input.length >= 3) {
-            // Envia uma solicitação AJAX para o servidor para obter os produtos correspondentes
-            $.ajax({
-                url: '/produtos/filtrar',
-                type: 'GET',
-                data: { input: input },
-                success: function (response) {
-                    // Limpa o contêiner de resultados
-                    $('#resultado-produtos').empty();
-
-                    // Adiciona os produtos correspondentes ao contêiner de resultados
-                    $.each(response.produtos, function (index, produto) {
-                        $('#resultado-produtos').append('<div>' + produto.nome + '</div>');
-                    });
-                }
-            });
-        } else {
-            // Limpa o contêiner de resultados se o campo de entrada estiver vazio
-            $('#resultado-produtos').empty();
-        }
-    });
-}
-
-// Chama a função filtrarProdutosPDV quando o documento estiver pronto
-$(document).ready(function () {
-    filtrarProdutosPDV();
-});
-
-
-function dropListaProdutos() {
-    // JavaScript para fazer a solicitação AJAX e preencher o dropdown com os produtos
-    $(document).ready(function () {
-        // Fazer solicitação AJAX para obter a lista de produtos
-        $.get("/api/produtos", function (produtos) {
-            // Preencher o dropdown com os produtos retornados
-            var dropdown = $("#produtoDropdown");
-            dropdown.empty();
-            $.each(produtos, function (index, produto) {
-                dropdown.append($("<option></option>").attr("value", produto.id).text(produto.nome));
-            });
-        });
+    // Adicionar cada produto como uma opção no dropdown
+    produtos.forEach(function (produto) {
+        console.log('item= ', produto.produto)
+        listaDropdown.append('<li class="dropdown-item">' + produto.produto + '</li>');
     });
 
+    // Posicionar o dropdown abaixo do campo de busca
+    var inputBusca = $('#inputBusca');
+    var listaPosicaoTop = inputBusca;
+    var listaPosicaoLeft = inputBusca;
+    var listaLargura = inputBusca.outerWidth();
+
+    listaDropdown.css({
+        'position': 'absolute',
+        'top': listaPosicaoTop,
+        'left': listaPosicaoLeft,
+        'width': listaLargura,
+        'z-index': '9999',
+        'background-color': '#fff',
+        'border': '1px solid #ced4da',
+        'border-radius': '0.25rem',
+        'padding': '0.5rem',
+        'list-style-type': 'none',
+        'box-shadow': '0px 8px 16px 0px rgba(0,0,0,0.2)',
+        'max-height': '200px',
+        'overflow-y': 'auto'
+    });
+
+    listaDropdown.show(); // Exibir o dropdown de produtos
 }
 
-$(document).ready(function() {
-    // Função para carregar os produtos no dropdown
-    function carregarProdutos() {
-        $.ajax({
-            type: "GET",
-            url: "/produtos", // Endpoint para listar os produtos
-            success: function(produtos) {
-                // Limpa as opções atuais
-                $('#produto').empty();
-                // Adiciona uma opção vazia para permitir a seleção de nenhum produto
-                $('#produto').append('<option value="">Selecione um produto</option>');
-                // Preenche o dropdown com os produtos obtidos
-                $.each(produtos, function(index, produto) {
-                    $('#produto').append('<option value="' + produto.id + '">' + produto.nome + '</option>');
+// Função para carregar os produtos do banco de dados
+function carregarProdutosDoBanco() {
+    console.log('entrou no carregar produto')
+    // Fazer uma solicitação AJAX para obter os produtos do banco de dados
+    $.ajax({
+        url: '/pdv/produtos', // URL da sua API que retorna os produtos
+        method: 'GET',
+        success: function (response) {
+            // Verificar se a resposta foi bem-sucedida e se há produtos
+            console.log('produtos', response);
+            if (response && response.length > 0) {
+                // Iterar sobre a lista de produtos
+                response.forEach(function (produto) {
+                    // Aqui você pode fazer um console.log de cada produto
+                    console.log('entrou no for', produto);
                 });
-            },
-            error: function() {
-                console.error('Erro ao carregar os produtos.');
+                // Atualizar a lista de produtos com os produtos do banco de dados
+                produtos = response;
+                // Exibir os novos produtos na lista dropdown
+                exibirDropdownProdutos();
+            } else {
+                console.log('Nenhum produto encontrado.');
             }
+        },
+        error: function (xhr, status, error) {
+            console.error('Erro ao carregar produtos:', error);
+        }
+    });
+}
+
+// Adicionar um evento de clique ao campo de busca para exibir o dropdown de produtos
+$('#inputBusca').on('click', function (event) {
+    if ($('#listaProdutos').is(':visible')) {
+        $('#listaProdutos').hide();
+        //return; // Se o dropdown já estiver visível, não fazer nada
+    }
+    console.log('input...')
+    event.stopPropagation(); // Impedir a propagação do evento de clique para os elementos pais
+    exibirDropdownProdutos(); // Chamar a função para exibir o dropdown de produtos
+});
+
+
+// Fechar o dropdown de produtos quando clicar fora dele
+$(document).on('click', function (event) {
+    console.log('fechar quando clica..')
+    if (!$(event.target).closest('#inputBusca').length || !$(event.target).closest('#listaProdutos').length) {
+        $('#listaProdutos').hide(); // Esconder o dropdown de produtos se clicar fora dele
+        console.log('entrou no if')
+    }
+});
+
+// Filtrar os produtos conforme o texto digitado
+$('#inputBusca').on('input', function () {
+    var filtro = $(this).val().toLowerCase(); // Obter o texto digitado e converter para minúsculas
+    var listaDropdown = $('#listaProdutos'); // Selecionar o elemento do dropdown de produtos
+
+    // Limpar a lista de produtos
+    listaDropdown.empty();
+
+    // Filtrar as opções do dropdown de produtos com base no texto digitado
+    var produtosFiltrados = produtos.filter(function (produto) {
+        return produto.produto.toLowerCase().includes(filtro);
+    });
+
+    // Verificar se a lista de produtos filtrados está vazia
+    if (produtosFiltrados.length === 0 && filtro !== "") {
+        // Adicionar mensagem de "produto não encontrado"
+        listaDropdown.append('<li class="dropdown-item disabled">Produto não encontrado</li>');
+    } else {
+        // Adicionar os produtos filtrados à lista dropdown
+        produtosFiltrados.forEach(function (produto) {
+            listaDropdown.append('<li class="dropdown-item">' + produto.produto + '</li>');
         });
     }
 
-    // Chama a função para carregar os produtos quando a página é carregada
-    carregarProdutos();
+    listaDropdown.show(); // Exibir o dropdown de produtos
 });
- */
+
+
+
+// Selecionar o produto clicado e preencher o campo de busca
+$('#listaProdutos').on('click', 'li', function (event) {
+    event.stopPropagation(); // Impedir a propagação do evento de clique para os elementos pais
+    var produtoSelecionado = $(this).text(); // Obter o texto do produto selecionado
+    $('#inputBusca').val(produtoSelecionado); // Preencher o campo de busca com o produto selecionado
+    $('#listaProdutos').hide(); // Esconder o dropdown de produtos após a seleção
+    console.log('fechando depois de selecionar.')
+});
+
+// Chamada inicial para carregar os produtos do banco de dados
+carregarProdutosDoBanco();

@@ -1,7 +1,7 @@
 <div th:replace="~{compartilhado/topo}"></div>
 <!-- Begin Page Content -->
 
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <div class="container-fluid">
 
@@ -21,20 +21,16 @@
                     <!-- Product insertion form -->
                     <!-- Product insertion form -->
                     <form method="POST" action="/pdv/criar" onsubmit="return confirm('Confirma ação')">
-                        <div class="form-group">
-                            <label for="produto">Produto</label>
-                            <!-- Dropdown para selecionar o produto -->
-                            <select class="form-control" id="produto" name="produto">
-                                <option value="">Selecione o produto</option>
-                                <!-- Aqui você irá iterar sobre a lista de produtos para criar as opções -->
-                                <option th:each="produto : ${produtos}" th:value="${produto.id}" th:text="${produto.produto}"></option>
-                            </select>
+                        <div class="form-group" style="position: relative;">
+                            <label>Produto</label>
+                            <!-- Campo de texto para busca -->
+                            <input type="text" id="inputBusca" placeholder="Buscar produto" class="form-control">
                         </div>
-                        <div class="form-group">
-                            <input type="text" id="inputBusca" placeholder="Buscar produto" class="form-control" oninput="filtrarProdutos()">
-                        </div>
+                        <!-- Dropdown de opções de produtos -->
+                        <ul id="listaProdutos" class="list-group" style="position: absolute; display: none;"></ul>
                         <button type="submit" class="btn btn-primary">Adicionar</button>
                     </form>
+
                     <!-- List of chosen products -->
                     <h4 class="mt-4">Itens Escolhidos</h4>
                     <!-- Tabela de produtos escolhidos -->
