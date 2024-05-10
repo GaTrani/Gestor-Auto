@@ -58,12 +58,12 @@
         <div class="col-md-4">
             <!-- Customer data, payment methods, total, print and delete buttons -->
             <div class="card shadow mb-4" style="padding: 30px;">
-                <h4>Dados do Cliente</h4>
+                <h5>Dados do Cliente</h5>
                 <!-- Customer data form -->
                 <form method="POST" action="/pdv/salvar" onsubmit="return confirm('Confirma ação')">
                     <!-- Dropdown de clientes -->
                     <div class="form-group">
-                        <label for="clienteId">Cliente</label>
+                        <!-- <label for="clienteId">Cliente</label> -->
                         <select class="form-control" id="clienteId" name="clienteId">
                             <option value="">Selecione um cliente</option>
                             <!-- Iterando sobre a lista de clientes -->
@@ -88,7 +88,7 @@
                     </div>
 
                     <hr>
-                    <h4>Formas de Pagamento</h4>
+                    <h5>Formas de Pagamento</h5>
                     <!-- Botões para seleção de forma de pagamento -->
                     <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center"
                         role="group">
@@ -99,12 +99,12 @@
                     </div>
                     <!-- Opções adicionais para pagamento com cartão -->
                     <div class="collapse mb-4" id="cartaoOpcoes">
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-secondary">Débito</button>
-                            <button type="button" class="btn btn-secondary">Crédito</button>
+                        <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center">
+                            <button type="button" class="btn btn-secondary btn-block mr-1">Débito</button>
+                            <button type="button" class="btn btn-secondary btn-block mr-1" style="margin-top: 0px;">Crédito</button>
                             <!-- Dropdown para número de parcelas (crédito) -->
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownParcelas"
+                                <button class="btn btn-secondary btn-block mr-1 dropdown-toggle" type="button" id="dropdownParcelas"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Parcelas
                                 </button>
@@ -118,16 +118,20 @@
                         </div>
                     </div>
                     <hr>
-                    <h4>Desconto</h4>
-                    <h4>
+                    <h5>Desconto</h5>
                         <div class="btn-group mb-4" role="group">
                             <button type="button" class="btn btn-secondary">R$</button>
-                            <button type="button" class="btn btn-secondary">%</button>
+                            <button type="button" class="btn btn-secondary" style="margin-right: 35px;">%</button>
                             <input type="text" id="desconto" name="desconto" class="form-control">
                         </div>
-                    </h4>
-                    <h4>Total da Nota</h4>
+                    <h5>Total da Nota</h5>
                     <!-- Cálculo do valor total aqui -->
+                    <div>
+                        <div class="position-relative">
+                            <input type="text" id="valorTotalNota" name="valorTotalNota" class="form-control" style="padding-left: 30px; text-align: right;" placeholder="0,00" readonly>
+                            <label for="valorTotalNota" class="position-absolute" style="left: 10px; top: 50%; transform: translateY(-50%);">R$</label>
+                        </div>
+                    </div>
                     <hr>
                     <div class="text-right">
                         <button type="button" id="btnSalvar" class="btn btn-primary">Salvar</button>
