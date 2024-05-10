@@ -67,8 +67,8 @@
                         <select class="form-control" id="clienteId" name="clienteId">
                             <option value="">Selecione um cliente</option>
                             <!-- Iterando sobre a lista de clientes -->
-                            <option th:each="cliente : ${clientes}" th:value="${cliente.nome}"
-                                th:text="${cliente.nome}"></option>
+                            <option th:each="cliente : ${clientes}" th:value="${cliente.id}" th:text="${cliente.nome}"></option>
+                            </option>
                         </select>
                     </div>
                     <!-- Outros campos de dados do cliente aqui -->
@@ -92,7 +92,8 @@
                     <!-- Botões para seleção de forma de pagamento -->
                     <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center"
                         role="group">
-                        <button type="button" class="btn btn-secondary btn-block mr-1" style="margin-top: 8px;">Dinheiro</button>
+                        <button type="button" class="btn btn-secondary btn-block mr-1"
+                            style="margin-top: 8px;">Dinheiro</button>
                         <button type="button" class="btn btn-secondary btn-block mr-1" data-toggle="collapse"
                             href="#cartaoOpcoes" aria-expanded="false" aria-controls="cartaoOpcoes">Cartão</button>
                         <button type="button" class="btn btn-secondary btn-block mr-1">Pix</button>
@@ -101,11 +102,13 @@
                     <div class="collapse mb-4" id="cartaoOpcoes">
                         <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center">
                             <button type="button" class="btn btn-secondary btn-block mr-1">Débito</button>
-                            <button type="button" class="btn btn-secondary btn-block mr-1" style="margin-top: 0px;">Crédito</button>
+                            <button type="button" class="btn btn-secondary btn-block mr-1"
+                                style="margin-top: 0px;">Crédito</button>
                             <!-- Dropdown para número de parcelas (crédito) -->
                             <div class="dropdown">
-                                <button class="btn btn-secondary btn-block mr-1 dropdown-toggle" type="button" id="dropdownParcelas"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button class="btn btn-secondary btn-block mr-1 dropdown-toggle" type="button"
+                                    id="dropdownParcelas" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
                                     Parcelas
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownParcelas">
@@ -119,24 +122,28 @@
                     </div>
                     <hr>
                     <h5>Desconto</h5>
-                        <div class="btn-group mb-4" role="group">
-                            <button type="button" class="btn btn-secondary">R$</button>
-                            <button type="button" class="btn btn-secondary" style="margin-right: 35px;">%</button>
-                            <input type="text" id="desconto" name="desconto" class="form-control">
-                        </div>
+                    <div class="btn-group mb-4" role="group">
+                        <button type="button" class="btn btn-secondary">R$</button>
+                        <button type="button" class="btn btn-secondary" style="margin-right: 35px;">%</button>
+                        <input type="text" id="desconto" name="desconto" class="form-control">
+                    </div>
                     <h5>Total da Nota</h5>
                     <!-- Cálculo do valor total aqui -->
                     <div>
                         <div class="position-relative">
-                            <input type="text" id="valorTotalNota" name="valorTotalNota" class="form-control" style="padding-left: 30px; text-align: right;" placeholder="0,00" readonly>
-                            <label for="valorTotalNota" class="position-absolute" style="left: 10px; top: 50%; transform: translateY(-50%);">R$</label>
+                            <input type="text" id="valorTotalNota" name="valorTotalNota" class="form-control"
+                                style="padding-left: 30px; text-align: right;" placeholder="0,00" readonly>
+                            <label for="valorTotalNota" class="position-absolute"
+                                style="left: 10px; top: 50%; transform: translateY(-50%);">R$</label>
                         </div>
                     </div>
                     <hr>
                     <div class="text-right">
-                        <button type="button" id="btnSalvar" class="btn btn-primary">Salvar</button>
-                        <button type="button" class="btn btn-success">Imprimir</button>
-                        <button type="button" class="btn btn-danger">Excluir</button>
+                        <div class="d-flex justify-content-between  mb-2">
+                            <button type="button" class="btn btn-danger mr-2">Excluir</button>
+                            <button type="button" class="btn btn-success">Imprimir</button>
+                        </div>
+                        <button type="button" id="btnSalvar" class="btn btn-primary btn-lg btn-block mb-2">Salvar</button>
                     </div>
                 </form>
             </div>
