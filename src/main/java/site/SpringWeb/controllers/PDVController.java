@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import site.SpringWeb.modelos.Cliente;
 import site.SpringWeb.modelos.PDV;
 import site.SpringWeb.modelos.PDVVendas;
 import site.SpringWeb.modelos.Produto;
 import site.SpringWeb.repositorio.PDVRepo;
 import site.SpringWeb.repositorio.PDVVendasRepo;
+import site.SpringWeb.servicos.ClienteService;
 import site.SpringWeb.servicos.ProdutoService;
 
 @Controller
@@ -45,9 +47,25 @@ public class PDVController {
 
     @GetMapping("/novo")
     public String exibirFormularioNovoProduto(Model model) {
+    List<Produto> listaProdutos = produtoService.listarProdutos();
+    model.addAttribute("produtos", listaProdutos);
+    List<Cliente> clientes = ClienteService.buscarTodos();
+    model.addAttribute("clientes", clientes);
+    return "pdv/novo";
+    }
+
+    @GetMapping("/novo/{id}")
+    public String exibirFormularioNovoPDV(@PathVariable int id, Model model) {
         List<Produto> listaProdutos = produtoService.listarProdutos();
         model.addAttribute("produtos", listaProdutos);
+        model.addAttribute("pdvId", id); // Passando o ID do PDV para a view
         return "pdv/novo";
+    }
+
+    @PostMapping("/salvar/{id}")
+    public String salvarPDV(PDV pdv) {
+        pdvRepo.save(pdv);
+        return "redirect:/pdv"; // Redirecionar para a página inicial dos PDVs
     }
 
     @GetMapping("/produtos")
@@ -131,7 +149,15 @@ public class PDVController {
     @ResponseBody
     public Integer obterUltimoId() {
         Integer ultimoId = pdvRepo.obterUltimoId(); // Supondo que você tenha um repositório para a tabela
-                                                        // pdv_vendas
+                                                    // pdv_vendas
         return ultimoId;
+    }
+
+    @GetMapping("/pdv/{id}/produtos")
+    @ResponseBody
+    public List<PDVVendas> listarProdutosDoPDV(@PathVariable("id") int idPdv) {
+        // Recuperar os produtos do PDV com base no ID do PDV
+        List<PDVVendas> produtos = pdvVendasRepo.findByPdvId(idPdv);
+        return produtos;
     }
 }

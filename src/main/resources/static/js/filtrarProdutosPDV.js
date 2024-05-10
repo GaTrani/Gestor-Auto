@@ -8,7 +8,7 @@ function exibirDropdownProdutos() {
 
     // Adicionar cada produto como uma opção no dropdown
     produtos.forEach(function (produto) {
-        console.log('id: ', produto.id,' item= ', produto.produto)
+        /* console.log('id: ', produto.id,' item= ', produto.produto) */
         listaDropdown.append('<li class="dropdown-item">' + produto.produto + '</li>');
     });
 
@@ -46,12 +46,12 @@ function carregarProdutosDoBanco() {
         method: 'GET',
         success: function (response) {
             // Verificar se a resposta foi bem-sucedida e se há produtos
-            console.log('produtos', response);
+            /* console.log('produtos', response); */
             if (response && response.length > 0) {
                 // Iterar sobre a lista de produtos
                 response.forEach(function (produto) {
                     // Aqui você pode fazer um console.log de cada produto
-                    console.log('entrou no for', produto);
+                    /* console.log('entrou no for', produto); */
                 });
                 // Atualizar a lista de produtos com os produtos do banco de dados
                 produtos = response;
@@ -73,7 +73,7 @@ $('#inputBusca').on('click', function (event) {
         $('#listaProdutos').hide();
         //return; // Se o dropdown já estiver visível, não fazer nada
     }
-    console.log('input...')
+    /* console.log('input...') */
     event.stopPropagation(); // Impedir a propagação do evento de clique para os elementos pais
     exibirDropdownProdutos(); // Chamar a função para exibir o dropdown de produtos
 });
@@ -81,10 +81,9 @@ $('#inputBusca').on('click', function (event) {
 
 // Fechar o dropdown de produtos quando clicar fora dele
 $(document).on('click', function (event) {
-    console.log('fechar quando clica..')
+    /* console.log('fechar quando clica..') */
     if (!$(event.target).closest('#inputBusca').length || !$(event.target).closest('#listaProdutos').length) {
         $('#listaProdutos').hide(); // Esconder o dropdown de produtos se clicar fora dele
-        console.log('entrou no if')
     }
 });
 
@@ -129,22 +128,33 @@ $('#listaProdutos').on('click', 'li', function (event) {
 // Chamada inicial para carregar os produtos do banco de dados
 carregarProdutosDoBanco();
 
-function obterUltimoIdPDV() {
+/* function obterUltimoIdPDV() {
     $.ajax({
         url: '/pdv/ultimo-id',
         method: 'GET',
         success: function(response) {
             console.log('Último ID do PDV:', response);
+            $('#pdvId').val(response); // Preencher o campo com o último ID do PDV
         },
         error: function(xhr, status, error) {
             console.error('Erro ao obter o último ID do PDV:', error);
         }
     });
 }
+ */
 
 // Chame esta função quando a página pdv/novo for carregada
 $(document).ready(function() {
+    //carregarProdutosDoBanco();
     obterUltimoIdPDV();
+    var idPdv = obterUltimoIdPDV(); // obterIdPDV() Substitua por sua lógica para obter o ID do PDV
+    carregarProdutosDoPDV(idPdv);
+
+    //evento para o drop cartao
+    $('#btnCartao').click(function() {
+        // Alternar a classe "show" na div de opções para pagamento com cartão
+        $('#cartaoOpcoes').collapse('toggle');
+    });
 });
 
 
@@ -183,7 +193,8 @@ function obterUltimoIdPDV() {
         success: function(response) {
             // Último ID do PDV capturado com sucesso
             ultimoIdPDV = response;
-            console.log('idPDV-coleta: ', ultimoIdPDV)
+            console.log('Último ID do PDV:', ultimoIdPDV);
+            $('#pdvId').val(ultimoIdPDV); // Preencher o campo com o último ID do PDV
         },
         error: function(xhr, status, error) {
             // Erro ao obter o último ID do PDV
@@ -192,3 +203,54 @@ function obterUltimoIdPDV() {
     });
     return ultimoIdPDV;
 }
+
+// Função para carregar os produtos deste PDV
+function carregarProdutosDoPDV(idPdv) {
+    console.log('id===', idPdv)
+    $.ajax({
+        url: '/pdv/' + idPdv + '/produtos',
+        method: 'GET',
+        success: function(response) {
+            console.log('response: ', response)
+            // Limpar a tabela antes de adicionar os novos produtos
+            $('#tabelaProdutosPDVVendas tbody').empty();
+
+            // Iterar sobre os produtos e adicionar na tabela
+            response.forEach(function(produto) {
+                $('#tabelaProdutosPDVVendas tbody').append(`
+                    <tr>
+                        <td>${produto.produto}</td>
+                        <td>${produto.valorUnitario}</td>
+                        <td>${produto.quantidade}</td>
+                        <td>${produto.total}</td>
+                        <td>Ações</td>
+                    </tr>
+                `);
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error('Erro ao carregar tabela produtos do PDV:', error);
+        }
+    });
+}
+
+// Evento de clique no botão "Salvar"
+$('#btnSalvar').on('click', function() {
+    var idPdv = $('#pdvId').val(); // Obter o ID do PDV
+    if (idPdv) {
+        // Enviar uma requisição POST para salvar o PDV
+        $.ajax({
+            url: '/pdv/salvar/' + idPdv,
+            method: 'POST',
+            success: function(response) {
+                // Redirecionar para a página inicial dos PDVs após salvar
+                window.location.href = '/pdv';
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao salvar o PDV:', error);
+            }
+        });
+    } else {
+        console.error('ID do PDV não encontrado.');
+    }
+});

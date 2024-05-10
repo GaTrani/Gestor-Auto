@@ -19,6 +19,8 @@
             <div class="card shadow mb-4" style="padding: 30px;">
                 <label>Inserir Produto</h4>
                     <!-- Product insertion form -->
+                    <!-- <input type="text" id="pdvId" class="form-control" readonly> -->
+                    <input readonly id="pdvId" th:value="${pdvId}">
                     <!-- Product insertion form -->
                     <form method="POST" action="/pdv/criar" onsubmit="return confirm('Confirma ação')">
                         <div class="form-group" style="position: relative;">
@@ -34,7 +36,7 @@
                     <h4 class="mt-4">Itens Escolhidos</h4>
                     <!-- Tabela de produtos escolhidos -->
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="tabelaProdutos">
+                        <table class="table table-bordered" id="tabelaProdutosPDVVendas">
                             <thead>
                                 <tr>
                                     <th>Produto</th>
@@ -59,20 +61,82 @@
                 <h4>Dados do Cliente</h4>
                 <!-- Customer data form -->
                 <form method="POST" action="/pdv/salvar" onsubmit="return confirm('Confirma ação')">
-                    <!-- Campos de dados do cliente aqui -->
+                    <!-- Dropdown de clientes -->
+                    <div class="form-group">
+                        <label for="clienteId">Cliente</label>
+                        <select class="form-control" id="clienteId" name="clienteId">
+                            <option value="">Selecione um cliente</option>
+                            <!-- Iterando sobre a lista de clientes -->
+                            <option th:each="cliente : ${clientes}" th:value="${cliente.nome}"
+                                th:text="${cliente.nome}"></option>
+                        </select>
+                    </div>
+                    <!-- Outros campos de dados do cliente aqui -->
+
+                    <!-- Grade flexível para alinhar Veiculo e Km na mesma linha -->
+                    <div class="d-flex align-items-center">
+                        <!-- Rótulos Veiculo e Km -->
+                        <div class="mr-3">
+                            <label for="veiculo">Veiculo</label><br>
+                            <input type="text" id="veiculo" name="veiculo" class="form-control">
+                        </div>
+                        <!-- Label e campo de entrada para Km -->
+                        <div>
+                            <label for="km">Km</label><br>
+                            <input type="text" id="km" name="km" class="form-control">
+                        </div>
+                    </div>
+
+                    <hr>
+                    <h4>Formas de Pagamento</h4>
+                    <!-- Botões para seleção de forma de pagamento -->
+                    <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center"
+                        role="group">
+                        <button type="button" class="btn btn-secondary btn-block mr-1" style="margin-top: 8px;">Dinheiro</button>
+                        <button type="button" class="btn btn-secondary btn-block mr-1" data-toggle="collapse"
+                            href="#cartaoOpcoes" aria-expanded="false" aria-controls="cartaoOpcoes">Cartão</button>
+                        <button type="button" class="btn btn-secondary btn-block mr-1">Pix</button>
+                    </div>
+                    <!-- Opções adicionais para pagamento com cartão -->
+                    <div class="collapse mb-4" id="cartaoOpcoes">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-secondary">Débito</button>
+                            <button type="button" class="btn btn-secondary">Crédito</button>
+                            <!-- Dropdown para número de parcelas (crédito) -->
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownParcelas"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Parcelas
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownParcelas">
+                                    <a class="dropdown-item" href="#">1x</a>
+                                    <a class="dropdown-item" href="#">2x</a>
+                                    <a class="dropdown-item" href="#">3x</a>
+                                    <!-- Adicione mais opções conforme necessário -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <h4>Desconto</h4>
+                    <h4>
+                        <div class="btn-group mb-4" role="group">
+                            <button type="button" class="btn btn-secondary">R$</button>
+                            <button type="button" class="btn btn-secondary">%</button>
+                            <input type="text" id="desconto" name="desconto" class="form-control">
+                        </div>
+                    </h4>
+                    <h4>Total da Nota</h4>
+                    <!-- Cálculo do valor total aqui -->
+                    <hr>
+                    <div class="text-right">
+                        <button type="button" id="btnSalvar" class="btn btn-primary">Salvar</button>
+                        <button type="button" class="btn btn-success">Imprimir</button>
+                        <button type="button" class="btn btn-danger">Excluir</button>
+                    </div>
                 </form>
-                <hr>
-                <h4>Formas de Pagamento</h4>
-                <!-- Opções de formas de pagamento aqui -->
-                <hr>
-                <h4>Total da Nota</h4>
-                <!-- Cálculo do valor total aqui -->
-                <hr>
-                <div class="text-right">
-                    <button type="button" class="btn btn-success">Imprimir</button>
-                    <button type="button" class="btn btn-danger">Excluir</button>
-                </div>
             </div>
+
         </div>
     </div>
 
