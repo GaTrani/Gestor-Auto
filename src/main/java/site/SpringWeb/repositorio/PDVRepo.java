@@ -14,4 +14,7 @@ public interface PDVRepo extends CrudRepository<PDV, Integer> {
     public boolean exist(int id);
 
     Optional<PDV> findById(int id); // Adicionado para buscar por ID
+
+    @Query(value = "SELECT MAX(id) FROM pdv", nativeQuery = true)
+    Integer obterUltimoId();
 }

@@ -8,7 +8,7 @@ function exibirDropdownProdutos() {
 
     // Adicionar cada produto como uma opção no dropdown
     produtos.forEach(function (produto) {
-        console.log('item= ', produto.produto)
+        console.log('id: ', produto.id,' item= ', produto.produto)
         listaDropdown.append('<li class="dropdown-item">' + produto.produto + '</li>');
     });
 
@@ -128,3 +128,67 @@ $('#listaProdutos').on('click', 'li', function (event) {
 
 // Chamada inicial para carregar os produtos do banco de dados
 carregarProdutosDoBanco();
+
+function obterUltimoIdPDV() {
+    $.ajax({
+        url: '/pdv/ultimo-id',
+        method: 'GET',
+        success: function(response) {
+            console.log('Último ID do PDV:', response);
+        },
+        error: function(xhr, status, error) {
+            console.error('Erro ao obter o último ID do PDV:', error);
+        }
+    });
+}
+
+// Chame esta função quando a página pdv/novo for carregada
+$(document).ready(function() {
+    obterUltimoIdPDV();
+});
+
+
+// Evento de clique no botão "Adicionar"
+$('#btnAdicionar').on('click', function() {
+    var produtoSelecionado = $('#inputBusca').val();
+    var ultimoIdPDV = obterUltimoIdPDV();
+    if (produtoSelecionado && ultimoIdPDV) {
+        $.ajax({
+            url: '/pdv/adicionar-produto-parametros',
+            method: 'POST',
+            data: {
+                id_pdv: ultimoIdPDV,
+                produto: produtoSelecionado
+            },
+            success: function(response) {
+                console.log('Produto adicionado com sucesso:', response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao adicionar produto:', error);
+            }
+        });
+    } else {
+        console.error('Erro ao capturar dados para adicionar produto.');
+    }
+});
+
+
+// Função para obter o último ID do PDV
+function obterUltimoIdPDV() {
+    var ultimoIdPDV = null;
+    $.ajax({
+        url: '/pdv/ultimo-id',
+        method: 'GET',
+        async: false, // Definir como síncrono para esperar a resposta antes de prosseguir
+        success: function(response) {
+            // Último ID do PDV capturado com sucesso
+            ultimoIdPDV = response;
+            console.log('idPDV-coleta: ', ultimoIdPDV)
+        },
+        error: function(xhr, status, error) {
+            // Erro ao obter o último ID do PDV
+            console.error('Erro ao obter o último ID do PDV:', error);
+        }
+    });
+    return ultimoIdPDV;
+}

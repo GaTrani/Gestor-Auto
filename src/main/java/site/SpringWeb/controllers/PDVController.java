@@ -9,20 +9,29 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import site.SpringWeb.modelos.PDV;
+import site.SpringWeb.modelos.PDVVendas;
 import site.SpringWeb.modelos.Produto;
 import site.SpringWeb.repositorio.PDVRepo;
+import site.SpringWeb.repositorio.PDVVendasRepo;
 import site.SpringWeb.servicos.ProdutoService;
 
 @Controller
 @RequestMapping("/pdv")
 public class PDVController {
 
-    @Autowired
-    private PDVRepo pdvRepo;
+    private final PDVRepo pdvRepo;
+    private final PDVVendasRepo pdvVendasRepo;
+
+    public PDVController(PDVRepo pdvRepo, PDVVendasRepo pdvVendasRepo) {
+        this.pdvRepo = pdvRepo;
+        this.pdvVendasRepo = pdvVendasRepo;
+    }
 
     @Autowired
     private ProdutoService produtoService;
@@ -76,4 +85,53 @@ public class PDVController {
         return "redirect:/pdv";
     }
 
+    // Controlador
+    @PostMapping("/adicionar-produto-parametros")
+    @ResponseBody
+    public String adicionarProdutoAoPDVComParametros(@RequestParam("id_pdv") int idPdv,
+            @RequestParam("produto") String produto) {
+        try {
+            // Recupere o PDV com base no ID fornecido
+            PDV pdv = pdvRepo.findById(idPdv)
+                    .orElseThrow(() -> new IllegalArgumentException("ID do PDV inválido: " + idPdv));
+
+            // Criar uma nova instância de PDVVendas
+            PDVVendas venda = new PDVVendas();
+            // Definir os atributos do objeto PDVVendas
+            venda.setPdv(pdv);
+            venda.setProduto(produto);
+            // Salvar o objeto no banco de dados
+            pdvVendasRepo.save(venda);
+            return "Produto adicionado ao PDV com sucesso";
+        } catch (Exception e) {
+            return "Erro ao adicionar produto ao PDV: " + e.getMessage();
+        }
+    }
+
+    @PostMapping("/adicionar-produto-body")
+    public String adicionarProdutoAoPDVComBody(@RequestBody PDVVendas request) {
+        // Verificar se o PDV existe
+        if (!pdvRepo.existsById(request.getId())) {
+            return "PDV não encontrado";
+        }
+
+        // Criar uma instância de PDVVendas e preencher com os dados recebidos
+        PDVVendas venda = new PDVVendas();
+        venda.setPdv(pdvRepo.findById(request.getId()).orElse(null)); // Buscar o PDV pelo ID
+        venda.setProduto(request.getProduto());
+        // Preencher outras informações, como quantidade, valor unitário, total, etc.
+
+        // Salvar a venda na tabela pdv_vendas
+        pdvVendasRepo.save(venda);
+
+        return "Produto adicionado ao PDV com sucessossss";
+    }
+
+    @GetMapping("/ultimo-id")
+    @ResponseBody
+    public Integer obterUltimoId() {
+        Integer ultimoId = pdvRepo.obterUltimoId(); // Supondo que você tenha um repositório para a tabela
+                                                        // pdv_vendas
+        return ultimoId;
+    }
 }
