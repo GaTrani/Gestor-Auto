@@ -1,16 +1,14 @@
 package site.SpringWeb.modelos;
 
-//import java.util.List;
-
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.springframework.stereotype.Component;
-@Component
 @Entity
 @Table(name = "veiculos")
 public class Veiculo {
@@ -20,8 +18,8 @@ public class Veiculo {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "cliente", length = 100)
-    private String cliente;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Cliente cliente; // Relacionamento com o cliente
 
     @Column(name = "marca", length = 50)
     private String marca;
@@ -32,6 +30,9 @@ public class Veiculo {
     @Column(name = "placa", length = 10, unique = true)
     private String placa;
 
+    @Column(name = "ano")
+    private int ano;
+
     @Column(name = "km")
     private int km;
 
@@ -40,7 +41,7 @@ public class Veiculo {
         return id;
     }
 
-    public String getCliente() {
+    public Cliente getCliente() {
         return cliente;
     }
 
@@ -56,6 +57,14 @@ public class Veiculo {
         return placa;
     }
 
+    public int getAno() {
+        return ano;
+    }
+
+    public void setAno(int ano) {
+        this.ano = ano;
+    }
+
     public int getKm() {
         return km;
     }
@@ -65,7 +74,7 @@ public class Veiculo {
         this.id = id;
     }
 
-    public void setCliente(String cliente) {
+    public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
 
@@ -84,10 +93,4 @@ public class Veiculo {
     public void setKm(int km) {
         this.km = km;
     }
-
-    //public List<MarcaCarro> obterMarcasCarro() {
-        // TODO Auto-generated method stub
-        //throw new UnsupportedOperationException("Unimplemented method 'obterMarcasCarro'");
-    //}
 }
-

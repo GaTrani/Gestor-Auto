@@ -21,13 +21,13 @@
                     </div>
                     <div class="form-group">
                         <label for="cpf">CPF</label>
-                        <input type="text" class="form-control" oninput="formatarCPF()" id="cpf" name="cpf"
+                        <input type="text" class="form-control input-medio" oninput="formatarCPF()" id="cpf" name="cpf"
                             maxlength="14" placeholder="Digite o CPF do cliente">
                     </div>
                     <div class="form-group">
                         <label for="telefone" class="required-field" title="* Campo obrigatório">Telefone</label>
-                        <input type="text" class="form-control" oninput="formatarTelefone()" required id="telefone"
-                            name="telefone" maxlength="15" placeholder="Digite o telefone do cliente">
+                        <input type="text" class="form-control input-medio" oninput="formatarTelefone()" required
+                            id="telefone" name="telefone" maxlength="15" placeholder="Digite o telefone do cliente">
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
@@ -38,13 +38,27 @@
                         <label for="placa">Placa do veículo</label>
                         <input type="text" class="form-control" id="placa" name="placa" placeholder="Digite a placa do veículo">
                     </div> -->
+                    <div class="form-group">
+                        <!-- Restante do seu código existente -->
+
+                        <!-- Campo de placa do veículo -->
+                        <div class="form-group" id="placas">
+                            <label for="placas">Placas dos veículos</label>
+                            <input type="text" class="form-control input-pequeno mb-3" name="placas[]"
+                                placeholder="Ex. ABC1234">
+                        </div>
+
+                        <!-- Botão para adicionar mais campos de placa do veículo -->
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="adicionarPlaca()">Adicionar
+                            Veículo</button>
+                    </div>
                 </div>
                 <!-- Coluna 2 -->
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="cep">CEP</label>
-                        <input type="text" class="form-control" onblur="pesquisacep(this.value);" id="cep" name="cep"
-                            maxlength="9" placeholder="Digite o CEP do cliente">
+                        <input type="text" class="form-control input-pequeno" onblur="pesquisacep(this.value);" id="cep"
+                            name="cep" maxlength="9" placeholder="Digite o CEP do cliente">
                     </div>
                     <div class="form-group">
                         <label for="endereco">Endereço</label>
@@ -84,12 +98,22 @@
 
 <script src="/js/scriptsCliente.js"></script>
 <script src="/js/scriptsCEP.js"></script>
+<script src="/js/scriptsClientePlaca.js"></script>
 <!-- <script src="/js/APIs/apiSinesp.js"></script> -->
 
 <style>
     .required-field::after {
         content: " *";
         color: red;
+    }
+
+    .input-pequeno {
+        width: 25%;
+        /* Defina o tamanho desejado */
+    }
+
+    .input-medio {
+        width: 50%;
     }
 </style>
 <!-- /.container-fluid -->

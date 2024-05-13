@@ -22,12 +22,16 @@ import site.SpringWeb.repositorio.VeiculosRepo;
 import site.SpringWeb.servicos.ClienteService;
 import site.SpringWeb.servicos.MarcaCarroService;
 import site.SpringWeb.servicos.ModeloCarroService;
+import site.SpringWeb.servicos.VeiculoService;
 
 @Controller
 public class VeiculosController {
 
     @Autowired
     public VeiculosRepo repo;
+
+    @Autowired
+    public VeiculoService veiculoService;
 
     @GetMapping("/veiculos")
     public String index(Model model) {
