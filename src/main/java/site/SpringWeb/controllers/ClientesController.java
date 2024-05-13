@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import site.SpringWeb.modelos.Cliente;
 import site.SpringWeb.modelos.Veiculo;
@@ -27,9 +26,6 @@ public class ClientesController {
     @Autowired
     private VeiculosRepo veiculosRepo;
 
-    @Autowired
-    private ClientesRepo clientesRepo;
-
     @GetMapping("/clientes")
     public String index(Model model) {
         List<Cliente> clientes = (List<Cliente>) repo.findAll();
@@ -41,39 +37,6 @@ public class ClientesController {
     public String novo() {
         return "clientes/novo";
     }
-
-    /*
-     * @PostMapping("/clientes/criar")
-     * public String criarCliente(Cliente cliente, RedirectAttributes
-     * redirectAttributes) {
-     * try {
-     * // Salva o cliente no banco de dados
-     * Cliente novoCliente = clientesRepo.save(cliente);
-     * 
-     * // Verifica se há veículos associados ao cliente
-     * List<Veiculo> veiculos = cliente.getVeiculos();
-     * if (veiculos != null && !veiculos.isEmpty()) {
-     * // Para cada veículo associado ao cliente, associa o cliente e salva no banco
-     * de
-     * // dados
-     * for (Veiculo veiculo : veiculos) {
-     * // Associa o cliente ao veículo
-     * veiculo.setCliente(novoCliente);
-     * // Salva o veículo no banco de dados
-     * veiculosRepo.save(veiculo);
-     * }
-     * }
-     * 
-     * return "redirect:/clientes";
-     * } catch (Exception e) {
-     * // Se ocorrer algum erro, redireciona de volta para a página de criação de
-     * // clientes
-     * redirectAttributes.addFlashAttribute("erro", "Erro ao criar cliente: " +
-     * e.getMessage());
-     * return "redirect:/clientes/novo";
-     * }
-     * }
-     */
 
     @PostMapping("/clientes/criar")
     public String criar(@ModelAttribute("cliente") Cliente cliente, @RequestParam("placas[]") List<String> placas) {
@@ -90,28 +53,6 @@ public class ClientesController {
 
         return "redirect:/clientes";
     }
-
-    /*
-     * @PostMapping("/clientes/criar")
-     * public String criar(Cliente cliente) {
-     * // Salva o cliente no banco de dados
-     * Cliente novoCliente = repo.save(cliente);
-     *
-     * // Verifica se há veículos associados ao cliente
-     * List<Veiculo> veiculos = cliente.getVeiculos();
-     * if (veiculos != null && !veiculos.isEmpty()) {
-     * // Para cada veículo associado ao cliente, associa o cliente e salva no banco
-     * de
-     * // dados
-     * for (Veiculo veiculo : veiculos) {
-     * veiculo.setCliente(novoCliente);
-     * veiculosRepo.save(veiculo);
-     * }
-     * }
-     *
-     * return "redirect:/clientes";
-     * }
-     */
 
     @GetMapping("/clientes/{id}")
     public String busca(@PathVariable int id, Model model) {
