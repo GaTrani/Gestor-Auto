@@ -159,7 +159,7 @@ $(document).ready(function() {
 
 
 // Evento de clique no botão "Adicionar"
-$('#btnAdicionar').on('click', function() {
+/* $('#btnAdicionar').on('click', function() {
     var produtoSelecionado = $('#inputBusca').val();
     var ultimoIdPDV = obterUltimoIdPDV();
     if (produtoSelecionado && ultimoIdPDV) {
@@ -180,7 +180,7 @@ $('#btnAdicionar').on('click', function() {
     } else {
         console.error('Erro ao capturar dados para adicionar produto.');
     }
-});
+}); */
 
 
 // Função para obter o último ID do PDV
@@ -234,23 +234,65 @@ function carregarProdutosDoPDV(idPdv) {
     });
 }
 
-// Evento de clique no botão "Salvar"
-$('#btnSalvar').on('click', function() {
-    var idPdv = $('#pdvId').val(); // Obter o ID do PDV
-    if (idPdv) {
-        // Enviar uma requisição POST para salvar o PDV
+$(document).ready(function() {
+    $("#btnSalvar").click(function() {
+        var clienteId = $("#clienteId").val();
+        var pdvId = $("#pdvId").val();
+
+        // Enviar os dados para o backend
         $.ajax({
-            url: '/pdv/salvar/' + idPdv,
-            method: 'POST',
+            type: "POST",
+            contentType: "application/json",
+            url: "/pdv/criar",
+            data: JSON.stringify({ clienteId: clienteId, pdvId: pdvId }),
+            dataType: 'json',
             success: function(response) {
-                // Redirecionar para a página inicial dos PDVs após salvar
-                window.location.href = '/pdv';
+                // Manipular a resposta, se necessário
+                console.log("PDV salvo com sucesso!");
             },
             error: function(xhr, status, error) {
-                console.error('Erro ao salvar o PDV:', error);
+                // Manipular erros, se necessário
+                console.error("Erro ao salvar PDV:", error);
             }
         });
+    });
+});
+
+
+
+// Lista para armazenar os produtos adicionados
+var produtosAdicionados = [];
+
+// Evento de clique no botão "Adicionar"
+$('#btnAdicionar').on('click', function() {
+    var produtoSelecionado = $('#inputBusca').val();
+    if (produtoSelecionado) {
+        // Adicionar o produto à lista de produtos adicionados
+        produtosAdicionados.push(produtoSelecionado);
+        // Limpar o campo de busca
+        $('#inputBusca').val('');
+        // Exibir os produtos adicionados na tabela
+        atualizarTabelaProdutos();
     } else {
-        console.error('ID do PDV não encontrado.');
+        console.error('Erro ao capturar dados para adicionar produto.');
     }
 });
+
+// Função para atualizar a tabela de produtos
+function atualizarTabelaProdutos() {
+    // Limpar a tabela antes de adicionar os produtos
+    $('#tabelaProdutosPDVVendas tbody').empty();
+
+    // Iterar sobre os produtos adicionados e adicionar na tabela
+    produtosAdicionados.forEach(function(produto) {
+        $('#tabelaProdutosPDVVendas tbody').append(`
+            <tr>
+                <td>${produto}</td>
+                <td>Valor Unitário</td>
+                <td>Quantidade</td>
+                <td>Valor Total</td>
+                <td>Ações</td>
+            </tr>
+        `);
+    });
+}

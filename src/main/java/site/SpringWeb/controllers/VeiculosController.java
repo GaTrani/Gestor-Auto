@@ -31,6 +31,9 @@ public class VeiculosController {
     public VeiculosRepo repo;
 
     @Autowired
+    private ClienteService clienteService;
+
+    @Autowired
     public VeiculoService veiculoService;
 
     @GetMapping("/veiculos")
@@ -42,7 +45,7 @@ public class VeiculosController {
 
     @GetMapping("/veiculos/novo")
     public String exibirFormularioNovoVeiculo(Model model) {
-        List<Cliente> listaClientes = ClienteService.buscarTodos();
+        List<Cliente> listaClientes = clienteService.buscarTodos();
         List<MarcaCarro> listaMarcasCarro = MarcaCarroService.buscarTodos();
         List<ModeloCarro> listaModelosCarro = ModeloCarroService.buscarTodos();
         model.addAttribute("listaClientes", listaClientes);

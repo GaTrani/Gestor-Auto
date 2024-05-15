@@ -4,7 +4,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <div class="container-fluid">
-
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Novo PDV</h1>
     <p class="mb-4">
@@ -17,40 +16,34 @@
         <div class="col-md-8">
             <!-- Product insertion and list -->
             <div class="card shadow mb-4" style="padding: 30px;">
-                <label>Inserir Produto</h4>
-                    <!-- Product insertion form -->
-                    <!-- <input type="text" id="pdvId" class="form-control" readonly> -->
-                    <input readonly id="pdvId" th:value="${pdvId}">
-                    <!-- Product insertion form -->
-                    <form method="POST" action="/pdv/criar" onsubmit="return confirm('Confirma ação')">
-                        <div class="form-group" style="position: relative;">
-                            <label>Produto</label>
-                            <!-- Campo de texto para busca -->
-                            <input type="text" id="inputBusca" placeholder="Buscar produto" class="form-control">
-                        </div>
-                        <!-- Dropdown de opções de produtos -->
-                        <ul id="listaProdutos" class="list-group" style="position: absolute; display: none;"></ul>
-                        <button type="button" id="btnAdicionar" class="btn btn-primary">Adicionar</button>
-                    </form>
-                    <!-- List of chosen products -->
-                    <h4 class="mt-4">Itens Escolhidos</h4>
-                    <!-- Tabela de produtos escolhidos -->
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="tabelaProdutosPDVVendas">
-                            <thead>
-                                <tr>
-                                    <th>Produto</th>
-                                    <th>Valor Unitário</th>
-                                    <th>Quantidade</th>
-                                    <th>Valor Total</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Linhas da tabela serão adicionadas dinamicamente aqui -->
-                            </tbody>
-                        </table>
+                <!-- <label>Inserir Produto</h4> -->
+                <!-- Product insertion form -->
+                <!-- <input readonly id="pdvId" th:value="${pdvId}"> -->
+                <form method="POST" action="/pdv/criar" onsubmit="return confirm('Confirma ação')">
+                    <div class="form-group" style="position: relative;">
+                        <label>Inserir Produto</label>
+                        <input type="text" id="inputBusca" placeholder="Buscar produto" class="form-control">
                     </div>
+                    <ul id="listaProdutos" class="list-group" style="position: absolute; display: none;"></ul>
+                    <!-- <button type="button" id="btnAdicionar" class="btn btn-primary">Adicionar</button> -->
+                </form>
+                <h4 class="mt-4">Itens Escolhidos</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="tabelaProdutosPDVVendas">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Valor Unitário</th>
+                                <th>Quantidade</th>
+                                <th>Valor Total</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Linhas da tabela serão adicionadas dinamicamente aqui -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -59,28 +52,19 @@
             <!-- Customer data, payment methods, total, print and delete buttons -->
             <div class="card shadow mb-4" style="padding: 30px;">
                 <h5>Dados do Cliente</h5>
-                <!-- Customer data form -->
-                <form method="POST" action="/pdv/salvar" onsubmit="return confirm('Confirma ação')">
-                    <!-- Dropdown de clientes -->
+                <form method="POST" action="/pdv/criar" onsubmit="return confirm('Confirma ação')">
                     <div class="form-group">
-                        <!-- <label for="clienteId">Cliente</label> -->
                         <select class="form-control" id="clienteId" name="clienteId">
                             <option value="">Selecione um cliente</option>
-                            <!-- Iterando sobre a lista de clientes -->
-                            <option th:each="cliente : ${clientes}" th:value="${cliente.id}" th:text="${cliente.nome}"></option>
+                            <option th:each="cliente : ${clientes}" th:value="${cliente.id}" th:text="${cliente.nome}">
                             </option>
                         </select>
                     </div>
-                    <!-- Outros campos de dados do cliente aqui -->
-
-                    <!-- Grade flexível para alinhar Veiculo e Km na mesma linha -->
                     <div class="d-flex align-items-center">
-                        <!-- Rótulos Veiculo e Km -->
                         <div class="mr-3">
                             <label for="veiculo">Veiculo</label><br>
                             <input type="text" id="veiculo" name="veiculo" class="form-control">
                         </div>
-                        <!-- Label e campo de entrada para Km -->
                         <div>
                             <label for="km">Km</label><br>
                             <input type="text" id="km" name="km" class="form-control">
@@ -89,33 +73,25 @@
 
                     <hr>
                     <h5>Formas de Pagamento</h5>
-                    <!-- Botões para seleção de forma de pagamento -->
                     <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center"
                         role="group">
-                        <button type="button" class="btn btn-secondary btn-block mr-1"
-                            style="margin-top: 8px;">Dinheiro</button>
+                        <button type="button" class="btn btn-secondary btn-block mr-1">Dinheiro</button>
                         <button type="button" class="btn btn-secondary btn-block mr-1" data-toggle="collapse"
                             href="#cartaoOpcoes" aria-expanded="false" aria-controls="cartaoOpcoes">Cartão</button>
                         <button type="button" class="btn btn-secondary btn-block mr-1">Pix</button>
                     </div>
-                    <!-- Opções adicionais para pagamento com cartão -->
                     <div class="collapse mb-4" id="cartaoOpcoes">
                         <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center">
                             <button type="button" class="btn btn-secondary btn-block mr-1">Débito</button>
-                            <button type="button" class="btn btn-secondary btn-block mr-1"
-                                style="margin-top: 0px;">Crédito</button>
-                            <!-- Dropdown para número de parcelas (crédito) -->
+                            <button type="button" class="btn btn-secondary btn-block mr-1">Crédito</button>
                             <div class="dropdown">
                                 <button class="btn btn-secondary btn-block mr-1 dropdown-toggle" type="button"
                                     id="dropdownParcelas" data-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">
-                                    Parcelas
-                                </button>
+                                    aria-expanded="false">Parcelas</button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownParcelas">
                                     <a class="dropdown-item" href="#">1x</a>
                                     <a class="dropdown-item" href="#">2x</a>
                                     <a class="dropdown-item" href="#">3x</a>
-                                    <!-- Adicione mais opções conforme necessário -->
                                 </div>
                             </div>
                         </div>
@@ -128,7 +104,6 @@
                         <input type="text" id="desconto" name="desconto" class="form-control">
                     </div>
                     <h5>Total da Nota</h5>
-                    <!-- Cálculo do valor total aqui -->
                     <div>
                         <div class="position-relative">
                             <input type="text" id="valorTotalNota" name="valorTotalNota" class="form-control"
@@ -139,23 +114,23 @@
                     </div>
                     <hr>
                     <div class="text-right">
-                        <div class="d-flex justify-content-between  mb-2">
+                        <div class="d-flex justify-content-between mb-2">
                             <button type="button" class="btn btn-danger mr-2">Excluir</button>
                             <button type="button" class="btn btn-success">Imprimir</button>
                         </div>
-                        <button type="button" id="btnSalvar" class="btn btn-primary btn-lg btn-block mb-2">Salvar</button>
+                        <button type="submit" id="btnSalvar"
+                            class="btn btn-primary btn-lg btn-block mb-2">Salvar</button>
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
-
 </div>
 
-
-<!-- <script src="/js/scriptsPDV.js"></script> -->
-<script src="/js/filtrarProdutosPDV.js"></script>
+<!-- <script src="/js/filtrarProdutosPDV.js"></script> -->
+<script src="/js/inserirEmostrar.js"></script>
+<script src="/js/exibirProdutos.js"></script>
+<!-- <script src="/js/inserirMostrarProdutos.js"></script> -->
 
 <style>
     .required-field::after {
@@ -163,5 +138,4 @@
         color: red;
     }
 </style>
-<!-- /.container-fluid -->
 <div th:replace="~{compartilhado/baixo}"></div>

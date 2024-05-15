@@ -17,13 +17,17 @@ public class ClienteService {
         ClienteService.clientesRepo = clientesRepo;
     }
 
-    public static List<Cliente> buscarTodos() {
+    public List<Cliente> buscarTodos() {
         return (List<Cliente>) clientesRepo.findAll();
     }
 
     public static Cliente buscarPorId(Integer clienteId) {
         Optional<Cliente> clienteOptional = clientesRepo.findById(clienteId);
         return clienteOptional.orElse(null);
+    }
+
+    public Optional<Cliente> buscarPorId2(Integer id) {
+        return clientesRepo.findById(id);
     }
 
     //public static Cliente buscarPorId(String clienteId) {
