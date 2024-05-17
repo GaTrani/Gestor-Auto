@@ -57,29 +57,64 @@ public class ClientesController {
     @GetMapping("/clientes/{id}")
     public String busca(@PathVariable int id, Model model) {
         Optional<Cliente> cliente = repo.findById(id);
-        try {
+        if (cliente.isPresent()) {
             model.addAttribute("cliente", cliente.get());
-        } catch (Exception err) {
+            List<Veiculo> veiculos = veiculosRepo.findByCliente(cliente.get());
+            model.addAttribute("veiculos", veiculos);
+            return "clientes/editar";
+        } else {
             return "redirect:/clientes";
         }
-
-        return "clientes/editar";
     }
 
     @PostMapping("/clientes/{id}/atualizar")
-    public String atualizar(@PathVariable int id, Cliente cliente) {
+    public String atualizar(@PathVariable int id, @ModelAttribute("cliente") Cliente cliente,
+            @RequestParam("placas[]") List<String> placas) {
         if (!repo.existsById(id)) {
             return "redirect:/clientes";
         }
 
-        repo.save(cliente);
+        // Atualizar o cliente
+        cliente.setId(id);
+        Cliente clienteAtualizado = repo.save(cliente);
+
+        // Obter os veículos antigos do cliente
+        List<Veiculo> veiculosAntigos = veiculosRepo.findByCliente(clienteAtualizado);
+
+        // Atualizar ou adicionar novos veículos
+        for (String placa : placas) {
+            Optional<Veiculo> veiculoOpt = veiculosAntigos.stream()
+                    .filter(v -> v.getPlaca().equals(placa))
+                    .findFirst();
+
+            if (veiculoOpt.isPresent()) {
+                // Veículo já existe, removê-lo da lista de veículos antigos para não ser
+                // deletado
+                veiculosAntigos.remove(veiculoOpt.get());
+            } else {
+                // Veículo não existe, criar um novo
+                Veiculo veiculo = new Veiculo();
+                veiculo.setCliente(clienteAtualizado);
+                veiculo.setPlaca(placa);
+                veiculosRepo.save(veiculo);
+            }
+        }
+
+        // Veículos restantes em veiculosAntigos são aqueles que foram removidos na
+        // atualização
+        veiculosRepo.deleteAll(veiculosAntigos);
 
         return "redirect:/clientes";
     }
 
     @GetMapping("/clientes/{id}/excluir")
     public String excluir(@PathVariable int id) {
-        repo.deleteById(id);
+        if (repo.existsById(id)) {
+            Cliente cliente = repo.findById(id).get();
+            List<Veiculo> veiculos = veiculosRepo.findByCliente(cliente);
+            veiculosRepo.deleteAll(veiculos);
+            repo.deleteById(id);
+        }
         return "redirect:/clientes";
     }
 

@@ -15,58 +15,94 @@
                 <!-- Coluna 1 -->
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="nome">Nome</label>
-                        <input type="text" class="form-control" th:value="${cliente.nome}" name="nome" placeholder="Digite o nome do cliente">
+                        <label for="nome" class="required-field" title="* Campo obrigatório">Nome</label>
+                        <input type="text" class="form-control" required id="nome" name="nome"
+                            th:value="${cliente.nome}" placeholder="Digite o nome do cliente">
                     </div>
                     <div class="form-group">
                         <label for="cpf">CPF</label>
-                        <input type="text" class="form-control" th:value="${cliente.cpf}" name="cpf" placeholder="Digite o CPF do cliente">
+                        <input type="text" class="form-control input-medio" id="cpf" name="cpf"
+                            th:value="${cliente.cpf}" maxlength="14" placeholder="Digite o CPF do cliente">
                     </div>
                     <div class="form-group">
-                        <label for="telefone">Telefone</label>
-                        <input type="text" class="form-control" th:value="${cliente.telefone}" name="telefone" placeholder="Digite o telefone do cliente">
+                        <label for="telefone" class="required-field" title="* Campo obrigatório">Telefone</label>
+                        <input type="text" class="form-control input-medio" required id="telefone" name="telefone"
+                            th:value="${cliente.telefone}" maxlength="15" placeholder="Digite o telefone do cliente">
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" th:value="${cliente.email}" name="email" placeholder="Digite o email do cliente">
+                        <input type="email" class="form-control" id="email" name="email"
+                            th:value="${cliente.email}" placeholder="Digite o email do cliente">
                     </div>
-                    <!-- <div class="form-group">
-                        <label for="placa">Placa do veículo</label>
-                        <input type="text" class="form-control" th:value="${cliente.placa}" name="placa" placeholder="Digite a placa do veículo">
-                    </div> -->
+                    <div class="form-group" id="placas">
+                        <label for="placas">Placas dos veículos</label>
+                        <div th:each="veiculo : ${veiculos}">
+                            <input type="text" class="form-control input-pequeno mb-3" name="placas[]"
+                                th:value="${veiculo.placa}" placeholder="Ex. ABC1234">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="adicionarPlaca()">Adicionar Veículo</button>
                 </div>
                 <!-- Coluna 2 -->
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="cep">CEP</label>
-                        <input type="text" class="form-control" th:value="${cliente.cep}" name="cep" placeholder="Digite o CEP do cliente">
+                        <input type="text" class="form-control input-pequeno" id="cep" name="cep"
+                            th:value="${cliente.cep}" maxlength="9" placeholder="Digite o CEP do cliente">
                     </div>
                     <div class="form-group">
                         <label for="endereco">Endereço</label>
-                        <input type="text" class="form-control" th:value="${cliente.endereco}" name="endereco" placeholder="Digite o endereço do cliente">
+                        <input type="text" class="form-control" id="endereco" name="endereco"
+                            th:value="${cliente.endereco}" placeholder="Digite o endereço do cliente">
                     </div>
                     <div class="form-group">
                         <label for="numero">Número</label>
-                        <input type="text" class="form-control" th:value="${cliente.numero}" name="numero" placeholder="Digite o número do endereço">
+                        <input type="number" class="form-control" id="numero" name="numero"
+                            th:value="${cliente.numero}" placeholder="Digite o número do endereço">
                     </div>
                     <div class="form-group">
                         <label for="cidade">Cidade</label>
-                        <input type="text" class="form-control" th:value="${cliente.cidade}" name="cidade" placeholder="Digite a cidade do cliente">
+                        <input type="text" class="form-control" id="cidade" name="cidade"
+                            th:value="${cliente.cidade}" placeholder="Digite a cidade do cliente">
                     </div>
                     <div class="form-group">
                         <label for="bairro">Bairro</label>
-                        <input type="text" class="form-control" th:value="${cliente.bairro}" name="bairro" placeholder="Digite o bairro do cliente">
+                        <input type="text" class="form-control" id="bairro" name="bairro"
+                            th:value="${cliente.bairro}" placeholder="Digite o bairro do cliente">
                     </div>
                     <div class="form-group">
                         <label for="complemento">Complemento</label>
-                        <input type="text" class="form-control" th:value="${cliente.complemento}" name="complemento" placeholder="Digite o complemento do cliente">
+                        <input type="text" class="form-control" id="complemento" name="complemento"
+                            th:value="${cliente.complemento}" placeholder="Digite o complemento">
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Enviar</button>
+            <div class="text-right">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </div>
         </form>
     </div>
 
 </div>
 <!-- /.container-fluid -->
 <div th:replace="~{compartilhado/baixo}"></div>
+
+<script src="/js/scriptsCliente.js"></script>
+<script src="/js/scriptsCEP.js"></script>
+<script src="/js/scriptsClientePlaca.js"></script>
+
+<style>
+    .required-field::after {
+        content: " *";
+        color: red;
+    }
+
+    .input-pequeno {
+        width: 25%;
+        /* Defina o tamanho desejado */
+    }
+
+    .input-medio {
+        width: 50%;
+    }
+</style>
