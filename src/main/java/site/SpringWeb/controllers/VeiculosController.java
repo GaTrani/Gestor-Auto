@@ -142,9 +142,23 @@ public class VeiculosController {
         return "redirect:/veiculos";
     }
 
-    @GetMapping("/veiculos/{id}/excluir")
-    public String excluir(@PathVariable int id) {
-        veiculosRepo.deleteById((long) id);
+    /*
+     * @GetMapping("/veiculos/{id}/excluir")
+     * public String excluir(@PathVariable int id) {
+     * veiculosRepo.deleteById((long) id);
+     * return "redirect:/veiculos";
+     * }
+     */
+
+    @PostMapping("/veiculos/{id}/excluir")
+    public String excluir(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Optional<Veiculo> veiculoOpt = veiculosRepo.findById(id);
+        if (veiculoOpt.isPresent()) {
+            veiculosRepo.deleteById(id);
+            redirectAttributes.addFlashAttribute("mensagem", "Veículo excluído com sucesso.");
+        } else {
+            redirectAttributes.addFlashAttribute("erro", "Veículo não encontrado.");
+        }
         return "redirect:/veiculos";
     }
 

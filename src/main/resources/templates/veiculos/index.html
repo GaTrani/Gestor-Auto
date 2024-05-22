@@ -44,10 +44,13 @@
                             <td th:text="${veiculo.placa}"></td>
                             <td th:text="${veiculo.km}"></td>
                             <td><a th:href="@{'/veiculos/' + ${veiculo.id}}" class="fas fa-solid fa-pen d-flex align-items-center justify-content-center"></td>
-                            <td><a href="#" th:onclick="'if(confirm(\'Confirma ?\')) { window.location.href = \'' + @{/veiculos/{id}(id=${veiculo.id})} + '/excluir\' } '">
-                                    <i class="fas fa-trash-alt d-flex align-items-center justify-content-center" style="color: #E74A3B"></i>
-                                    <!--style="color: #E74A3B"-->
-                                </a></td>
+                            <td>
+                                <form th:action="@{'/veiculos/' + ${veiculo.id} + '/excluir'}" method="post" onsubmit="return confirm('Confirma exclusão?');">
+                                    <button type="submit" class="btn btn-link">
+                                        <i class="fas fa-trash-alt d-flex align-items-center justify-content-center" style="color: #E74A3B"></i>
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

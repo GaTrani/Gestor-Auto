@@ -1,6 +1,6 @@
 package site.SpringWeb.modelos;
 
-import javax.persistence.CascadeType;
+//import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +18,7 @@ public class Veiculo {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne //cascade = CascadeType.ALL)
     private Cliente cliente; // Relacionamento com o cliente
 
     @Column(name = "marca", length = 50)

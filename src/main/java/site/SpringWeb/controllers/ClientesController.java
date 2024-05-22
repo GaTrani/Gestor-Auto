@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,16 +40,21 @@ public class ClientesController {
     }
 
     @PostMapping("/clientes/criar")
-    public String criar(@ModelAttribute("cliente") Cliente cliente, @RequestParam("placas[]") List<String> placas) {
+    public String criar(@ModelAttribute("cliente") Cliente cliente, @RequestParam("placas[]") List<String> placas,
+            BindingResult result) {
         // Salvar o cliente na tabela Cliente
         Cliente clienteSalvo = repo.save(cliente);
-
+        if (result.hasFieldErrors("numero")) {
+            cliente.setNumero(null);
+        }
         // Para cada placa, salvar na tabela Veiculo
         for (String placa : placas) {
-            Veiculo veiculo = new Veiculo();
-            veiculo.setCliente(clienteSalvo); // Definir o cliente associado ao veículo
-            veiculo.setPlaca(placa); // Definir a placa do veículo
-            veiculosRepo.save(veiculo); // Salvar o veículo na tabela Veiculo
+            if (placa != null && !placa.trim().isEmpty()) {
+                Veiculo veiculo = new Veiculo();
+                veiculo.setCliente(clienteSalvo); // Definir o cliente associado ao veículo
+                veiculo.setPlaca(placa); // Definir a placa do veículo
+                veiculosRepo.save(veiculo); // Salvar o veículo na tabela Veiculo
+            }
         }
 
         return "redirect:/clientes";
@@ -69,7 +75,11 @@ public class ClientesController {
 
     @PostMapping("/clientes/{id}/atualizar")
     public String atualizar(@PathVariable int id, @ModelAttribute("cliente") Cliente cliente,
-            @RequestParam("placas[]") List<String> placas) {
+            @RequestParam("placas[]") List<String> placas, BindingResult result) {
+        if (result.hasFieldErrors("numero")) {
+            cliente.setNumero(null);
+        }
+
         if (!repo.existsById(id)) {
             return "redirect:/clientes";
         }
@@ -83,20 +93,22 @@ public class ClientesController {
 
         // Atualizar ou adicionar novos veículos
         for (String placa : placas) {
-            Optional<Veiculo> veiculoOpt = veiculosAntigos.stream()
-                    .filter(v -> v.getPlaca().equals(placa))
-                    .findFirst();
+            if (placa != null && !placa.trim().isEmpty()) {
+                Optional<Veiculo> veiculoOpt = veiculosAntigos.stream()
+                        .filter(v -> v.getPlaca().equals(placa))
+                        .findFirst();
 
-            if (veiculoOpt.isPresent()) {
-                // Veículo já existe, removê-lo da lista de veículos antigos para não ser
-                // deletado
-                veiculosAntigos.remove(veiculoOpt.get());
-            } else {
-                // Veículo não existe, criar um novo
-                Veiculo veiculo = new Veiculo();
-                veiculo.setCliente(clienteAtualizado);
-                veiculo.setPlaca(placa);
-                veiculosRepo.save(veiculo);
+                if (veiculoOpt.isPresent()) {
+                    // Veículo já existe, removê-lo da lista de veículos antigos para não ser
+                    // deletado
+                    veiculosAntigos.remove(veiculoOpt.get());
+                } else {
+                    // Veículo não existe, criar um novo
+                    Veiculo veiculo = new Veiculo();
+                    veiculo.setCliente(clienteAtualizado);
+                    veiculo.setPlaca(placa);
+                    veiculosRepo.save(veiculo);
+                }
             }
         }
 

@@ -37,7 +37,7 @@ public class Cliente {
     private String endereco;
 
     @Column(name = "numero")
-    private int numero;
+    private Integer numero;
 
     @Column(name = "cidade", length = 100)
     private String cidade;
@@ -107,11 +107,11 @@ public class Cliente {
         this.endereco = endereco;
     }
 
-    public int getNumero() {
+    public Integer getNumero() {
         return numero;
     }
 
-    public void setNumero(int numero) {
+    public void setNumero(Integer numero) {
         this.numero = numero;
     }
 

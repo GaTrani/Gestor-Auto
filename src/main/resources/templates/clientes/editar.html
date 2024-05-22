@@ -47,7 +47,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="cep">CEP</label>
-                        <input type="text" class="form-control input-pequeno" id="cep" name="cep"
+                        <input type="text" class="form-control input-pequeno" onblur="pesquisacep(this.value);" id="cep" name="cep"
                             th:value="${cliente.cep}" maxlength="9" placeholder="Digite o CEP do cliente">
                     </div>
                     <div class="form-group">
@@ -58,7 +58,7 @@
                     <div class="form-group">
                         <label for="numero">Número</label>
                         <input type="number" class="form-control" id="numero" name="numero"
-                            th:value="${cliente.numero}" placeholder="Digite o número do endereço">
+                            th:value="${cliente.numero}" placeholder="Digite o número do endereço" onwheel="this.blur()">
                     </div>
                     <div class="form-group">
                         <label for="cidade">Cidade</label>
