@@ -38,7 +38,7 @@
                     <tbody>
                         <tr th:each="veiculo : ${veiculos}">
                             <td th:text="${veiculo.id}"></td>
-                            <td th:text="${veiculo.cliente}"></td>
+                            <td th:text="${veiculo.cliente.nome}"></td>
                             <td th:text="${veiculo.marca}"></td>
                             <td th:text="${veiculo.modelo}"></td>
                             <td th:text="${veiculo.placa}"></td>

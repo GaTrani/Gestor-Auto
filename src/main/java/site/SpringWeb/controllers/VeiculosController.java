@@ -28,7 +28,7 @@ import site.SpringWeb.servicos.VeiculoService;
 public class VeiculosController {
 
     @Autowired
-    public VeiculosRepo repo;
+    public VeiculosRepo veiculosRepo;
 
     @Autowired
     private ClienteService clienteService;
@@ -36,9 +36,15 @@ public class VeiculosController {
     @Autowired
     public VeiculoService veiculoService;
 
+    @Autowired
+    private MarcaCarroService marcaCarroService;
+
+    @Autowired
+    private ModeloCarroService modeloCarroService;
+
     @GetMapping("/veiculos")
     public String index(Model model) {
-        List<Veiculo> veiculos = (List<Veiculo>) repo.findAll();
+        List<Veiculo> veiculos = (List<Veiculo>) veiculosRepo.findAll();
         model.addAttribute("veiculos", veiculos);
         return "veiculos/index";
     }
@@ -60,72 +66,62 @@ public class VeiculosController {
         return ModeloCarroService.buscarModelosPorMarca(marca);
     }
 
-    /*
-     * @PostMapping("/veiculos/criar")
-     * public String criar(Veiculo veiculo, RedirectAttributes redirectAttributes) {
-     * try {
-     * repo.save(veiculo);
-     * return "redirect:/veiculos";
-     * } catch (DataIntegrityViolationException e) {
-     * // Se ocorrer uma violação de restrição de integridade, significa que a placa
-     * já
-     * // existe
-     * redirectAttributes.addFlashAttribute("erro",
-     * "A placa do veículo já está em uso.");
-     * return "redirect:/veiculos/novo"; // Redireciona de volta para a página de
-     * criação de veículos
-     * }
-     * }
-     */
-
     @PostMapping("/veiculos/criar")
-    public String criar(@RequestParam("cliente") String clienteId,
+    public String criar(@RequestParam("cliente") int clienteId,
             @RequestParam("marca") Long marcaId,
             @RequestParam("modelo") Long modeloId,
             @RequestParam("placa") String placa,
+            @RequestParam("ano") int ano,
             @RequestParam("km") int km,
             RedirectAttributes redirectAttributes) {
         try {
             // Busca o cliente pelo ID
-            // Cliente cliente = ClienteService.buscarPorId(clienteId);
-            // Busca a marca pelo ID
-            MarcaCarro marca = MarcaCarroService.buscarPorId(marcaId);
-
-            // Busca os modelos de carro pela marca selecionada
-            List<ModeloCarro> modelos = ModeloCarroService.buscarModelosPorMarca(marcaId);
-
-            // Verifica se a marca e os modelos foram encontrados
-            if (marca != null && modelos != null) {
-                // Cria o objeto Veiculo e associa o cliente, marca e modelo
-                Veiculo veiculo = new Veiculo();
-                // veiculo.setCliente(cliente.getNome());
-                veiculo.setMarca(marca.getNome());
-                veiculo.setModelo(modeloId); // Aqui você pode definir o modelo selecionado
-                veiculo.setPlaca(placa);
-                veiculo.setKm(km);
-
-                // Salva o veículo no banco de dados
-                repo.save(veiculo);
-
-                return "redirect:/veiculos";
-            } else {
-                // Se a marca ou os modelos não foram encontrados, redireciona de volta para a
-                // página de criação
-                // de veículos
-                redirectAttributes.addFlashAttribute("erro", "Marca de carro ou modelos não encontrados.");
+            Optional<Cliente> clienteOpt = clienteService.buscarPorId(clienteId);
+            if (!clienteOpt.isPresent()) {
+                redirectAttributes.addFlashAttribute("erro", "Cliente não encontrado.");
                 return "redirect:/veiculos/novo";
             }
+            Cliente cliente = clienteOpt.get();
+
+            // Busca a marca pelo ID
+            Optional<MarcaCarro> marcaOpt = marcaCarroService.buscarPorId(marcaId);
+            if (!marcaOpt.isPresent()) {
+                redirectAttributes.addFlashAttribute("erro", "Marca não encontrada.");
+                return "redirect:/veiculos/novo";
+            }
+            MarcaCarro marca = marcaOpt.get();
+
+            // Busca o modelo pelo ID
+            Optional<ModeloCarro> modeloOpt = modeloCarroService.buscarPorId(modeloId);
+            if (!modeloOpt.isPresent()) {
+                redirectAttributes.addFlashAttribute("erro", "Modelo não encontrado.");
+                return "redirect:/veiculos/novo";
+            }
+            ModeloCarro modelo = modeloOpt.get();
+
+            // Cria o objeto Veiculo e associa o cliente, marca e modelo
+            Veiculo veiculo = new Veiculo();
+            veiculo.setCliente(cliente);
+            veiculo.setMarca(marca.getNome());
+            veiculo.setModelo(modelo.getNome());
+            veiculo.setPlaca(placa);
+            veiculo.setAno(ano);
+            veiculo.setKm(km);
+
+            veiculosRepo.save(veiculo);
+
+            return "redirect:/veiculos";
         } catch (DataIntegrityViolationException e) {
             // Se ocorrer uma violação de restrição de integridade, significa que a placa já
             // existe
             redirectAttributes.addFlashAttribute("erro", "A placa do veículo já está em uso.");
-            return "redirect:/veiculos/novo"; // Redireciona de volta para a página de criação de veículos
+            return "redirect:/veiculos/novo";
         }
     }
 
     @GetMapping("/veiculos/{id}")
     public String busca(@PathVariable int id, Model model) {
-        Optional<Veiculo> veiculo = repo.findById((long) id);
+        Optional<Veiculo> veiculo = veiculosRepo.findById((long) id);
         try {
             model.addAttribute("veiculo", veiculo.get());
         } catch (Exception err) {
@@ -137,18 +133,18 @@ public class VeiculosController {
 
     @PostMapping("/veiculos/{id}/atualizar")
     public String atualizar(@PathVariable int id, Veiculo veiculo) {
-        if (!repo.existsById((long) id)) {
+        if (!veiculosRepo.existsById((long) id)) {
             return "redirect:/veiculos";
         }
 
-        repo.save(veiculo);
+        veiculosRepo.save(veiculo);
 
         return "redirect:/veiculos";
     }
 
     @GetMapping("/veiculos/{id}/excluir")
     public String excluir(@PathVariable int id) {
-        repo.deleteById((long) id);
+        veiculosRepo.deleteById((long) id);
         return "redirect:/veiculos";
     }
 

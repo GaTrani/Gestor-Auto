@@ -25,7 +25,7 @@ public class Veiculo {
     private String marca;
 
     @Column(name = "modelo", length = 50)
-    private Long modelo;
+    private String modelo;
 
     @Column(name = "placa", length = 10, unique = true)
     private String placa;
@@ -49,7 +49,7 @@ public class Veiculo {
         return marca;
     }
 
-    public Long getModelo() {
+    public String getModelo() {
         return modelo;
     }
 
@@ -82,8 +82,8 @@ public class Veiculo {
         this.marca = marca;
     }
 
-    public void setModelo(Long modeloId) {
-        this.modelo = modeloId;
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
     }
 
     public void setPlaca(String placa) {

@@ -27,10 +27,10 @@ public class MarcaCarroService {
         return MarcaCarro.findByVeiculo(this);
     }
 
-    public static MarcaCarro buscarPorId(Long id) {
+    /* public static MarcaCarro buscarPorId(Long id) {
         Optional<MarcaCarro> marcaOptional = marcasRepo.findById(id);
         return marcaOptional.orElse(null);
-    }
+    } */
 
     public static MarcaCarro buscarPorId2(Long marcaId) {
         // TODO Auto-generated method stub
@@ -40,6 +40,10 @@ public class MarcaCarroService {
     public static MarcaCarro buscarPorId3(Long marcaId) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'buscarPorId'");
+    }
+
+    public Optional<MarcaCarro> buscarPorId(Long id) {
+        return marcasRepo.findById(id);
     }
 
 }

@@ -21,12 +21,16 @@ public class ClienteService {
         return (List<Cliente>) clientesRepo.findAll();
     }
 
-    public static Cliente buscarPorId(Integer clienteId) {
+    public static Cliente buscarPorId3(Integer clienteId) {
         Optional<Cliente> clienteOptional = clientesRepo.findById(clienteId);
         return clienteOptional.orElse(null);
     }
 
     public Optional<Cliente> buscarPorId2(Integer id) {
+        return clientesRepo.findById(id);
+    }
+
+    public Optional<Cliente> buscarPorId(int id) {
         return clientesRepo.findById(id);
     }
 

@@ -44,4 +44,8 @@ public class ModeloCarro {
     public void setMarca(MarcaCarro marca) {
         this.marca = marca;
     }
+
+    public String getNome() {
+        return modelo;
+    }
 }

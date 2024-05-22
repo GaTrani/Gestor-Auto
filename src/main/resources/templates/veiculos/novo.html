@@ -1,8 +1,6 @@
 <div th:replace="~{compartilhado/topo}"></div>
 
 <script src="/js/scripts.js"></script>
-<!-- <script src="/js/veiculo/scripts.js"></script> -->
-
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -16,24 +14,24 @@
                 <label for="cliente">Cliente</label>
                 <select class="form-control" id="cliente" name="cliente">
                     <option value="">Selecione o cliente</option>
-                    <!-- Aqui você irá iterar sobre a lista de cliente para criar as opções -->
-                    <option th:each="cliente : ${listaClientes}" th:value="${cliente.id}" th:text="${cliente.nome}"></option>
+                    <option th:each="cliente : ${listaClientes}" th:value="${cliente.id}" th:text="${cliente.nome}">
+                    </option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="marca">Marca</label>
                 <select class="form-control" id="marca" name="marca" onchange="atualizarModelos()">
                     <option value="">Selecione a marca</option>
-                    <!-- Iterar sobre a lista de marcas para criar as opções -->
-                    <option th:each="marca : ${listaMarcasCarro}" th:value="${marca.id}" th:text="${marca.nome}"></option>
+                    <option th:each="marca : ${listaMarcasCarro}" th:value="${marca.id}" th:text="${marca.nome}">
+                    </option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="modelo">Modelo</label>
                 <select class="form-control" id="modelo" name="modelo">
                     <option value="">Selecione o modelo</option>
-                    <!-- Iterar sobre a lista de modelos de carro para criar as opções filtradas pela marca selecionada -->
-                    <option th:each="modelo : ${listaModelosCarro}" th:value="${modelo.id}" th:text="${modelo.modelo}"></option>
+                    <option th:each="modelo : ${listaModelosCarro}" th:value="${modelo.id}" th:text="${modelo.modelo}">
+                    </option>
                 </select>
             </div>
             <div class="form-group">
@@ -54,7 +52,6 @@
             <button type="submit" class="btn btn-primary">Salvar</button>
         </form>
     </div>
-
 </div>
 <!-- /.container-fluid -->
 <div th:replace="~{compartilhado/baixo}"></div>

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+
 import site.SpringWeb.modelos.ModeloCarro;
 import site.SpringWeb.repositorio.ModelosRepo;
 
@@ -32,9 +33,17 @@ public class ModeloCarroService {
         return modelosRepo.findByMarcaId(marcaId);
     }
 
-    public static Optional<ModeloCarro> buscarPorId(Long id) {
+    /* public static Optional<ModeloCarro> buscarPorId(Long id) {
+        return modelosRepo.findById(id);
+    } */
+
+    public Optional<ModeloCarro> buscarPorId(Long id) {
         return modelosRepo.findById(id);
     }
+
+    /* public List<ModeloCarro> buscarModelosPorMarca(Long marcaId) {
+        return modelosRepo.findByMarcaCarroId(marcaId);
+    } */
 
     // Outros métodos do serviço podem ser adicionados conforme necessário
 }
