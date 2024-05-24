@@ -10,7 +10,7 @@
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4" style="padding: 30px;">
-        <form method="POST" th:action="@{'/produtos/' + ${produto?.id} + '/atualizar'}">
+        <form id="form" method="POST" th:action="@{'/produtos/' + ${produto?.id} + '/atualizar'}">
             <div class="row">
                 <!-- Coluna 1 -->
                 <div class="col-md-6">
@@ -24,7 +24,8 @@
                         <select class="form-control" id="fornecedor" name="fornecedor">
                             <!-- <option value="">Selecione o fornecedor</option> -->
                             <!-- Aqui você irá iterar sobre a lista de fornecedores para criar as opções -->
-                            <option th:each="fornecedor : ${listaFornecedores}" th:value="${produto.fornecedor}" th:text="${produto.fornecedor}"></option>
+                            <option th:each="fornecedor : ${listaFornecedores}" th:value="${produto.fornecedor}"
+                                th:text="${produto.fornecedor}"></option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -34,13 +35,13 @@
                     </div>
                     <div class="form-group">
                         <label for="precoVenda">Preço Venda</label>
-                        <input type="number" class="form-control" th:value="${produto.precoVenda}" name="precoVenda"
-                            placeholder="Digite o preço de venda do produto" maxlength="10">
+                        <input type="text" class="form-control" th:value="${produto.precoVenda}" id="precoVenda"
+                            name="precoVenda" placeholder="Digite o preço de venda do produto" maxlength="10">
                     </div>
                     <div class="form-group">
                         <label for="precoCusto">Preço Custo</label>
-                        <input type="number" class="form-control" th:value="${produto.precoCusto}" name="precoCusto"
-                            placeholder="Digite o preço de custo do produto" maxlength="10">
+                        <input type="text" class="form-control" th:value="${produto.precoCusto}" id="precoCusto"
+                            name="precoCusto" placeholder="Digite o preço de custo do produto" maxlength="10">
                     </div>
                     <div class="form-group">
                         <label for="sku">SKU</label>
@@ -68,8 +69,8 @@
 
 </div>
 
-<script src="/js/produtos/editarValorBanco.js"></script>
 <script src="/js/editarPreco.js"></script>
+<script src="/js/editarValorBanco.js"></script>
 
 <!-- /.container-fluid -->
 <div th:replace="~{compartilhado/baixo}"></div>

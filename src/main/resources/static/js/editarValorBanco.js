@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('Depurar Após Conversão:', { precoVendaDouble, precoCustoDouble });
             console.log('Depurar Tipo Após Conversão:', { tipoPrecoVenda: typeof precoVendaDouble, tipoPrecoCusto: typeof precoCustoDouble });
 
-            precoVenda.value = precoVendaDouble;
             precoCusto.value = precoCustoDouble;
+            precoVenda.value = precoVendaDouble;
 
             // Permite o envio do formulário
         }

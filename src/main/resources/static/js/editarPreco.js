@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-
+    console.log('enter')
     var precoVenda = document.getElementById('precoVenda');
     var precoCusto = document.getElementById('precoCusto');
 

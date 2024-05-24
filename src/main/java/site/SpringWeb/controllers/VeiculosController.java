@@ -121,6 +121,12 @@ public class VeiculosController {
 
     @GetMapping("/veiculos/{id}")
     public String busca(@PathVariable int id, Model model) {
+        List<Cliente> listaClientes = clienteService.buscarTodos();
+        List<MarcaCarro> listaMarcasCarro = MarcaCarroService.buscarTodos();
+        List<ModeloCarro> listaModelosCarro = ModeloCarroService.buscarTodos();
+        model.addAttribute("listaClientes", listaClientes);
+        model.addAttribute("listaMarcasCarro", listaMarcasCarro);
+        model.addAttribute("listaModelosCarro", listaModelosCarro);
         Optional<Veiculo> veiculo = veiculosRepo.findById((long) id);
         try {
             model.addAttribute("veiculo", veiculo.get());

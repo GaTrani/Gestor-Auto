@@ -34,7 +34,7 @@
                     <div class="form-group">
                         <label for="dataVencimento" class="required-field" title="* Campo obrigatório">Data de
                             Vencimento</label>
-                        <input type="date" class="form-control" id="dataVencimento" name="dataVencimento">
+                        <input type="date" class="form-control input-pequeno" id="dataVencimento" name="dataVencimento">
                     </div> <!-- required -->
                 </div>
                 <!-- Coluna 2 -->
@@ -67,5 +67,22 @@
     </div>
 
 </div>
+
+<style>
+    .required-field::after {
+        content: " *";
+        color: red;
+    }
+
+    .input-pequeno {
+        width: 25%;
+        /* Defina o tamanho desejado */
+    }
+
+    .input-medio {
+        width: 50%;
+    }
+</style>
+
 <!-- /.container-fluid -->
 <div th:replace="~{compartilhado/baixo}"></div>
