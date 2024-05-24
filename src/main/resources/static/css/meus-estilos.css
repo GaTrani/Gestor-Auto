@@ -1,0 +1,19 @@
+.required-field::after {
+    content: " *";
+    color: red;
+}
+
+.input-pequeno {
+    width: 25%;
+    /* Defina o tamanho desejado */
+}
+
+.input-medio {
+    width: 50%;
+}
+
+/* .center-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} */
