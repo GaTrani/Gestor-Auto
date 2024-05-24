@@ -34,4 +34,6 @@ public interface ModelosRepo extends JpaRepository<ModeloCarro, Long> {
   @SuppressWarnings("null")
   @Query(value = "SELECT m FROM ModeloCarro m WHERE m.id = :id")
   Optional<ModeloCarro> findById(Long id);; // Corrigido para esperar um Long como parâmetro
+
+  List<ModeloCarro> findByMarcaNome(String marcaNome);
 }

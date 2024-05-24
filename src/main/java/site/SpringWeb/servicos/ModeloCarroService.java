@@ -33,6 +33,10 @@ public class ModeloCarroService {
         return modelosRepo.findByMarcaId(marcaId);
     }
 
+    public List<ModeloCarro> buscarPorMarca(String marca) {
+        return modelosRepo.findByMarcaNome(marca);
+    }
+
     /* public static Optional<ModeloCarro> buscarPorId(Long id) {
         return modelosRepo.findById(id);
     } */

@@ -1,6 +1,6 @@
 <div th:replace="~{compartilhado/topo}"></div>
 
-<script src="/js/scripts.js"></script>
+<script src="/js/atualizarModelos.js"></script>
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -10,46 +10,54 @@
     </p>
     <div class="card shadow mb-4" style="padding: 30px;">
         <form method="POST" action="/veiculos/criar" onsubmit="return confirm('Confirma ação')">
-            <div class="form-group">
-                <label for="cliente">Cliente</label>
-                <select class="form-control" id="cliente" name="cliente">
-                    <option value="">Selecione o cliente</option>
-                    <option th:each="cliente : ${listaClientes}" th:value="${cliente.id}" th:text="${cliente.nome}">
-                    </option>
-                </select>
+            <div class="row">
+                <!-- Coluna 1 -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="cliente">Cliente</label>
+                        <select class="form-control" id="cliente" name="cliente">
+                            <option value="">Selecione o cliente</option>
+                            <option th:each="cliente : ${listaClientes}" th:value="${cliente.id}"
+                                th:text="${cliente.nome}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="marca">Marca</label>
+                        <select class="form-control" id="marca" name="marca" onchange="atualizarModelos()">
+                            <option value="">Selecione a marca</option>
+                            <option th:each="marca : ${listaMarcasCarro}" th:value="${marca.id}"
+                                th:text="${marca.nome}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="modelo">Modelo</label>
+                        <select class="form-control" id="modelo" name="modelo">
+                            <option value="">Selecione o modelo</option>
+                            <option th:each="modelo : ${listaModelosCarro}" th:value="${modelo.id}"
+                                th:text="${modelo.modelo}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="placa">Placa</label>
+                        <input type="text" class="form-control input-pequeno" required id="placa" name="placa"
+                            placeholder="Digite a placa do veículo">
+                    </div>
+                    <div class="form-group">
+                        <label for="ano">Ano</label>
+                        <input type="number" class="form-control input-pequeno" required id="ano" name="ano"
+                            placeholder="Digite o ano do veículo" onwheel="this.blur()">
+                    </div>
+                    <div class="form-group">
+                        <label for="km">Km</label>
+                        <input type="number" class="form-control input-pequeno" required id="km" name="km"
+                            placeholder="Digite a quilometragem do veículo" onwheel="this.blur()">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="marca">Marca</label>
-                <select class="form-control" id="marca" name="marca" onchange="atualizarModelos()">
-                    <option value="">Selecione a marca</option>
-                    <option th:each="marca : ${listaMarcasCarro}" th:value="${marca.id}" th:text="${marca.nome}">
-                    </option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="modelo">Modelo</label>
-                <select class="form-control" id="modelo" name="modelo">
-                    <option value="">Selecione o modelo</option>
-                    <option th:each="modelo : ${listaModelosCarro}" th:value="${modelo.id}" th:text="${modelo.modelo}">
-                    </option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="placa">Placa</label>
-                <input type="text" class="form-control" required id="placa" name="placa"
-                    placeholder="Digite a placa do veículo">
-            </div>
-            <div class="form-group">
-                <label for="ano">Ano</label>
-                <input type="number" class="form-control" required id="ano" name="ano"
-                    placeholder="Digite o ano do veículo">
-            </div>
-            <div class="form-group">
-                <label for="km">Km</label>
-                <input type="number" class="form-control" required id="km" name="km"
-                    placeholder="Digite a quilometragem do veículo">
-            </div>
-            <button type="submit" class="btn btn-primary">Salvar</button>
         </form>
     </div>
 </div>
