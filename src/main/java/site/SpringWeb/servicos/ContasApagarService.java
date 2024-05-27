@@ -9,7 +9,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-//import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Pageable;
 //import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters.LocalDateConverter;
 import org.springframework.stereotype.Service;
 
@@ -50,5 +50,15 @@ public class ContasApagarService {
         contaApagar.setValorPago(valorPagamento);
         contaApagar.setDataPagamento(dataPagamento);
         contasApagarRepo.save(contaApagar);
+    }
+
+    // Método para buscar contas pagas com paginação
+    public Page<ContasApagar> buscarContasPagasComPaginacao2(int pagina, int tamanho) {
+        return contasApagarRepo.findByValorPagoIsNotNull(PageRequest.of(pagina, tamanho));
+    }
+
+    public Page<ContasApagar> buscarContasPagasComPaginacao(int pagina, int tamanho) {
+        Pageable pageable = PageRequest.of(pagina, tamanho);
+        return contasApagarRepo.findByValorPagoIsNotNull(pageable);
     }
 }

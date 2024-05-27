@@ -153,4 +153,39 @@ public class ContasApagarController {
         }
     }
 
+    @GetMapping("contasapagar/pagas")
+    public String listarContasPagas(Model model,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "20") int tamanho) {
+        Page<ContasApagar> contasPagasPage = contasApagarService.buscarContasPagasComPaginacao(pagina, tamanho);
+        model.addAttribute("contasPagasPage", contasPagasPage);
+        model.addAttribute("paginaAtual", pagina);
+        model.addAttribute("tamanho", tamanho);
+        return "contasapagar/pagas";
+    }
+
+    @GetMapping("/contasapagar/{id}/editar")
+    public String pagarContaEditar(@PathVariable("id") Integer id, Model model) {
+        Optional<ContasApagar> contaApagar = contasApagarService.buscarPorId(id);
+        if (contaApagar.isPresent()) {
+            model.addAttribute("contaApagar", contaApagar.get());
+            return "contasapagar/pagar";
+        } else {
+            return "redirect:/contasapagar"; // Redirecionar se a conta não for encontrada
+        }
+    }
+
+    @PostMapping("/contasapagar/{id}/editar")
+    public String processarPagamentoEditar(@PathVariable("id") Integer id,
+            @RequestParam("valorPagamento") BigDecimal valorPagamento,
+            @RequestParam("dataPagamento") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataPagamento) {
+        try {
+            contasApagarService.processarPagamento(id, valorPagamento, dataPagamento);
+            return "redirect:/contasapagar/pagas";
+        } catch (Exception e) {
+            // Log the error and return an error page or handle the error appropriately
+            e.printStackTrace();
+            return "redirect:/contasapagar?error=true";
+        }
+    }
 }

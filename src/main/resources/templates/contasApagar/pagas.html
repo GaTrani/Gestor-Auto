@@ -47,7 +47,7 @@
                             <td th:text="${conta.valorPago}"></td>
                             <td th:text="${conta.dataPagamento}"></td>
                             <td><a class="fas fa-fw fa-solid fa-pen"
-                                    th:href="@{'/contasapagar/' + ${conta.id} + '/editar'}"></a></td>
+                                    th:href="@{'/contasapagar/' + ${conta.id} + '/editar/'}"></a></td>
                             <td><a href="#"
                                     th:onclick="'if(confirm(\'Confirma ?\')) { window.location.href = \'' + @{/contasapagar/{id}(id=${conta.id})} + '/excluir\' } '">
                                     <i class="fas fa-trash-alt d-flex align-items-center justify-content-center"
