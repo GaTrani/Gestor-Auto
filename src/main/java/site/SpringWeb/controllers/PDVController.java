@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import site.SpringWeb.modelos.Produto;
 import site.SpringWeb.repositorio.PDVRepo;
 import site.SpringWeb.repositorio.PDVVendasRepo;
 import site.SpringWeb.servicos.ClienteService;
+import site.SpringWeb.servicos.PDVService;
 import site.SpringWeb.servicos.ProdutoService;
 
 @Controller
@@ -30,6 +32,9 @@ public class PDVController {
     @Autowired
     private ClienteService clienteService;
 
+    @Autowired
+    private PDVService pdvService;
+
     public PDVController(PDVRepo pdvRepo, PDVVendasRepo pdvVendasRepo) {
         this.pdvRepo = pdvRepo;
         this.pdvVendasRepo = pdvVendasRepo;
@@ -37,8 +42,8 @@ public class PDVController {
 
     @GetMapping
     public String index(Model model) {
-        List<PDV> pdvList = (List<PDV>) pdvRepo.findAll();
-        model.addAttribute("pdv", pdvList);
+        List<PDV> pdvs = pdvService.listarPDVs();
+        model.addAttribute("pdvs", pdvs);
         return "pdv/index";
     }
 
@@ -72,13 +77,32 @@ public class PDVController {
         return produtoService.listarProdutos();
     }
 
+    /*
+     * @PostMapping("/criar")
+     * public String criar(@RequestParam("clienteId") int clienteId, Model model) {
+     * Cliente cliente = clienteService.buscarPorId2(clienteId).orElseThrow(() ->
+     * new IllegalArgumentException("Cliente não encontrado"));
+     * PDV pdv = new PDV();
+     * pdv.setCliente(cliente);
+     * pdvRepo.save(pdv);
+     * model.addAttribute("pdvId", pdv.getId());
+     * return "redirect:/pdv";
+     * }
+     */
+
     @PostMapping("/criar")
-    public String criar(@RequestParam("clienteId") int clienteId, Model model) {
-        Cliente cliente = clienteService.buscarPorId2(clienteId).orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+    public String criarPDV(@RequestParam("clienteId") int clienteId) {
         PDV pdv = new PDV();
+
+        Cliente cliente = new Cliente();
+        cliente.setId(clienteId);
         pdv.setCliente(cliente);
-        pdvRepo.save(pdv);
-        model.addAttribute("pdvId", pdv.getId());
+
+        // Aqui você pode adicionar outras configurações do PDV, como veículo, data de
+        // entrada, total, etc.
+
+        pdvService.salvarPDV(pdv);
+
         return "redirect:/pdv";
     }
 
@@ -152,5 +176,12 @@ public class PDVController {
     @ResponseBody
     public List<PDVVendas> listarProdutosDoPDV(@PathVariable("id") int idPdv) {
         return pdvVendasRepo.findByPdvId(idPdv);
+    }
+
+    @GetMapping("/listar")
+    public String listarPDVs(Model model) {
+        List<PDV> pdvs = pdvService.listarPDVs();
+        model.addAttribute("pdvs", pdvs);
+        return "pdv/index"; // Nome do seu arquivo HTML
     }
 }

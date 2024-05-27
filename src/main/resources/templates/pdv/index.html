@@ -39,9 +39,9 @@
                         <tr th:each="pdv : ${pdvs}">
                             <td th:text="${pdv.id}"></td>
                             <td th:text="${pdv.cliente.nome}"></td>
-                            <td th:text="${pdv.veiculo.modelo}"></td>
-                            <td th:text="${#dates.format(pdv.dataEntrada, 'dd/MM/yyyy HH:mm')}"></td>
-                            <td th:text="${pdv.total}"></td>
+                            <td >-</td> <!-- ${pdv.veiculo.modelo} -->
+                            <td >-</td> <!-- ${#dates.format(pdv.dataEntrada, 'dd/MM/yyyy HH:mm')} -->
+                            <td >-</td> <!-- ${pdv.total} -->
                             <td><a th:href="@{'/pdv/' + ${pdv.id}}" class="fas fa-fw fa-solid fa-pen"></td>
                             <td><a href="#" th:onclick="'if(confirm(\'Confirma ?\')) { window.location.href = \'' + @{/pdv/{id}(id=${pdv.id})} + '/excluir\' } '">
                                     <i class="fas fa-trash-alt d-flex align-items-center justify-content-center" style="color: #E74A3B"></i>

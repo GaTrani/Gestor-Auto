@@ -1,5 +1,7 @@
 package site.SpringWeb.servicos;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import site.SpringWeb.modelos.PDV;
@@ -16,5 +18,13 @@ public class PDVService {
 
     public PDV salvar(PDV pdv) {
         return pdvRepository.save(pdv);
+    }
+
+    public void salvarPDV(PDV pdv) {
+        pdvRepository.save(pdv);
+    }
+
+    public List<PDV> listarPDVs() {
+        return (List<PDV>) pdvRepository.findAll();
     }
 }
