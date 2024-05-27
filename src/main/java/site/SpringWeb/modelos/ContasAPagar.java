@@ -16,123 +16,107 @@ import java.time.LocalDate;
 @Table(name = "contas_a_pagar")
 public class ContasApagar {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
 
-  @Column(name = "fornecedor", length = 255, nullable = false)
-  private String fornecedor;
+    @Column(name = "fornecedor", length = 255, nullable = false)
+    private String fornecedor;
 
-  @Column(name = "cnpj", length = 14, nullable = false)
-  private String cnpj;
+    @Column(name = "cnpj", length = 14, nullable = false)
+    private String cnpj;
 
-  @Column(name = "valor", precision = 10, scale = 2, nullable = false)
-  private BigDecimal valor;
+    @Column(name = "valor", precision = 10, scale = 2, nullable = false)
+    private BigDecimal valor;
 
-  @Column(name = "recorrencia", length = 50)
-  private String recorrencia;
+    @Column(name = "recorrencia", length = 50)
+    private String recorrencia;
 
-  @Column(name = "parcelas")
-  private Integer parcelas;
+    @Column(name = "parcelas")
+    private Integer parcelas;
 
-  /* @Temporal(TemporalType.DATE) */
-  @DateTimeFormat(pattern = "dd/MM/yyyy")
-  @Column(name = "data_vencimento")
-  private LocalDate dataVencimento;
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @Column(name = "data_vencimento")
+    private LocalDate dataVencimento;
 
-  /* @DateTimeFormat(pattern = "dd-MM-yyyy")
-  @Column(name = "data_vencimento", nullable = false)
-  public LocalDate dataVencimento; */
+    @Column(name = "valor_pago", precision = 10, scale = 2)
+    private BigDecimal valorPago;
 
-  // @Column(name = "string_vencimento", length = 10)
-  // private String stringVencimento;
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @Column(name = "data_pagamento")
+    private LocalDate dataPagamento;
 
-  @Column(name = "valor_pago", precision = 10, scale = 2)
-  private BigDecimal valorPago;
+    // Getters e Setters
+    public int getId() {
+        return id;
+    }
 
-  /* @Column(name = "data_pagamento")
-  private LocalDate dataPagamento; */
+    public void setId(int id) {
+        this.id = id;
+    }
 
-  // Getters e Setters
-  public int getId() {
-    return id;
-  }
+    public String getFornecedor() {
+        return fornecedor;
+    }
 
-  public void setId(int id) {
-    this.id = id;
-  }
+    public void setFornecedor(String fornecedor) {
+        this.fornecedor = fornecedor;
+    }
 
-  public String getFornecedor() {
-    return fornecedor;
-  }
+    public String getCnpj() {
+        return cnpj;
+    }
 
-  public void setFornecedor(String fornecedor) {
-    this.fornecedor = fornecedor;
-  }
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
+    }
 
-  public String getCnpj() {
-    return cnpj;
-  }
+    public BigDecimal getValor() {
+        return valor;
+    }
 
-  public void setCnpj(String cnpj) {
-    this.cnpj = cnpj;
-  }
+    public void setValor(BigDecimal valor) {
+        this.valor = valor;
+    }
 
-  public BigDecimal getValor() {
-    return valor;
-  }
+    public String getRecorrencia() {
+        return recorrencia;
+    }
 
-  public void setValor(BigDecimal valor) {
-    this.valor = valor;
-  }
+    public void setRecorrencia(String recorrencia) {
+        this.recorrencia = recorrencia;
+    }
 
-  public String getRecorrencia() {
-    return recorrencia;
-  }
+    public Integer getParcelas() {
+        return parcelas;
+    }
 
-  public void setRecorrencia(String recorrencia) {
-    this.recorrencia = recorrencia;
-  }
+    public void setParcelas(Integer parcelas) {
+        this.parcelas = parcelas;
+    }
 
-  public Integer getParcelas() {
-    return parcelas;
-  }
+    public LocalDate getDataVencimento() {
+        return dataVencimento;
+    }
 
-  public void setParcelas(Integer parcelas) {
-    this.parcelas = parcelas;
-  }
+    public void setDataVencimento(LocalDate dataVencimento) {
+        this.dataVencimento = dataVencimento;
+    }
 
-  public LocalDate getDataVencimento() {
-    return dataVencimento;
-  }
+    public BigDecimal getValorPago() {
+        return valorPago;
+    }
 
-  public void setDataVencimento(LocalDate dataVencimento) {
-    this.dataVencimento = dataVencimento;
-  }
+    public void setValorPago(BigDecimal valorPago) {
+        this.valorPago = valorPago;
+    }
 
-  /*
-   * public String getStringVencimento() {
-   * return stringVencimento;
-   * }
-   * 
-   * public void setStringVencimento(String stringVencimento) {
-   * this.stringVencimento = stringVencimento;
-   * }
-   */
-  public BigDecimal getValorPago() {
-    return valorPago;
-  }
+    public LocalDate getDataPagamento() {
+        return dataPagamento;
+    }
 
-  public void setValorPago(BigDecimal valorPago) {
-    this.valorPago = valorPago;
-  }
-
-  /* public LocalDate getDataPagamento() {
-    return dataPagamento;
-  }
-
-  public void setDataPagamento(LocalDate dataPagamento) {
-    this.dataPagamento = dataPagamento;
-  } */
+    public void setDataPagamento(LocalDate dataPagamento) {
+        this.dataPagamento = dataPagamento;
+    }
 }

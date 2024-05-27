@@ -14,7 +14,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>Id</th>
@@ -46,7 +46,7 @@
                             <td th:text="${cliente.id}"></td>
                             <td th:text="${cliente.nome}"></td>
                             <td th:text="${cliente.telefone}"></td>
-                            <td th:text="${cliente.email}"></td>
+                            <td class="col-email" th:text="${cliente.email}"></td>
                             <td th:text="${cliente.endereco}"></td>
                             <td th:text="${cliente.numero}"></td>
                             <td th:text="${cliente.cidade}"></td>
@@ -64,5 +64,14 @@
         </div>
     </div>
 </div>
+
+<style>
+    .table th.col-email, .table td.col-email {
+        max-width: 400px; /* Set a maximum width for the email column */
+        white-space: normal; /* Allow breaking lines within the cell */
+        word-break: break-all; /* Break long words */
+        word-wrap: break-word; /* Break long words */
+    }
+</style>
 <!-- /.container-fluid -->
 <div th:replace="~{compartilhado/baixo}"></div>

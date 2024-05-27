@@ -1,0 +1,89 @@
+<div th:replace="~{compartilhado/topo}"></div>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Pagar Conta</h1>
+    <p class="mb-4">Aqui iremos pagar uma conta.</p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4" style="padding: 30px;">
+        <form method="POST" th:action="@{'/contasapagar/' + ${contaApagar.id} + '/pagar'}">
+            <div class="row">
+                <!-- Coluna 1 -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="fornecedor">Fornecedor</label>
+                        <input type="text" class="form-control" th:value="${contaApagar.fornecedor}" name="fornecedor"
+                            readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="cnpj">CNPJ</label>
+                        <input type="text" class="form-control input-medio" th:value="${contaApagar.cnpj}" name="cnpj" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="valor">Valor</label>
+                        <input type="number" class="form-control input-pequeno" th:value="${contaApagar.valor}" name="valor" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataVencimento">Data de Vencimento</label>
+                        <input type="date" class="form-control input-pequeno" id="dataVencimento" name="dataVencimento"
+                            th:value="${contaApagar.dataVencimento}" readonly>
+                    </div>
+                </div>
+                <!-- Coluna 2 -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="recorrencia">Recorrência</label>
+                        <input type="text" class="form-control input-pequeno" th:value="${contaApagar.recorrencia}" name="recorrencia"
+                            readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="parcelas">Parcelas</label>
+                        <input type="number" class="form-control input-pequeno" th:value="${contaApagar.parcelas}" name="parcelas"
+                            readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="valorPagamento">Valor Pagamento</label>
+                        <div class="input-group input-medio">
+                            <input type="text" class="form-control" id="valorPagamento" name="valorPagamento"
+                                placeholder="Digite o valor do pagamento" th:value="${contaApagar.valorPago}"  onwheel="this.blur()">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary"
+                                    onclick="repetirValor()">Repetir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataPagamento">Data Pagamento</label>
+                        <div class="input-group input-medio">
+                            <input type="date" class="form-control" id="dataPagamento" name="dataPagamento"
+                                placeholder="Digite a data do pagamento" th:value="${contaApagar.dataPagamento}" >
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary"
+                                    onclick="repetirData()">Repetir</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Pagar</button>
+        </form>
+    </div>
+
+</div>
+
+<script>
+    function repetirValor() {
+        var valorOriginal = document.getElementsByName("valor")[0].value;
+        document.getElementById("valorPagamento").value = valorOriginal;
+    }
+
+    function repetirData() {
+        var dataOriginal = document.getElementsByName("dataVencimento")[0].value;
+        document.getElementById("dataPagamento").value = dataOriginal;
+    }
+</script>
+
+<!-- /.container-fluid -->
+<div th:replace="~{compartilhado/baixo}"></div>

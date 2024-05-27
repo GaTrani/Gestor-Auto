@@ -5,8 +5,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+//import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +24,7 @@ import site.SpringWeb.modelos.ContasApagar;
 import site.SpringWeb.modelos.Fornecedor;
 import site.SpringWeb.repositorio.ContasApagarRepo;
 import site.SpringWeb.servicos.FornecedorService;
+import site.SpringWeb.servicos.ContasApagarService;
 
 @Controller
 public class ContasApagarController {
@@ -28,10 +32,26 @@ public class ContasApagarController {
     @Autowired
     private ContasApagarRepo repo;
 
+    @Autowired
+    private ContasApagarService contasApagarService;
+
+    /*
+     * @GetMapping("/contasapagar")
+     * public String index(Model model) {
+     * List<ContasApagar> contasApagar = (List<ContasApagar>) repo.findAll();
+     * model.addAttribute("contasApagar", contasApagar);
+     * return "contasapagar/index";
+     * }
+     */
+
     @GetMapping("/contasapagar")
-    public String index(Model model) {
-        List<ContasApagar> contasApagar = (List<ContasApagar>) repo.findAll();
-        model.addAttribute("contasApagar", contasApagar);
+    public String listarContas(Model model,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "20") int tamanho) {
+        Page<ContasApagar> contasApagarPage = contasApagarService.buscarComPaginacao(pagina, tamanho);
+        model.addAttribute("contasApagarPage", contasApagarPage);
+        model.addAttribute("paginaAtual", pagina);
+        model.addAttribute("tamanho", tamanho);
         return "contasapagar/index";
     }
 
@@ -107,4 +127,30 @@ public class ContasApagarController {
             }
         });
     }
+
+    @GetMapping("/contasapagar/{id}/pagar")
+    public String pagarConta(@PathVariable("id") Integer id, Model model) {
+        Optional<ContasApagar> contaApagar = contasApagarService.buscarPorId(id);
+        if (contaApagar.isPresent()) {
+            model.addAttribute("contaApagar", contaApagar.get());
+            return "contasapagar/pagar";
+        } else {
+            return "redirect:/contasapagar"; // Redirecionar se a conta não for encontrada
+        }
+    }
+
+    @PostMapping("/contasapagar/{id}/pagar")
+    public String processarPagamento(@PathVariable("id") Integer id,
+            @RequestParam("valorPagamento") BigDecimal valorPagamento,
+            @RequestParam("dataPagamento") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataPagamento) {
+        try {
+            contasApagarService.processarPagamento(id, valorPagamento, dataPagamento);
+            return "redirect:/contasapagar";
+        } catch (Exception e) {
+            // Log the error and return an error page or handle the error appropriately
+            e.printStackTrace();
+            return "redirect:/contasapagar?error=true";
+        }
+    }
+
 }

@@ -3,20 +3,19 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Contas a Pagar</h1>
-    <p class="mb-4">Aqui terá uma tabela para mostrar contas em aberto.</p>
+    <h1 class="h3 mb-2 text-gray-800">Contas Pagas</h1>
+    <p class="mb-4">Aqui você pode ver todas as contas que foram pagas.</p>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <a href="/contasapagar/novo" class="btn btn-primary" style="margin-right: 20px;">Novo</a>
-            <h6 class="m-0 font-weight-bold text-primary" style="display: inline-block;">Fornecedores</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Contas Pagas</h6>
         </div>
         <div class="card-body">
             <div class="form-group">
                 <label for="tamanho">Mostrar:</label>
                 <select id="tamanho"
-                    onchange="window.location.href = '/contasapagar?tamanho=' + this.value + '&pagina=0'">
+                    onchange="window.location.href = '/contaspagas?tamanho=' + this.value + '&pagina=0'">
                     <option th:value="20" th:text="'20'" th:selected="${tamanho == 20}">20</option>
                     <option th:value="50" th:text="'50'" th:selected="${tamanho == 50}">50</option>
                     <option th:value="100" th:text="'100'" th:selected="${tamanho == 100}">100</option>
@@ -33,23 +32,22 @@
                             <th>CNPJ</th>
                             <th>Data de Vencimento</th>
                             <th>Valor</th>
-                            <th colspan="3">Ações</th>
+                            <th>Valor Pago</th>
+                            <th>Data de Pagamento</th>
+                            <th colspan="2">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="conta : ${contasApagarPage.getContent()}" th:if="${conta.valorPago == null}">
+                        <tr th:each="conta : ${contasPagasPage.getContent()}" th:if="${conta.valorPago != null}">
                             <td th:text="${conta.id}"></td>
                             <td th:text="${conta.fornecedor}"></td>
                             <td th:text="${conta.cnpj}"></td>
                             <td th:text="${conta.dataVencimento}"></td>
                             <td th:text="${conta.valor}"></td>
-                            <td>
-                                <a class="fas fa-fw fa-money-bill"
-                                    th:href="@{'/contasapagar/' + ${conta.id} + '/pagar/'}"
-                                    th:style="${conta.valorPago != null} ? 'color: gray;' : 'color: #28a745;'"></a>
-                            </td>
-                            <td><a class="fas fa-fw fa-solid fa-pen" th:href="@{'/contasapagar/' + ${conta.id}}"></a>
-                            </td>
+                            <td th:text="${conta.valorPago}"></td>
+                            <td th:text="${conta.dataPagamento}"></td>
+                            <td><a class="fas fa-fw fa-solid fa-pen"
+                                    th:href="@{'/contasapagar/' + ${conta.id} + '/editar'}"></a></td>
                             <td><a href="#"
                                     th:onclick="'if(confirm(\'Confirma ?\')) { window.location.href = \'' + @{/contasapagar/{id}(id=${conta.id})} + '/excluir\' } '">
                                     <i class="fas fa-trash-alt d-flex align-items-center justify-content-center"
@@ -61,18 +59,18 @@
             </div>
             <div class="pagination">
                 <ul class="pagination">
-                    <li th:classappend="${contasApagarPage.hasPrevious()} ? '' : 'disabled'">
+                    <li th:classappend="${contasPagasPage.hasPrevious()} ? '' : 'disabled'">
                         <a
-                            th:href="@{'/contasapagar?pagina=' + ${paginaAtual - 1} + '&tamanho=' + ${tamanho} }">Anterior</a>
+                            th:href="@{'/contaspagas?pagina=' + ${paginaAtual - 1} + '&tamanho=' + ${tamanho} }">Anterior</a>
                     </li>
-                    <li th:each="i : ${#numbers.sequence(0, contasApagarPage.getTotalPages() - 1)}"
+                    <li th:each="i : ${#numbers.sequence(0, contasPagasPage.getTotalPages() - 1)}"
                         th:classappend="${i == paginaAtual} ? 'active' : ''">
-                        <a th:href="@{'/contasapagar?pagina=' + ${i} + '&tamanho=' + ${tamanho} }"
+                        <a th:href="@{'/contaspagas?pagina=' + ${i} + '&tamanho=' + ${tamanho} }"
                             th:text="${i + 1}"></a>
                     </li>
-                    <li th:classappend="${contasApagarPage.hasNext()} ? '' : 'disabled'">
+                    <li th:classappend="${contasPagasPage.hasNext()} ? '' : 'disabled'">
                         <a
-                            th:href="@{'/contasapagar?pagina=' + ${paginaAtual + 1} + '&tamanho=' + ${tamanho} }">Próxima</a>
+                            th:href="@{'/contaspagas?pagina=' + ${paginaAtual + 1} + '&tamanho=' + ${tamanho} }">Próxima</a>
                     </li>
                 </ul>
             </div>
