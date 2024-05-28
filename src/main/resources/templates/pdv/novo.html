@@ -16,16 +16,13 @@
         <div class="col-md-8">
             <!-- Product insertion and list -->
             <div class="card shadow mb-4" style="padding: 30px;">
-                <!-- <label>Inserir Produto</h4> -->
                 <!-- Product insertion form -->
-                <!-- <input readonly id="pdvId" th:value="${pdvId}"> -->
                 <form method="POST" action="/pdv/criar" onsubmit="return confirm('Confirma ação')">
                     <div class="form-group" style="position: relative;">
                         <label>Inserir Produto</label>
                         <input type="text" id="inputBusca" placeholder="Buscar produto" class="form-control">
                     </div>
                     <ul id="listaProdutos" class="list-group" style="position: absolute; display: none;"></ul>
-                    <!-- <button type="button" id="btnAdicionar" class="btn btn-primary">Adicionar</button> -->
                 </form>
                 <h4 class="mt-4">Itens Escolhidos</h4>
                 <div class="table-responsive">
@@ -77,23 +74,24 @@
                     <h5>Formas de Pagamento</h5>
                     <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center"
                         role="group">
-                        <button type="button" class="btn btn-secondary btn-block mr-1">Dinheiro</button>
+                        <input type="hidden" id="formaPagamento" name="formaPagamento">
+                        <button type="button" class="btn btn-secondary btn-block mr-1" onclick="selecionarFormaPagamento('Dinheiro')">Dinheiro</button>
                         <button type="button" class="btn btn-secondary btn-block mr-1" data-toggle="collapse"
                             href="#cartaoOpcoes" aria-expanded="false" aria-controls="cartaoOpcoes">Cartão</button>
-                        <button type="button" class="btn btn-secondary btn-block mr-1">Pix</button>
+                        <button type="button" class="btn btn-secondary btn-block mr-1" onclick="selecionarFormaPagamento('Pix')">Pix</button>
                     </div>
                     <div class="collapse mb-4" id="cartaoOpcoes">
                         <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center">
-                            <button type="button" class="btn btn-secondary btn-block mr-1">Débito</button>
-                            <button type="button" class="btn btn-secondary btn-block mr-1">Crédito</button>
+                            <button type="button" class="btn btn-secondary btn-block mr-1" onclick="selecionarFormaPagamento('Débito')">Débito</button>
+                            <button type="button" class="btn btn-secondary btn-block mr-1" onclick="selecionarFormaPagamento('Crédito')">Crédito</button>
                             <div class="dropdown">
                                 <button class="btn btn-secondary btn-block mr-1 dropdown-toggle" type="button"
                                     id="dropdownParcelas" data-toggle="dropdown" aria-haspopup="true"
                                     aria-expanded="false">Parcelas</button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownParcelas">
-                                    <a class="dropdown-item" href="#">1x</a>
-                                    <a class="dropdown-item" href="#">2x</a>
-                                    <a class="dropdown-item" href="#">3x</a>
+                                    <a class="dropdown-item" href="#" onclick="selecionarFormaPagamento('1x')">1x</a>
+                                    <a class="dropdown-item" href="#" onclick="selecionarFormaPagamento('2x')">2x</a>
+                                    <a class="dropdown-item" href="#" onclick="selecionarFormaPagamento('3x')">3x</a>
                                 </div>
                             </div>
                         </div>
@@ -134,6 +132,17 @@
 <script src="/js/exibirProdutos.js"></script>
 <script src="/js/pdv/dropdownPlacas.js"></script>
 <!-- <script src="/js/inserirMostrarProdutos.js"></script> -->
+
+<script>
+    function selecionarFormaPagamento(forma) {
+        var inputFormaPagamento = document.getElementById('formaPagamento');
+        inputFormaPagamento.value = forma;
+    }
+
+    $(document).ready(function() {
+        carregarVeiculos();
+    });
+</script>
 
 <style>
     .required-field::after {

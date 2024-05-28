@@ -31,6 +31,9 @@ public class PDV {
     @Column(name = "total")
     private double total;
 
+    @Column(name = "forma_pagamento", length = 100, nullable = true)
+    private String formaPagamento;
+
     @OneToMany(mappedBy = "pdv", cascade = CascadeType.ALL)
     private List<PDVVendas> vendas;
 
@@ -77,14 +80,13 @@ public class PDV {
         this.dataEntrada = dataEntrada;
     }
 
-
-    /* public double getDesconto() {
+    public double getDesconto() {
         return desconto;
     }
 
     public void setDesconto(double desconto) {
         this.desconto = desconto;
-    } */
+    }
 
     public double getTotal() {
         return total;
@@ -92,6 +94,14 @@ public class PDV {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    public String getFormaPagamento() {
+        return formaPagamento;
+    }
+
+    public void setFormaPagamento(String formaPagamento) {
+        this.formaPagamento = formaPagamento;
     }
 
     public List<PDVVendas> getVendas() {

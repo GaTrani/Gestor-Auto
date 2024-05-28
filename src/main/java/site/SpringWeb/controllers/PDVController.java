@@ -1,5 +1,6 @@
 package site.SpringWeb.controllers;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,7 +93,15 @@ public class PDVController {
      */
 
     @PostMapping("/criar")
-    public String criarPDV(@RequestParam("clienteId") int clienteId, @RequestParam("veiculo") String veiculo, @RequestParam("km") int km) {
+    public String criarPDV(
+            @RequestParam("clienteId") int clienteId,
+            @RequestParam("veiculo") String veiculo,
+            @RequestParam("km") int km,
+            @RequestParam("formaPagamento") String formaPagamento
+
+            ) {
+                //@RequestParam("desconto") double desconto
+                //@RequestParam("valorTotalNota") double valorTotalNota
         PDV pdv = new PDV();
 
         Cliente cliente = new Cliente();
@@ -100,10 +109,14 @@ public class PDVController {
         pdv.setCliente(cliente);
         pdv.setVeiculo(veiculo);
         pdv.setKm(km);
+        pdv.setFormaPagamento(formaPagamento);
+        //pdv.setDesconto(desconto);
+        //pdv.setTotal(valorTotalNota);
 
-        // Aqui você pode adicionar outras configurações do PDV, como veículo, data de
-        // entrada, total, etc.
+        // Definindo a data de entrada como a data atual
+        pdv.setDataEntrada(new Date());
 
+        // Salvar PDV
         pdvService.salvarPDV(pdv);
 
         return "redirect:/pdv";
