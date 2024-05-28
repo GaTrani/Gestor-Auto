@@ -5,14 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 //import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import site.SpringWeb.modelos.Cliente;
 import site.SpringWeb.modelos.PDV;
@@ -22,11 +19,8 @@ import site.SpringWeb.repositorio.PDVRepo;
 import site.SpringWeb.repositorio.PDVVendasRepo;
 import site.SpringWeb.servicos.ClienteService;
 import site.SpringWeb.servicos.PDVService;
-import site.SpringWeb.servicos.PDVVendasService;
+//import site.SpringWeb.servicos.PDVVendasService;
 import site.SpringWeb.servicos.ProdutoService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 
 @Controller
 @RequestMapping("/pdv")
@@ -44,8 +38,8 @@ public class PDVController {
     @Autowired
     private PDVService pdvService;
 
-    @Autowired
-    private PDVVendasService pdvVendasService;
+    /* @Autowired
+    private PDVVendasService pdvVendasService; */
 
     public PDVController(PDVRepo pdvRepo, PDVVendasRepo pdvVendasRepo) {
         this.pdvRepo = pdvRepo;
@@ -146,61 +140,64 @@ public class PDVController {
          */
 
         // Criar uma lista de produtos fixa
-        //String[] nomesProdutos = {"produto1", "produto2", "produto3"};
+        // String[] nomesProdutos = {"produto1", "produto2", "produto3"};
 
         // Salvar cada produto na tabela pdv_vendas
-/*
-        for (String nomeProduto : nomesProdutos) {
-        PDVVendas produto = new PDVVendas();
-        produto.setProduto(nomeProduto);
-        produto.setQuantidade(1); // Definir a quantidade desejada
-        // Definir o valor unitário e total conforme necessário
-        produto.setValorUnitario(10.0);
-        produto.setTotal(10.0);
-        produto.setPdv(pdv); // Vincular o produto ao PDV
-        pdvVendasService.salvarPDVVendas(produto);
-        }
- */
+        /*
+         * for (String nomeProduto : nomesProdutos) {
+         * PDVVendas produto = new PDVVendas();
+         * produto.setProduto(nomeProduto);
+         * produto.setQuantidade(1); // Definir a quantidade desejada
+         * // Definir o valor unitário e total conforme necessário
+         * produto.setValorUnitario(10.0);
+         * produto.setTotal(10.0);
+         * produto.setPdv(pdv); // Vincular o produto ao PDV
+         * pdvVendasService.salvarPDVVendas(produto);
+         * }
+         */
 
         return "redirect:/pdv";
     }
 
-    /* @PostMapping("/adicionar-produtos-pdv-vendas")
-public String adicionarProdutosAoPDV(Model model, @RequestParam("clienteId") int clienteId) {
-    // Adicione esta linha para imprimir uma mensagem ao acessar a rota
-    System.out.println("Rota /adicionar-produtos-pdv-vendas foi acessada com sucesso.");
-
-    // Agora você pode adicionar o restante da lógica conforme necessário
-
-    try {
-        // Recuperar o último PDV criado
-        Integer ultimoId = pdvRepo.obterUltimoId();
-        PDV pdv = pdvRepo.findById(ultimoId)
-                .orElseThrow(() -> new IllegalArgumentException("PDV não encontrado"));
-
-        // Lista fixa de produtos
-        String[] produtos = { "produto1", "produto2", "produto3" };
-
-        // Salvar cada produto na tabela pdv_vendas
-        for (String produto : produtos) {
-            PDVVendas venda = new PDVVendas();
-            venda.setPdv(pdv);
-            venda.setProduto(produto);
-            venda.setQuantidade(1);
-            venda.setValorUnitario(11.0);
-            venda.setTotal(11.0);
-            pdvVendasRepo.save(venda);
-        }
-
-        // Redirecionar para a página de PDV
-        return "redirect:/pdv";
-    } catch (Exception e) {
-        // Em caso de erro, redirecionar para a página de PDV com uma mensagem de erro
-        return "redirect:/pdv?error=" + e.getMessage();
-    }
-} */
-
-
+    /*
+     * @PostMapping("/adicionar-produtos-pdv-vendas")
+     * public String adicionarProdutosAoPDV(Model model, @RequestParam("clienteId")
+     * int clienteId) {
+     * // Adicione esta linha para imprimir uma mensagem ao acessar a rota
+     * System.out.
+     * println("Rota /adicionar-produtos-pdv-vendas foi acessada com sucesso.");
+     * 
+     * // Agora você pode adicionar o restante da lógica conforme necessário
+     * 
+     * try {
+     * // Recuperar o último PDV criado
+     * Integer ultimoId = pdvRepo.obterUltimoId();
+     * PDV pdv = pdvRepo.findById(ultimoId)
+     * .orElseThrow(() -> new IllegalArgumentException("PDV não encontrado"));
+     * 
+     * // Lista fixa de produtos
+     * String[] produtos = { "produto1", "produto2", "produto3" };
+     * 
+     * // Salvar cada produto na tabela pdv_vendas
+     * for (String produto : produtos) {
+     * PDVVendas venda = new PDVVendas();
+     * venda.setPdv(pdv);
+     * venda.setProduto(produto);
+     * venda.setQuantidade(1);
+     * venda.setValorUnitario(11.0);
+     * venda.setTotal(11.0);
+     * pdvVendasRepo.save(venda);
+     * }
+     * 
+     * // Redirecionar para a página de PDV
+     * return "redirect:/pdv";
+     * } catch (Exception e) {
+     * // Em caso de erro, redirecionar para a página de PDV com uma mensagem de
+     * erro
+     * return "redirect:/pdv?error=" + e.getMessage();
+     * }
+     * }
+     */
 
     /*
      * @GetMapping("/{id}")
@@ -266,42 +263,49 @@ public String adicionarProdutosAoPDV(Model model, @RequestParam("clienteId") int
         return "redirect:/pdv";
     }
 
-    /* @PostMapping("/adicionar-produto-parametros")
-    @ResponseBody
-    public String adicionarProdutoAoPDVComParametros(@RequestParam("id_pdv") int idPdv,
-            @RequestParam("produto") String produto) {
-        try {
-            PDV pdv = pdvRepo.findById(idPdv)
-                    .orElseThrow(() -> new IllegalArgumentException("ID do PDV inválido: " + idPdv));
-
-            PDVVendas venda = new PDVVendas();
-            venda.setPdv(pdv);
-            venda.setProduto(produto);
-
-            pdvVendasRepo.save(venda);
-            return "Produto adicionado ao PDV com sucesso";
-        } catch (Exception e) {
-            return "Erro ao adicionar produto ao PDV: " + e.getMessage();
-        }
-    }
-
-    @PostMapping("/adicionar-produto-body")
-    @ResponseBody
-    public String adicionarProdutoAoPDVComBody(@RequestBody PDVVendas request) {
-        try {
-            PDV pdv = pdvRepo.findById(request.getPdv().getId())
-                    .orElseThrow(() -> new IllegalArgumentException("PDV não encontrado"));
-
-            PDVVendas venda = new PDVVendas();
-            venda.setPdv(pdv);
-            venda.setProduto(request.getProduto());
-
-            pdvVendasRepo.save(venda);
-            return "Produto adicionado ao PDV com sucesso";
-        } catch (Exception e) {
-            return "Erro ao adicionar produto ao PDV: " + e.getMessage();
-        }
-    } */
+    /*
+     * @PostMapping("/adicionar-produto-parametros")
+     * 
+     * @ResponseBody
+     * public String adicionarProdutoAoPDVComParametros(@RequestParam("id_pdv") int
+     * idPdv,
+     * 
+     * @RequestParam("produto") String produto) {
+     * try {
+     * PDV pdv = pdvRepo.findById(idPdv)
+     * .orElseThrow(() -> new IllegalArgumentException("ID do PDV inválido: " +
+     * idPdv));
+     * 
+     * PDVVendas venda = new PDVVendas();
+     * venda.setPdv(pdv);
+     * venda.setProduto(produto);
+     * 
+     * pdvVendasRepo.save(venda);
+     * return "Produto adicionado ao PDV com sucesso";
+     * } catch (Exception e) {
+     * return "Erro ao adicionar produto ao PDV: " + e.getMessage();
+     * }
+     * }
+     * 
+     * @PostMapping("/adicionar-produto-body")
+     * 
+     * @ResponseBody
+     * public String adicionarProdutoAoPDVComBody(@RequestBody PDVVendas request) {
+     * try {
+     * PDV pdv = pdvRepo.findById(request.getPdv().getId())
+     * .orElseThrow(() -> new IllegalArgumentException("PDV não encontrado"));
+     * 
+     * PDVVendas venda = new PDVVendas();
+     * venda.setPdv(pdv);
+     * venda.setProduto(request.getProduto());
+     * 
+     * pdvVendasRepo.save(venda);
+     * return "Produto adicionado ao PDV com sucesso";
+     * } catch (Exception e) {
+     * return "Erro ao adicionar produto ao PDV: " + e.getMessage();
+     * }
+     * }
+     */
 
     @GetMapping("/ultimo-id")
     @ResponseBody
@@ -327,4 +331,14 @@ public String adicionarProdutosAoPDV(Model model, @RequestParam("clienteId") int
     public List<String> obterVeiculosPorCliente(@PathVariable int clienteId) {
         return clienteService.buscarVeiculosPorClienteId(clienteId);
     }
+
+    @GetMapping("/buscar_valor_unitario")
+    @ResponseBody
+    public ResponseEntity<Double> buscarValorUnitario(@RequestParam("produtoId") int produtoId) {
+        // Aqui você irá realizar a lógica para buscar o valor unitário do produto no
+        // banco de dados
+        double valorUnitario = produtoService.buscarValorUnitarioPorId(produtoId);
+        return ResponseEntity.ok(valorUnitario);
+    }
+
 }
