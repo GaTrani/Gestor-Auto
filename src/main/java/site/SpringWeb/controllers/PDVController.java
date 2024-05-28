@@ -97,8 +97,8 @@ public class PDVController {
             @RequestParam("clienteId") int clienteId,
             @RequestParam("veiculo") String veiculo,
             @RequestParam("km") int km,
-            @RequestParam("formaPagamento") String formaPagamento
-
+            @RequestParam("formaPagamento") String formaPagamento,
+            @RequestParam("desconto") double desconto
             ) {
                 //@RequestParam("desconto") double desconto
                 //@RequestParam("valorTotalNota") double valorTotalNota
@@ -110,7 +110,7 @@ public class PDVController {
         pdv.setVeiculo(veiculo);
         pdv.setKm(km);
         pdv.setFormaPagamento(formaPagamento);
-        //pdv.setDesconto(desconto);
+        pdv.setDesconto(desconto);
         //pdv.setTotal(valorTotalNota);
 
         // Definindo a data de entrada como a data atual

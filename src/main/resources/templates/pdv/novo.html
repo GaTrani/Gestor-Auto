@@ -49,7 +49,7 @@
             <!-- Customer data, payment methods, total, print and delete buttons -->
             <div class="card shadow mb-4" style="padding: 30px;">
                 <h5>Dados do Cliente</h5>
-                <form method="POST" action="/pdv/criar" onsubmit="return confirm('Confirma ação')">
+                <form id="form" method="POST" action="/pdv/criar" onsubmit="return confirm('Confirma ação')">
                     <div class="form-group">
                         <select class="form-control" id="clienteId" name="clienteId" onchange="carregarVeiculos()">
                             <option value="">Selecione um cliente</option>
@@ -131,6 +131,8 @@
 <script src="/js/inserirEmostrar.js"></script>
 <script src="/js/exibirProdutos.js"></script>
 <script src="/js/pdv/dropdownPlacas.js"></script>
+<script src="/js/pdv/editarPreco.js"></script>
+<script src="/js/pdv/editarValorBanco.js"></script>
 <!-- <script src="/js/inserirMostrarProdutos.js"></script> -->
 
 <script>
@@ -139,9 +141,9 @@
         inputFormaPagamento.value = forma;
     }
 
-    $(document).ready(function() {
+    /* $(document).ready(function() {
         carregarVeiculos();
-    });
+    }); */
 </script>
 
 <style>
