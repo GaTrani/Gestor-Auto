@@ -10,6 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import site.SpringWeb.modelos.Cliente;
 import site.SpringWeb.modelos.PDV;
 import site.SpringWeb.modelos.PDVVendas;
@@ -18,7 +22,11 @@ import site.SpringWeb.repositorio.PDVRepo;
 import site.SpringWeb.repositorio.PDVVendasRepo;
 import site.SpringWeb.servicos.ClienteService;
 import site.SpringWeb.servicos.PDVService;
+import site.SpringWeb.servicos.PDVVendasService;
 import site.SpringWeb.servicos.ProdutoService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @Controller
 @RequestMapping("/pdv")
@@ -35,6 +43,9 @@ public class PDVController {
 
     @Autowired
     private PDVService pdvService;
+
+    @Autowired
+    private PDVVendasService pdvVendasService;
 
     public PDVController(PDVRepo pdvRepo, PDVVendasRepo pdvVendasRepo) {
         this.pdvRepo = pdvRepo;
@@ -98,12 +109,9 @@ public class PDVController {
             @RequestParam("veiculo") String veiculo,
             @RequestParam("km") int km,
             @RequestParam("formaPagamento") String formaPagamento,
-            @RequestParam("desconto") double desconto
-            ) {
-                //@RequestParam("desconto") double desconto
-                //@RequestParam("valorTotalNota") double valorTotalNota
-        PDV pdv = new PDV();
+            @RequestParam("desconto") double desconto) {
 
+        PDV pdv = new PDV();
         Cliente cliente = new Cliente();
         cliente.setId(clienteId);
         pdv.setCliente(cliente);
@@ -111,16 +119,88 @@ public class PDVController {
         pdv.setKm(km);
         pdv.setFormaPagamento(formaPagamento);
         pdv.setDesconto(desconto);
-        //pdv.setTotal(valorTotalNota);
-
-        // Definindo a data de entrada como a data atual
         pdv.setDataEntrada(new Date());
 
         // Salvar PDV
         pdvService.salvarPDV(pdv);
 
+        /*
+         * // Parsear JSON de produtos e salvar cada produto
+         * ObjectMapper objectMapper = new ObjectMapper();
+         * List<PDVVendas> produtos;
+         * try {
+         * produtos = objectMapper.readValue(produtosJson, new
+         * TypeReference<List<PDVVendas>>() {
+         * });
+         * for (PDVVendas produto : produtos) {
+         * // Log de cada produto
+         * System.out.println("Produto: " + produto.getProduto());
+         * produto.setPdv(pdv); // Vincular o PDV ao produto
+         * pdvVendasService.salvarPDVVendas(produto);
+         * }
+         * } catch (JsonProcessingException e) {
+         * e.printStackTrace();
+         * // Tratar o erro de parsing do JSON
+         * return "redirect:/pdv?error";
+         * }
+         */
+
+        // Criar uma lista de produtos fixa
+        //String[] nomesProdutos = {"produto1", "produto2", "produto3"};
+
+        // Salvar cada produto na tabela pdv_vendas
+/*
+        for (String nomeProduto : nomesProdutos) {
+        PDVVendas produto = new PDVVendas();
+        produto.setProduto(nomeProduto);
+        produto.setQuantidade(1); // Definir a quantidade desejada
+        // Definir o valor unitário e total conforme necessário
+        produto.setValorUnitario(10.0);
+        produto.setTotal(10.0);
+        produto.setPdv(pdv); // Vincular o produto ao PDV
+        pdvVendasService.salvarPDVVendas(produto);
+        }
+ */
+
         return "redirect:/pdv";
     }
+
+    /* @PostMapping("/adicionar-produtos-pdv-vendas")
+public String adicionarProdutosAoPDV(Model model, @RequestParam("clienteId") int clienteId) {
+    // Adicione esta linha para imprimir uma mensagem ao acessar a rota
+    System.out.println("Rota /adicionar-produtos-pdv-vendas foi acessada com sucesso.");
+
+    // Agora você pode adicionar o restante da lógica conforme necessário
+
+    try {
+        // Recuperar o último PDV criado
+        Integer ultimoId = pdvRepo.obterUltimoId();
+        PDV pdv = pdvRepo.findById(ultimoId)
+                .orElseThrow(() -> new IllegalArgumentException("PDV não encontrado"));
+
+        // Lista fixa de produtos
+        String[] produtos = { "produto1", "produto2", "produto3" };
+
+        // Salvar cada produto na tabela pdv_vendas
+        for (String produto : produtos) {
+            PDVVendas venda = new PDVVendas();
+            venda.setPdv(pdv);
+            venda.setProduto(produto);
+            venda.setQuantidade(1);
+            venda.setValorUnitario(11.0);
+            venda.setTotal(11.0);
+            pdvVendasRepo.save(venda);
+        }
+
+        // Redirecionar para a página de PDV
+        return "redirect:/pdv";
+    } catch (Exception e) {
+        // Em caso de erro, redirecionar para a página de PDV com uma mensagem de erro
+        return "redirect:/pdv?error=" + e.getMessage();
+    }
+} */
+
+
 
     /*
      * @GetMapping("/{id}")
@@ -186,7 +266,7 @@ public class PDVController {
         return "redirect:/pdv";
     }
 
-    @PostMapping("/adicionar-produto-parametros")
+    /* @PostMapping("/adicionar-produto-parametros")
     @ResponseBody
     public String adicionarProdutoAoPDVComParametros(@RequestParam("id_pdv") int idPdv,
             @RequestParam("produto") String produto) {
@@ -221,7 +301,7 @@ public class PDVController {
         } catch (Exception e) {
             return "Erro ao adicionar produto ao PDV: " + e.getMessage();
         }
-    }
+    } */
 
     @GetMapping("/ultimo-id")
     @ResponseBody

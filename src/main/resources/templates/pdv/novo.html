@@ -17,7 +17,7 @@
             <!-- Product insertion and list -->
             <div class="card shadow mb-4" style="padding: 30px;">
                 <!-- Product insertion form -->
-                <form method="POST" action="/pdv/criar" onsubmit="return confirm('Confirma ação')">
+                <form method="POST" action="/pdv/teste" onsubmit="return confirm('Confirma ação')">
                     <div class="form-group" style="position: relative;">
                         <label>Inserir Produto</label>
                         <input type="text" id="inputBusca" placeholder="Buscar produto" class="form-control">
@@ -118,6 +118,7 @@
                             <button type="button" class="btn btn-danger mr-2">Excluir</button>
                             <button type="button" class="btn btn-success">Imprimir</button>
                         </div>
+                        <input type="hidden" id="produtosJson" name="produtosJson">
                         <button type="submit" id="btnSalvar"
                             class="btn btn-primary btn-lg btn-block mb-2">Salvar</button>
                     </div>
@@ -133,6 +134,7 @@
 <script src="/js/pdv/dropdownPlacas.js"></script>
 <script src="/js/pdv/editarPreco.js"></script>
 <script src="/js/pdv/editarValorBanco.js"></script>
+<script src="/js/pdv/salvarProdutos.js"></script>
 <!-- <script src="/js/inserirMostrarProdutos.js"></script> -->
 
 <script>
@@ -140,10 +142,6 @@
         var inputFormaPagamento = document.getElementById('formaPagamento');
         inputFormaPagamento.value = forma;
     }
-
-    /* $(document).ready(function() {
-        carregarVeiculos();
-    }); */
 </script>
 
 <style>
