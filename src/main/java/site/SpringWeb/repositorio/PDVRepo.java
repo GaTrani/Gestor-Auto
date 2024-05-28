@@ -13,7 +13,7 @@ public interface PDVRepo extends CrudRepository<PDV, Integer> {
     @Query(value = "select CASE WHEN count(1) > 0 THEN 'true' ELSE 'false' END from pdv where id = :id", nativeQuery = true)
     public boolean exist(int id);
 
-    Optional<PDV> findById(int id); // Adicionado para buscar por ID
+    Optional<PDV> findById(Long id); // Adicionado para buscar por ID
 
     @Query(value = "SELECT MAX(id) FROM pdv", nativeQuery = true)
     Integer obterUltimoId();

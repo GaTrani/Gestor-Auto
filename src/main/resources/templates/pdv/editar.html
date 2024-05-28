@@ -1,0 +1,142 @@
+<div th:replace="~{compartilhado/topo}"></div>
+<!-- Begin Page Content -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Editar PDV</h1>
+    <p class="mb-4">
+        Aqui você pode editar um ponto de venda existente.
+    </p>
+
+    <!-- Two columns layout -->
+    <div class="row">
+        <!-- Left column -->
+        <div class="col-md-8">
+            <!-- Product insertion and list -->
+            <div class="card shadow mb-4" style="padding: 30px;">
+                <form method="POST" action="#" onsubmit="return confirm('Confirma ação')">
+                    <div class="form-group" style="position: relative;">
+                        <label>Inserir Produto</label>
+                        <input type="text" id="inputBusca" placeholder="Buscar produto" class="form-control">
+                    </div>
+                    <ul id="listaProdutos" class="list-group" style="position: absolute; display: none;"></ul>
+                </form>
+                <h4 class="mt-4">Itens Escolhidos</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="tabelaProdutosPDVVendas">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Valor Unitário</th>
+                                <th>Quantidade</th>
+                                <th>Valor Total</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Linhas da tabela serão adicionadas dinamicamente aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="col-md-4">
+            <!-- Customer data, payment methods, total, print and delete buttons -->
+            <div class="card shadow mb-4" style="padding: 30px;">
+                <h5>Dados do Cliente</h5>
+                <form method="POST" action="@{'/pdv/' + ${pdv?.id} + '/atualizar'}" onsubmit="return confirm('Confirma ação')">
+                    <div th:text="${pdv?.id}"></div>
+                    <div class="form-group">
+                        <select class="form-control" id="clienteId" name="clienteId" onchange="carregarVeiculos()">
+                            <option value="">Selecione um cliente</option>
+                            <option th:each="cliente : ${clientes}" th:value="${cliente.id}" th:text="${cliente.nome}"
+                                th:selected="${pdv.cliente.id} == ${cliente.id}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="mr-3">
+                            <label for="veiculo">Veículo</label>
+                            <select class="form-control" id="veiculo" name="veiculo">
+                                <option value="">Placa</option>
+                            </select>
+                        </div>
+                        <div class="mr-3">
+                            <label for="km">Km</label><br>
+                            <input type="text" id="km" name="km" class="form-control"> <!--  th:value="${pdv.km}" -->
+                        </div>
+                    </div>
+
+                    <hr>
+                    <h5>Formas de Pagamento</h5>
+                    <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center"
+                        role="group">
+                        <button type="button" class="btn btn-secondary btn-block mr-1">Dinheiro</button>
+                        <button type="button" class="btn btn-secondary btn-block mr-1" data-toggle="collapse"
+                            href="#cartaoOpcoes" aria-expanded="false" aria-controls="cartaoOpcoes">Cartão</button>
+                        <button type="button" class="btn btn-secondary btn-block mr-1">Pix</button>
+                    </div>
+                    <div class="collapse mb-4" id="cartaoOpcoes">
+                        <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center">
+                            <button type="button" class="btn btn-secondary btn-block mr-1">Débito</button>
+                            <button type="button" class="btn btn-secondary btn-block mr-1">Crédito</button>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary btn-block mr-1 dropdown-toggle" type="button"
+                                    id="dropdownParcelas" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">Parcelas</button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownParcelas">
+                                    <a class="dropdown-item" href="#">1x</a>
+                                    <a class="dropdown-item" href="#">2x</a>
+                                    <a class="dropdown-item" href="#">3x</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <h5>Desconto</h5>
+                    <div class="btn-group mb-4" role="group">
+                        <button type="button" class="btn btn-secondary">R$</button>
+                        <button type="button" class="btn btn-secondary" style="margin-right: 35px;">%</button>
+                        <input type="text" id="desconto" name="desconto"
+                            class="form-control"><!-- th:value="${pdv.desconto}" -->
+                    </div>
+                    <h5>Total da Nota</h5>
+                    <div>
+                        <div class="position-relative">
+                            <input type="text" id="valorTotalNota" name="valorTotalNota" class="form-control"
+                                style="padding-left: 30px; text-align: right;" placeholder="0,00"
+                                readonly><!-- th:value="${pdv.valorTotalNota}" -->
+                            <label for="valorTotalNota" class="position-absolute"
+                                style="left: 10px; top: 50%; transform: translateY(-50%);">R$</label>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="text-right">
+                        <div class="d-flex justify-content-between mb-2">
+                            <button type="button" class="btn btn-danger mr-2">Excluir</button>
+                            <button type="button" class="btn btn-success">Imprimir</button>
+                        </div>
+                        <button type="submit" id="btnSalvar"
+                            class="btn btn-primary btn-lg btn-block mb-2">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/inserirEmostrar.js"></script>
+<script src="/js/exibirProdutos.js"></script>
+<script src="/js/pdv/dropdownPlacas.js"></script>
+
+<style>
+    .required-field::after {
+        content: " *";
+        color: red;
+    }
+</style>
+<div th:replace="~{compartilhado/baixo}"></div>

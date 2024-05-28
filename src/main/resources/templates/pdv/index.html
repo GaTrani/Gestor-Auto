@@ -39,7 +39,7 @@
                         <tr th:each="pdv : ${pdvs}">
                             <td th:text="${pdv.id}"></td>
                             <td th:text="${pdv.cliente.nome}"></td>
-                            <td >-</td> <!-- ${pdv.veiculo.modelo} -->
+                            <td th:text="${pdv.veiculo}">-</td> <!-- ${pdv.veiculo.modelo} -->
                             <td >-</td> <!-- ${#dates.format(pdv.dataEntrada, 'dd/MM/yyyy HH:mm')} -->
                             <td >-</td> <!-- ${pdv.total} -->
                             <td><a th:href="@{'/pdv/' + ${pdv.id}}" class="fas fa-fw fa-solid fa-pen"></td>

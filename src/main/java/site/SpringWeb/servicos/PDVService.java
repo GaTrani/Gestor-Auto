@@ -27,4 +27,12 @@ public class PDVService {
     public List<PDV> listarPDVs() {
         return (List<PDV>) pdvRepository.findAll();
     }
+
+    public PDV findById(Long id) {
+        return pdvRepository.findById(id).orElse(null);
+    }
+
+    public void save(PDV pdv) {
+        pdvRepository.save(pdv);
+    }
 }

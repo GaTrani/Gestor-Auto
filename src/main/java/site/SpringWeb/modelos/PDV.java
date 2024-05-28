@@ -19,8 +19,14 @@ public class PDV {
     @Column(name = "veiculo", length = 100, nullable = true)
     private String veiculo;
 
+    @Column(name = "km")
+    private int km;
+
     @Column(name = "data_entrada")
     private Date dataEntrada;
+
+    @Column(name = "desconto")
+    private double desconto;
 
     @Column(name = "total")
     private double total;
@@ -55,6 +61,14 @@ public class PDV {
         this.veiculo = veiculo;
     }
 
+    public int getKm() {
+        return km;
+    }
+
+    public void setKm(int km) {
+        this.km = km;
+    }
+
     public Date getDataEntrada() {
         return dataEntrada;
     }
@@ -62,6 +76,15 @@ public class PDV {
     public void setDataEntrada(Date dataEntrada) {
         this.dataEntrada = dataEntrada;
     }
+
+
+    /* public double getDesconto() {
+        return desconto;
+    }
+
+    public void setDesconto(double desconto) {
+        this.desconto = desconto;
+    } */
 
     public double getTotal() {
         return total;

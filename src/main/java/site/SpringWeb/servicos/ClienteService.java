@@ -2,10 +2,12 @@ package site.SpringWeb.servicos;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import site.SpringWeb.modelos.Cliente;
+import site.SpringWeb.modelos.Veiculo;
 import site.SpringWeb.repositorio.ClientesRepo;
 
 @Service
@@ -34,8 +36,25 @@ public class ClienteService {
         return clientesRepo.findById(id);
     }
 
-    //public static Cliente buscarPorId(String clienteId) {
+    public Cliente buscarClientePorId(Long id) {
         // TODO Auto-generated method stub
-    //    throw new UnsupportedOperationException("Unimplemented method 'buscarPorId'");
-    //}
+        throw new UnsupportedOperationException("Unimplemented method 'buscarClientePorId'");
+    }
+
+    public List<Cliente> findAll() {
+        return (List<Cliente>) clientesRepo.findAll();
+    }
+
+    public List<String> buscarVeiculosPorClienteId(int clienteId) {
+        Optional<Cliente> cliente = clientesRepo.findById(clienteId);
+        if (cliente.isPresent()) {
+            return cliente.get().getVeiculos().stream().map(Veiculo::getPlaca).collect(Collectors.toList());
+        }
+        return List.of();
+    }
+    // public static Cliente buscarPorId(String clienteId) {
+    // TODO Auto-generated method stub
+    // throw new UnsupportedOperationException("Unimplemented method
+    // 'buscarPorId'");
+    // }
 }

@@ -54,7 +54,7 @@
                 <h5>Dados do Cliente</h5>
                 <form method="POST" action="/pdv/criar" onsubmit="return confirm('Confirma ação')">
                     <div class="form-group">
-                        <select class="form-control" id="clienteId" name="clienteId">
+                        <select class="form-control" id="clienteId" name="clienteId" onchange="carregarVeiculos()">
                             <option value="">Selecione um cliente</option>
                             <option th:each="cliente : ${clientes}" th:value="${cliente.id}" th:text="${cliente.nome}">
                             </option>
@@ -62,8 +62,10 @@
                     </div>
                     <div class="d-flex align-items-center">
                         <div class="mr-3">
-                            <label for="veiculo">Veiculo</label><br>
-                            <input type="text" id="veiculo" name="veiculo" class="form-control">
+                            <label for="veiculo">Veículo</label>
+                            <select class="form-control" id="veiculo" name="veiculo">
+                                <option value="">Placa</option>
+                            </select>
                         </div>
                         <div>
                             <label for="km">Km</label><br>
@@ -130,6 +132,7 @@
 <!-- <script src="/js/filtrarProdutosPDV.js"></script> -->
 <script src="/js/inserirEmostrar.js"></script>
 <script src="/js/exibirProdutos.js"></script>
+<script src="/js/pdv/dropdownPlacas.js"></script>
 <!-- <script src="/js/inserirMostrarProdutos.js"></script> -->
 
 <style>

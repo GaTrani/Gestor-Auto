@@ -67,6 +67,7 @@ public class PDVController {
     @PostMapping("/salvar/{id}")
     public String salvarPDV(@PathVariable int id, PDV pdv) {
         pdv.setId(id); // Certifique-se de que o ID do PDV é configurado corretamente
+        /* pdv.setKm(pdv.getKm()); */
         pdvRepo.save(pdv);
         return "redirect:/pdv";
     }
@@ -91,12 +92,14 @@ public class PDVController {
      */
 
     @PostMapping("/criar")
-    public String criarPDV(@RequestParam("clienteId") int clienteId) {
+    public String criarPDV(@RequestParam("clienteId") int clienteId, @RequestParam("veiculo") String veiculo, @RequestParam("km") int km) {
         PDV pdv = new PDV();
 
         Cliente cliente = new Cliente();
         cliente.setId(clienteId);
         pdv.setCliente(cliente);
+        pdv.setVeiculo(veiculo);
+        pdv.setKm(km);
 
         // Aqui você pode adicionar outras configurações do PDV, como veículo, data de
         // entrada, total, etc.
@@ -106,20 +109,61 @@ public class PDVController {
         return "redirect:/pdv";
     }
 
+    /*
+     * @GetMapping("/{id}")
+     * public String buscarPdv(@PathVariable int id, Model model) {
+     * Optional<PDV> pdv = pdvRepo.findById(id);
+     * pdv.ifPresent(value -> model.addAttribute("pdv", value));
+     * return pdv.map(pdv1 -> "pdv/editar").orElse("redirect:/pdv");
+     * }
+     */
+
     @GetMapping("/{id}")
     public String buscarPdv(@PathVariable int id, Model model) {
         Optional<PDV> pdv = pdvRepo.findById(id);
-        pdv.ifPresent(value -> model.addAttribute("pdv", value));
-        return pdv.map(pdv1 -> "pdv/editar").orElse("redirect:/pdv");
+        if (pdv.isPresent()) {
+            model.addAttribute("pdv", pdv.get());
+            List<Cliente> clientes = clienteService.buscarTodos();
+            model.addAttribute("clientes", clientes);
+            return "pdv/editar";
+        } else {
+            return "redirect:/pdv";
+        }
     }
 
-    @PostMapping("/{id}/atualizar")
-    public String atualizar(@PathVariable int id, PDV pdv) {
+    /*
+     * @PostMapping("/{id}/atualizar")
+     * public String atualizar(@PathVariable int id, PDV pdv) {
+     * if (!pdvRepo.existsById(id)) {
+     * return "redirect:/pdv";
+     * }
+     * pdv.setId(id); // Certifique-se de que o ID do PDV é configurado corretamente
+     * pdvRepo.save(pdv);
+     * return "redirect:/pdv";
+     * }
+     */
+
+    @PostMapping("/pdv/{id}/atualizar")
+    public String atualizar(@PathVariable int id, @ModelAttribute PDV pdv, @RequestParam("clienteId") int clienteId,
+            @RequestParam("km") int km) {
+        System.out.println("entrou no atualizar");
         if (!pdvRepo.existsById(id)) {
             return "redirect:/pdv";
         }
-        pdv.setId(id); // Certifique-se de que o ID do PDV é configurado corretamente
-        pdvRepo.save(pdv);
+
+        // Buscar o PDV existente
+        Optional<PDV> pdvExistenteOptional = pdvRepo.findById(id);
+        if (pdvExistenteOptional.isPresent()) {
+            PDV pdvExistente = pdvExistenteOptional.get();
+
+            // Atualizar os campos do PDV existente
+            pdvExistente.setCliente(clienteService.buscarPorId(clienteId).orElse(null));
+            pdvExistente.setKm(1000);
+
+            // Salvar as alterações
+            pdvRepo.save(pdvExistente);
+        }
+
         return "redirect:/pdv";
     }
 
@@ -178,10 +222,16 @@ public class PDVController {
         return pdvVendasRepo.findByPdvId(idPdv);
     }
 
-    @GetMapping("/listar")
+    @GetMapping("/listar") // lista os pdvs no index
     public String listarPDVs(Model model) {
         List<PDV> pdvs = pdvService.listarPDVs();
         model.addAttribute("pdvs", pdvs);
-        return "pdv/index"; // Nome do seu arquivo HTML
+        return "pdv/index";
+    }
+
+    @GetMapping("/cliente/{clienteId}/veiculos")
+    @ResponseBody
+    public List<String> obterVeiculosPorCliente(@PathVariable int clienteId) {
+        return clienteService.buscarVeiculosPorClienteId(clienteId);
     }
 }
