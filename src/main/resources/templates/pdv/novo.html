@@ -75,15 +75,19 @@
                     <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center"
                         role="group">
                         <input type="hidden" id="formaPagamento" name="formaPagamento">
-                        <button type="button" class="btn btn-secondary btn-block mr-1" onclick="selecionarFormaPagamento('Dinheiro')">Dinheiro</button>
+                        <button type="button" class="btn btn-secondary btn-block mr-1"
+                            onclick="selecionarFormaPagamento('Dinheiro')">Dinheiro</button>
                         <button type="button" class="btn btn-secondary btn-block mr-1" data-toggle="collapse"
                             href="#cartaoOpcoes" aria-expanded="false" aria-controls="cartaoOpcoes">Cartão</button>
-                        <button type="button" class="btn btn-secondary btn-block mr-1" onclick="selecionarFormaPagamento('Pix')">Pix</button>
+                        <button type="button" class="btn btn-secondary btn-block mr-1"
+                            onclick="selecionarFormaPagamento('Pix')">Pix</button>
                     </div>
                     <div class="collapse mb-4" id="cartaoOpcoes">
                         <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center">
-                            <button type="button" class="btn btn-secondary btn-block mr-1" onclick="selecionarFormaPagamento('Débito')">Débito</button>
-                            <button type="button" class="btn btn-secondary btn-block mr-1" onclick="selecionarFormaPagamento('Crédito')">Crédito</button>
+                            <button type="button" class="btn btn-secondary btn-block mr-1"
+                                onclick="selecionarFormaPagamento('Débito')">Débito</button>
+                            <button type="button" class="btn btn-secondary btn-block mr-1"
+                                onclick="selecionarFormaPagamento('Crédito')">Crédito</button>
                             <div class="dropdown">
                                 <button class="btn btn-secondary btn-block mr-1 dropdown-toggle" type="button"
                                     id="dropdownParcelas" data-toggle="dropdown" aria-haspopup="true"
@@ -121,6 +125,8 @@
                         <input type="hidden" id="produtosJson" name="produtosJson">
                         <button type="submit" id="btnSalvar"
                             class="btn btn-primary btn-lg btn-block mb-2">Salvar</button>
+                        <button type="button" onclick="verificarProdutosAdicionados()">Verificar Produtos</button>
+
                     </div>
                 </form>
             </div>
@@ -153,16 +159,21 @@
     }
 
     input[type="number"].quantidade {
-    border: none;
-    outline: none;
-    width: 50px;
-    }
-    .table th.col-qtd, .table td.col-qtd {
-        max-width: 70px; /* Set a maximum width for the email column */
-        white-space: normal; /* Allow breaking lines within the cell */
-        word-break: break-all; /* Break long words */
-        word-wrap: break-word; /* Break long words */
+        border: none;
+        outline: none;
+        width: 50px;
     }
 
+    .table th.col-qtd,
+    .table td.col-qtd {
+        max-width: 70px;
+        /* Set a maximum width for the email column */
+        white-space: normal;
+        /* Allow breaking lines within the cell */
+        word-break: break-all;
+        /* Break long words */
+        word-wrap: break-word;
+        /* Break long words */
+    }
 </style>
 <div th:replace="~{compartilhado/baixo}"></div>

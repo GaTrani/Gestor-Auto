@@ -10,7 +10,7 @@ function adicionarProdutoNaLista(produtoId, precoVenda) {
         id: produtoId,
         precoVenda: precoVenda,
         quantidade: 1, // Quantidade inicial
-        valorTotal: precoVenda // Valor total inicial (precoVenda * quantidade)
+        //total: precoVenda // Valor total inicial (precoVenda * quantidade)
     };
     console.log('Novo produto adicionado: ', novoProduto);
 
@@ -65,7 +65,6 @@ function atualizarTabelaProdutos() {
         atualizarTabelaProdutos();
     });
 }
-
 
 // Função para exibir o dropdown de produtos
 function exibirDropdownProdutos() {
@@ -197,6 +196,25 @@ $('#listaProdutos').on('click', 'li', function (event) {
 
     // Impedir a propagação do evento de clique para os elementos pais
     event.stopPropagation();
+});
+
+// Função para verificar os produtos adicionados antes de enviar ao controlador
+function verificarProdutosAdicionados() {
+    console.log('Produtos adicionados: ', produtosAdicionados);
+}
+
+// Chamada inicial para carregar os produtos do banco de dados
+carregarProdutosDoBanco();
+
+// Função para preparar os dados dos produtos antes de enviar o formulário
+function prepararDadosProdutos() {
+    var produtosJson = JSON.stringify(produtosAdicionados);
+    $('#produtosJson').val(produtosJson);
+}
+
+// Adiciona a função para preparar os dados ao evento de submit do formulário
+$('#form').on('submit', function(event) {
+    prepararDadosProdutos();
 });
 
 // Chamada inicial para carregar os produtos do banco de dados
