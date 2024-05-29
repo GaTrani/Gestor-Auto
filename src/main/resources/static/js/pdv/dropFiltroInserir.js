@@ -21,6 +21,9 @@ function adicionarProdutoNaLista(produtoId, precoVenda) {
     $('#inputBusca').val('');
     $('#inputBusca').removeData('produtoId'); // Remove o dado armazenado
 
+    // Atualizar o campo hidden com os dados dos produtos
+    $('#produtosJson').val(JSON.stringify(produtosAdicionados));
+
     // Exibir os produtos adicionados na tabela
     atualizarTabelaProdutos();
 }
@@ -32,17 +35,19 @@ function atualizarTabelaProdutos() {
     console.log('Lista de produtos adicionados: ', produtosAdicionados);
 
     // Iterar sobre os produtos adicionados e adicionar na tabela
-    produtosAdicionados.forEach(function (produto) {
+    produtosAdicionados.forEach(function (produto, indice) {
         // Construir a linha da tabela com um campo de input para a quantidade
         var linhaTabela = `
             <tr>
                 <td>${produto.id}</td>
                 <td>${produto.precoVenda !== null ? produto.precoVenda : 'Preço não disponível'}</td>
                 <td class="col-qtd">
-                    <input type="number" class="quantidade" value="${produto.quantidade}" min="1" step="1">
+                    <input type="number" class="quantidade" autocomplete="off" value="${produto.quantidade}" min="1" step="1" data-indice="${indice}">
                 </td>
                 <td>${produto.precoVenda !== null ? (produto.precoVenda * produto.quantidade).toFixed(2) : 'N/A'}</td>
-                <td>Ações</td>
+                <td>
+                    <button class="btn btn-danger btn-sm remover-produto" data-indice="${indice}">Remover</button>
+                </td>
             </tr>
         `;
 
@@ -50,22 +55,32 @@ function atualizarTabelaProdutos() {
         $('#tabelaProdutosPDVVendas tbody').append(linhaTabela);
     });
 
+    // Atualizar o campo hidden com os dados dos produtos
+    $('#produtosJson').val(JSON.stringify(produtosAdicionados));
+
     // Adicionar um evento de mudança para os campos de input de quantidade
     $('.quantidade').change(function() {
         // Obter o índice da linha na tabela
-        var indiceLinha = $(this).closest('tr').index();
+        var indiceLinha = $(this).data('indice');
 
         // Obter a nova quantidade do campo de input
         var novaQuantidade = parseInt($(this).val());
 
         // Atualizar a quantidade do produto na lista produtosAdicionados
         produtosAdicionados[indiceLinha].quantidade = novaQuantidade;
+        produtosAdicionados[indiceLinha].valorTotal = produtosAdicionados[indiceLinha].precoVenda * novaQuantidade;
 
         // Atualizar a tabela de produtos
         atualizarTabelaProdutos();
     });
-}
 
+    // Adicionar um evento de clique para remover produtos
+    $('.remover-produto').click(function() {
+        var indiceLinha = $(this).data('indice');
+        produtosAdicionados.splice(indiceLinha, 1);
+        atualizarTabelaProdutos();
+    });
+}
 
 // Função para exibir o dropdown de produtos
 function exibirDropdownProdutos() {

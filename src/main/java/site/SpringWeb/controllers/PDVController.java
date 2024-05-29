@@ -1,5 +1,6 @@
 package site.SpringWeb.controllers;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import site.SpringWeb.dto.ProdutoDTO;
 import site.SpringWeb.modelos.Cliente;
 import site.SpringWeb.modelos.PDV;
 import site.SpringWeb.modelos.PDVVendas;
@@ -38,8 +43,10 @@ public class PDVController {
     @Autowired
     private PDVService pdvService;
 
-    /* @Autowired
-    private PDVVendasService pdvVendasService; */
+    /*
+     * @Autowired
+     * private PDVVendasService pdvVendasService;
+     */
 
     public PDVController(PDVRepo pdvRepo, PDVVendasRepo pdvVendasRepo) {
         this.pdvRepo = pdvRepo;
@@ -103,7 +110,8 @@ public class PDVController {
             @RequestParam("veiculo") String veiculo,
             @RequestParam("km") int km,
             @RequestParam("formaPagamento") String formaPagamento,
-            @RequestParam("desconto") double desconto) {
+            @RequestParam("desconto") double desconto,
+            @RequestParam("produtosJson") String produtosJson) {
 
         PDV pdv = new PDV();
         Cliente cliente = new Cliente();
@@ -115,49 +123,104 @@ public class PDVController {
         pdv.setDesconto(desconto);
         pdv.setDataEntrada(new Date());
 
-        // Salvar PDV
+        // Convertendo JSON dos produtos para lista de ProdutoDTO
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<ProdutoDTO> produtosDTO;
+        try {
+            produtosDTO = objectMapper.readValue(produtosJson, new TypeReference<List<ProdutoDTO>>() {
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Tratar exceção apropriadamente (ex: retornar uma mensagem de erro)
+            return "redirect:/pdv";
+        }
+
+        // Convertendo ProdutoDTO para Produto e adicionando ao PDV
+        List<Produto> produtos = new ArrayList<>();
+        for (ProdutoDTO produtoDTO : produtosDTO) {
+            Produto produto = new Produto();
+            produto.setId(produtoDTO.getId());
+            produto.setPrecoVenda(produtoDTO.getPrecoVenda());
+            produto.setQuantidade(produtoDTO.getQuantidade());
+            produto.setValorTotal(produtoDTO.getValorTotal());
+            produto.setPdv(pdv); // Associando o produto ao PDV
+            produtos.add(produto);
+        }
+        pdv.setProdutos(produtos);
+
+        // Salvar PDV e produtos
         pdvService.salvarPDV(pdv);
-
-        /*
-         * // Parsear JSON de produtos e salvar cada produto
-         * ObjectMapper objectMapper = new ObjectMapper();
-         * List<PDVVendas> produtos;
-         * try {
-         * produtos = objectMapper.readValue(produtosJson, new
-         * TypeReference<List<PDVVendas>>() {
-         * });
-         * for (PDVVendas produto : produtos) {
-         * // Log de cada produto
-         * System.out.println("Produto: " + produto.getProduto());
-         * produto.setPdv(pdv); // Vincular o PDV ao produto
-         * pdvVendasService.salvarPDVVendas(produto);
-         * }
-         * } catch (JsonProcessingException e) {
-         * e.printStackTrace();
-         * // Tratar o erro de parsing do JSON
-         * return "redirect:/pdv?error";
-         * }
-         */
-
-        // Criar uma lista de produtos fixa
-        // String[] nomesProdutos = {"produto1", "produto2", "produto3"};
-
-        // Salvar cada produto na tabela pdv_vendas
-        /*
-         * for (String nomeProduto : nomesProdutos) {
-         * PDVVendas produto = new PDVVendas();
-         * produto.setProduto(nomeProduto);
-         * produto.setQuantidade(1); // Definir a quantidade desejada
-         * // Definir o valor unitário e total conforme necessário
-         * produto.setValorUnitario(10.0);
-         * produto.setTotal(10.0);
-         * produto.setPdv(pdv); // Vincular o produto ao PDV
-         * pdvVendasService.salvarPDVVendas(produto);
-         * }
-         */
+        pdvService.salvarProdutos(produtos); // Certifique-se de que este método esteja implementado
 
         return "redirect:/pdv";
     }
+    /*
+     * @PostMapping("/criar")
+     * public String criarPDV(
+     *
+     * @RequestParam("clienteId") int clienteId,
+     *
+     * @RequestParam("veiculo") String veiculo,
+     *
+     * @RequestParam("km") int km,
+     *
+     * @RequestParam("formaPagamento") String formaPagamento,
+     *
+     * @RequestParam("desconto") double desconto) {
+     *
+     * PDV pdv = new PDV();
+     * Cliente cliente = new Cliente();
+     * cliente.setId(clienteId);
+     * pdv.setCliente(cliente);
+     * pdv.setVeiculo(veiculo);
+     * pdv.setKm(km);
+     * pdv.setFormaPagamento(formaPagamento);
+     * pdv.setDesconto(desconto);
+     * pdv.setDataEntrada(new Date());
+     * 
+     * // Salvar PDV
+     * pdvService.salvarPDV(pdv);
+     */
+    /*
+     * // Parsear JSON de produtos e salvar cada produto
+     * ObjectMapper objectMapper = new ObjectMapper();
+     * List<PDVVendas> produtos;
+     * try {
+     * produtos = objectMapper.readValue(produtosJson, new
+     * TypeReference<List<PDVVendas>>() {
+     * });
+     * for (PDVVendas produto : produtos) {
+     * // Log de cada produto
+     * System.out.println("Produto: " + produto.getProduto());
+     * produto.setPdv(pdv); // Vincular o PDV ao produto
+     * pdvVendasService.salvarPDVVendas(produto);
+     * }
+     * } catch (JsonProcessingException e) {
+     * e.printStackTrace();
+     * // Tratar o erro de parsing do JSON
+     * return "redirect:/pdv?error";
+     * }
+     */
+
+    // Criar uma lista de produtos fixa
+    // String[] nomesProdutos = {"produto1", "produto2", "produto3"};
+
+    // Salvar cada produto na tabela pdv_vendas
+    /*
+     * for (String nomeProduto : nomesProdutos) {
+     * PDVVendas produto = new PDVVendas();
+     * produto.setProduto(nomeProduto);
+     * produto.setQuantidade(1); // Definir a quantidade desejada
+     * // Definir o valor unitário e total conforme necessário
+     * produto.setValorUnitario(10.0);
+     * produto.setTotal(10.0);
+     * produto.setPdv(pdv); // Vincular o produto ao PDV
+     * pdvVendasService.salvarPDVVendas(produto);
+     * }
+     */
+
+    // return "redirect:/pdv";
+    // }
 
     /*
      * @PostMapping("/adicionar-produtos-pdv-vendas")

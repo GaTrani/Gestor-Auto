@@ -2,15 +2,21 @@ package site.SpringWeb.servicos;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import site.SpringWeb.modelos.PDV;
+import site.SpringWeb.modelos.Produto;
 import site.SpringWeb.repositorio.PDVRepo;
+import site.SpringWeb.repositorio.ProdutosRepo;
 
 @Service
 public class PDVService {
 
     private final PDVRepo pdvRepository;
+
+    @Autowired
+    private ProdutosRepo produtoRepository;
 
     public PDVService(PDVRepo pdvRepository) {
         this.pdvRepository = pdvRepository;
@@ -34,5 +40,9 @@ public class PDVService {
 
     public void save(PDV pdv) {
         pdvRepository.save(pdv);
+    }
+
+    public void salvarProdutos(List<Produto> produtos) {
+        produtoRepository.saveAll(produtos);
     }
 }
