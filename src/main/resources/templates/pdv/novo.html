@@ -31,7 +31,7 @@
                             <tr>
                                 <th>Produto</th>
                                 <th>Valor Unitário</th>
-                                <th>Quantidade</th>
+                                <th class="col-qtd">Quantidade</th>
                                 <th>Valor Total</th>
                                 <th>Ações</th>
                             </tr>
@@ -151,5 +151,18 @@
         content: " *";
         color: red;
     }
+
+    input[type="number"].quantidade {
+    border: none;
+    outline: none;
+    width: 50px;
+    }
+    .table th.col-qtd, .table td.col-qtd {
+        max-width: 70px; /* Set a maximum width for the email column */
+        white-space: normal; /* Allow breaking lines within the cell */
+        word-break: break-all; /* Break long words */
+        word-wrap: break-word; /* Break long words */
+    }
+
 </style>
 <div th:replace="~{compartilhado/baixo}"></div>

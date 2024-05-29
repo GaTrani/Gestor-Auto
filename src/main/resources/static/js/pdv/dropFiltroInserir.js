@@ -33,17 +33,39 @@ function atualizarTabelaProdutos() {
 
     // Iterar sobre os produtos adicionados e adicionar na tabela
     produtosAdicionados.forEach(function (produto) {
-        $('#tabelaProdutosPDVVendas tbody').append(`
+        // Construir a linha da tabela com um campo de input para a quantidade
+        var linhaTabela = `
             <tr>
                 <td>${produto.id}</td>
                 <td>${produto.precoVenda !== null ? produto.precoVenda : 'Preço não disponível'}</td>
-                <td>${produto.quantidade}</td>
+                <td class="col-qtd">
+                    <input type="number" class="quantidade" value="${produto.quantidade}" min="1" step="1">
+                </td>
                 <td>${produto.precoVenda !== null ? (produto.precoVenda * produto.quantidade).toFixed(2) : 'N/A'}</td>
                 <td>Ações</td>
             </tr>
-        `);
+        `;
+
+        // Adicionar a linha à tabela
+        $('#tabelaProdutosPDVVendas tbody').append(linhaTabela);
+    });
+
+    // Adicionar um evento de mudança para os campos de input de quantidade
+    $('.quantidade').change(function() {
+        // Obter o índice da linha na tabela
+        var indiceLinha = $(this).closest('tr').index();
+
+        // Obter a nova quantidade do campo de input
+        var novaQuantidade = parseInt($(this).val());
+
+        // Atualizar a quantidade do produto na lista produtosAdicionados
+        produtosAdicionados[indiceLinha].quantidade = novaQuantidade;
+
+        // Atualizar a tabela de produtos
+        atualizarTabelaProdutos();
     });
 }
+
 
 // Função para exibir o dropdown de produtos
 function exibirDropdownProdutos() {
