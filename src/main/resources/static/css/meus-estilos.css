@@ -12,6 +12,10 @@
     width: 50%;
 }
 
+body {
+    font-size: 0.9rem;
+}
+
 /* .center-button {
     display: flex;
     justify-content: center;
