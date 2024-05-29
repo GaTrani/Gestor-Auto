@@ -126,7 +126,10 @@ public class PDVController {
 
         // Exibir a lista de produtos no console para verificação
         for (Produto produto : produtosAdicionados) {
-            System.out.println("Produto ID: " + produto.getId() + ", Quantidade: " + produto.getQuantidade());
+            System.out.println("Produto ID: " + produto.getId() +
+            ", Produto: " + produto.getProduto() +
+            ", Quantidade: " + produto.getQuantidade() +
+            ", unitario: " + produto.getPrecoVenda() + ", total: " + produto.getQuantidade() * produto.getPrecoVenda());
         }
 
         // Crie o objeto PDV e configure os detalhes (cliente, veículo, etc.)
@@ -148,10 +151,10 @@ public class PDVController {
         for (Produto produto : produtosAdicionados) {
             PDVVendas pdvVenda = new PDVVendas();
             pdvVenda.setPdv(pdv); // Associe o PDV ao registro de venda
-            pdvVenda.setId(produto.getId()); // Defina o ID do produto
+            pdvVenda.setIdProduto(produto.getId()); // Defina o ID do produto
             pdvVenda.setQuantidade(produto.getQuantidade());
             pdvVenda.setValorUnitario(produto.getPrecoVenda());
-            //pdvVenda.setTotal(produto.getQuantidade() * produto.getPrecoVenda());
+            pdvVenda.setTotal(produto.getQuantidade() * produto.getPrecoVenda());
 
             // Salve o registro de venda
             pdvVendasService.salvarPDVVendas(pdvVenda);
