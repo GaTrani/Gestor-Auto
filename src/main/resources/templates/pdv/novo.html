@@ -116,6 +116,15 @@
                                 style="left: 10px; top: 50%; transform: translateY(-50%);">R$</label>
                         </div>
                     </div>
+                    <div>
+                        <div class="position-relative">
+                            <input type="text" id="valorTotalComDesconto" name="valorTotalComDesconto"
+                                class="form-control" style="padding-left: 30px; text-align: right;" placeholder="0,00"
+                                readonly>
+                            <label for="valorTotalComDesconto" class="position-absolute"
+                                style="left: 10px; top: 50%; transform: translateY(-50%);">R$</label>
+                        </div>
+                    </div>
                     <hr>
                     <div class="text-right">
                         <div class="d-flex justify-content-between mb-2">
@@ -144,6 +153,8 @@
 <!-- <script src="/js/pdv/exibirEFiltrarProdutos.js"></script>
 <script src="/js/pdv/inserirEMostrarProdutos.js"></script> -->
 <script src="/js/pdv/dropFiltroInserir.js"></script>
+<script src="/js/pdv/descontoPdv.js"></script>
+
 
 <script>
     function selecionarFormaPagamento(forma) {
