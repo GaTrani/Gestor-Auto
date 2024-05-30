@@ -127,9 +127,10 @@ public class PDVController {
         // Exibir a lista de produtos no console para verificação
         for (Produto produto : produtosAdicionados) {
             System.out.println("Produto ID: " + produto.getId() +
-            ", Produto: " + produto.getProduto() +
-            ", Quantidade: " + produto.getQuantidade() +
-            ", unitario: " + produto.getPrecoVenda() + ", total: " + produto.getQuantidade() * produto.getPrecoVenda());
+                    ", Produto: " + produto.getProduto() +
+                    ", Quantidade: " + produto.getQuantidade() +
+                    ", unitario: " + produto.getPrecoVenda() + ", total: "
+                    + produto.getQuantidade() * produto.getPrecoVenda());
         }
 
         // Crie o objeto PDV e configure os detalhes (cliente, veículo, etc.)
@@ -142,6 +143,15 @@ public class PDVController {
         pdv.setFormaPagamento(formaPagamento);
         pdv.setDesconto(desconto);
         pdv.setDataEntrada(new Date());
+
+        // Calcular o total dos produtos
+        double totalProdutos = 0;
+        for (Produto produto : produtosAdicionados) {
+            totalProdutos += produto.getQuantidade() * produto.getPrecoVenda();
+        }
+
+        // Definir o total no objeto PDV
+        pdv.setTotal(totalProdutos);
 
         // Salve o PDV
         pdvService.salvarPDV(pdv);

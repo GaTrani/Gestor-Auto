@@ -5,12 +5,12 @@ var produtosAdicionados = [];
 var produtos = [];
 
 // Função para adicionar o produto à lista com o preço de venda
-function adicionarProdutoNaLista(produtoId, precoVenda) {
+function adicionarProdutoNaLista(produtoId, precoVenda, nomeProduto) {
     var novoProduto = {
         id: produtoId,
+        produto: nomeProduto, // Nome do produto
         precoVenda: precoVenda,
-        quantidade: 1, // Quantidade inicial
-        //total: precoVenda // Valor total inicial (precoVenda * quantidade)
+        quantidade: 1 // Quantidade inicial
     };
     console.log('Novo produto adicionado: ', novoProduto);
 
@@ -32,17 +32,21 @@ function atualizarTabelaProdutos() {
     console.log('Lista de produtos adicionados: ', produtosAdicionados);
 
     // Iterar sobre os produtos adicionados e adicionar na tabela
-    produtosAdicionados.forEach(function (produto) {
+    produtosAdicionados.forEach(function (produto, index) {
         // Construir a linha da tabela com um campo de input para a quantidade
         var linhaTabela = `
             <tr>
-                <td>${produto.id}</td>
+                <td>${produto.produto}</td>
                 <td>${produto.precoVenda !== null ? produto.precoVenda : 'Preço não disponível'}</td>
                 <td class="col-qtd">
                     <input type="number" class="quantidade" value="${produto.quantidade}" min="1" step="1">
                 </td>
                 <td>${produto.precoVenda !== null ? (produto.precoVenda * produto.quantidade).toFixed(2) : 'N/A'}</td>
-                <td>Ações</td>
+                <td>
+                    <a href="#" class="apagar-produto" data-index="${index}">
+                        <i class="fas fa-trash-alt d-flex align-items-center justify-content-center" style="color: #E74A3B"></i>
+                    </a>
+                </td>
             </tr>
         `;
 
@@ -51,7 +55,7 @@ function atualizarTabelaProdutos() {
     });
 
     // Adicionar um evento de mudança para os campos de input de quantidade
-    $('.quantidade').change(function() {
+    $('.quantidade').change(function () {
         // Obter o índice da linha na tabela
         var indiceLinha = $(this).closest('tr').index();
 
@@ -64,7 +68,21 @@ function atualizarTabelaProdutos() {
         // Atualizar a tabela de produtos
         atualizarTabelaProdutos();
     });
+
+    // Adicionar evento de clique para apagar o produto
+    $('.apagar-produto').click(function (event) {
+        event.preventDefault();
+        var indiceProduto = $(this).data('index');
+        // Remover o produto da lista
+        produtosAdicionados.splice(indiceProduto, 1);
+        // Atualizar a tabela de produtos
+        atualizarTabelaProdutos();
+    });
+
+    // Atualizar o valor do campo total
+    $('#valorTotalNota').val(calcularTotalProdutos());
 }
+
 
 // Função para exibir o dropdown de produtos
 function exibirDropdownProdutos() {
@@ -73,7 +91,7 @@ function exibirDropdownProdutos() {
 
     // Adicionar cada produto como uma opção no dropdown
     produtos.forEach(function (produto) {
-        listaDropdown.append('<li class="dropdown-item" data-produto-id="' + produto.id + '">' + produto.produto + '</li>');
+        listaDropdown.append('<li class="dropdown-item" data-produto-id="' + produto.id + '" data-produto-nome="' + produto.produto + '">' + produto.produto + '</li>');
     });
 
     // Posicionar o dropdown abaixo do campo de busca
@@ -159,7 +177,7 @@ $('#inputBusca').on('input', function () {
     } else {
         // Adicionar os produtos filtrados à lista dropdown
         produtosFiltrados.forEach(function (produto) {
-            listaDropdown.append('<li class="dropdown-item" data-produto-id="' + produto.id + '">' + produto.produto + '</li>');
+            listaDropdown.append('<li class="dropdown-item" data-produto-id="' + produto.id + '" data-produto-nome="' + produto.produto + '">' + produto.produto + '</li>');
         });
     }
 
@@ -169,7 +187,7 @@ $('#inputBusca').on('input', function () {
 // Selecionar o produto clicado e preencher o campo de busca
 $('#listaProdutos').on('click', 'li', function (event) {
     var produtoSelecionadoId = $(this).data('produtoId');
-    var produtoSelecionadoNome = $(this).text(); // Obter o texto do produto selecionado
+    var produtoSelecionadoNome = $(this).data('produtoNome'); // Obter o nome do produto selecionado
     $('#inputBusca').val(produtoSelecionadoNome); // Preencher o campo de busca com o produto selecionado
     $('#inputBusca').data('produtoId', produtoSelecionadoId); // Armazenar o ID do produto no campo de busca
     $('#listaProdutos').hide(); // Esconder o dropdown de produtos após a seleção
@@ -185,12 +203,12 @@ $('#listaProdutos').on('click', 'li', function (event) {
         },
         success: function (response) {
             console.log('Resposta do servidor: ', response);
-            adicionarProdutoNaLista(produtoSelecionadoId, response); // Adiciona o produto com o preço de venda na lista
+            adicionarProdutoNaLista(produtoSelecionadoId, response, produtoSelecionadoNome); // Adiciona o produto com o preço de venda e o nome na lista
         },
         error: function (error) {
             console.error('Erro ao buscar preço de venda do produto: ', error);
             // Adicionar o produto sem preço de venda na lista
-            adicionarProdutoNaLista(produtoSelecionadoId, null);
+            adicionarProdutoNaLista(produtoSelecionadoId, null, produtoSelecionadoNome);
         }
     });
 
@@ -203,17 +221,22 @@ function verificarProdutosAdicionados() {
     console.log('Produtos adicionados: ', produtosAdicionados);
 }
 
-// Chamada inicial para carregar os produtos do banco de dados
-carregarProdutosDoBanco();
-
 // Função para preparar os dados dos produtos antes de enviar o formulário
 function prepararDadosProdutos() {
     var produtosJson = JSON.stringify(produtosAdicionados);
     $('#produtosJson').val(produtosJson);
 }
 
+function calcularTotalProdutos() {
+    let total = 0;
+    produtosAdicionados.forEach(function (produto) {
+        total += produto.precoVenda * produto.quantidade;
+    });
+    return total.toFixed(2); // Retorna o total com duas casas decimais
+}
+
 // Adiciona a função para preparar os dados ao evento de submit do formulário
-$('#form').on('submit', function(event) {
+$('#form').on('submit', function (event) {
     prepararDadosProdutos();
 });
 
