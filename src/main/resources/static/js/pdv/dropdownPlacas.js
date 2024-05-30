@@ -17,7 +17,16 @@ function carregarVeiculos() {
         $('#veiculo').empty().append('<option value="">Selecione um veículo</option>');
     }
 }
-
-$(document).ready(function() {
+// Chamada da função quando um cliente é selecionado
+$('#clienteId').change(function() {
     carregarVeiculos();
 });
+
+// Chamada da função quando o dropdown de veículos é clicado
+$('#veiculo').click(function() {
+    carregarVeiculos();
+});
+
+/* $(document).ready(function() {
+    carregarVeiculos();
+}); */
