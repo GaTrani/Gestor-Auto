@@ -109,7 +109,7 @@ public class PDVController {
             @RequestParam("veiculo") String veiculo,
             @RequestParam("km") int km,
             @RequestParam("formaPagamento") String formaPagamento,
-            @RequestParam("desconto") double desconto,
+            @RequestParam("descontoEmReais") double descontoEmReais,
             @RequestParam("produtosJson") String produtosJson) {
 
         // Converte a string JSON de produtos em uma lista de objetos Produto
@@ -141,7 +141,7 @@ public class PDVController {
         pdv.setVeiculo(veiculo);
         pdv.setKm(km);
         pdv.setFormaPagamento(formaPagamento);
-        pdv.setDesconto(desconto);
+        pdv.setDesconto(descontoEmReais);
         pdv.setDataEntrada(new Date());
 
         // Calcular o total dos produtos

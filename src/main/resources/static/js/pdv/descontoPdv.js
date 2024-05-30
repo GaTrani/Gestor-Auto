@@ -1,6 +1,7 @@
 $(document).ready(function () {
     var tipoDesconto = 'R$'; // Default: tipo de desconto em R$
     var descontoAnteriorEmReais = 0; // Valor do desconto anterior em reais
+    var descontoEmReais = 0; // Novo valor do desconto sempre em reais
 
     // Evento para botões de tipo de desconto
     $('.btn-desconto-group button').click(function () {
@@ -47,36 +48,45 @@ $(document).ready(function () {
 
     // Função para aplicar o desconto
     function aplicarDesconto() {
-        var totalProdutos = parseFloat(calcularTotalProdutos()) || 0;
-        var descontoValor = parseFloat($('#desconto').val().replace(',', '.')) || 0; // Replace comma with dot for decimal values
+    var totalProdutos = parseFloat(calcularTotalProdutos()) || 0;
+    var descontoValor = parseFloat($('#desconto').val().replace(',', '.')) || 0; // Replace comma with dot for decimal values
+    console.log('1totalProdutos: ', totalProdutos, 'descontoValor: ', descontoValor)
+    $('#desconto').val(descontoValor.toFixed(2));
+    var valorComDesconto;
 
-        var valorComDesconto;
-
-        if (totalProdutos === 0) {
-            valorComDesconto = 0;
-            descontoAnteriorEmReais = 0;
-        } else if (tipoDesconto === '%') {
-            if (descontoValor > 100) {
-                descontoValor = 100;
-                $('#desconto').val(100);
-            }
-            descontoAnteriorEmReais = (totalProdutos * (descontoValor / 100));
-            valorComDesconto = totalProdutos - descontoAnteriorEmReais;
-        } else if (tipoDesconto === 'R$') {
-            if (descontoValor > totalProdutos) {
-                descontoValor = totalProdutos;
-                $('#desconto').val(totalProdutos.toFixed(2));
-            }
-            descontoAnteriorEmReais = descontoValor;
-            valorComDesconto = totalProdutos - descontoAnteriorEmReais;
-        } else {
-            descontoAnteriorEmReais = 0;
-            valorComDesconto = totalProdutos;
+    if (totalProdutos === 0) {
+        valorComDesconto = 0;
+        descontoAnteriorEmReais = 0;
+    } else if (tipoDesconto === '%') {
+        if (descontoValor > 100) {
+            descontoValor = 100;
+            $('#desconto').val(100);
         }
+        descontoAnteriorEmReais = (totalProdutos * (descontoValor / 100));
 
-        $('#valorTotalNota').val(totalProdutos.toFixed(2));
-        $('#valorTotalComDesconto').val(valorComDesconto.toFixed(2));
+        descontoEmReais = descontoAnteriorEmReais;
+        console.log('DESCONTO EM REAIS SALVAR: ', descontoEmReais)
+        $('#descontoEmReais').val(descontoEmReais);
+        valorComDesconto = totalProdutos - descontoAnteriorEmReais;
+    } else if (tipoDesconto === 'R$') {
+        if (descontoValor > totalProdutos) {
+            descontoValor = totalProdutos;
+            $('#desconto').val(totalProdutos.toFixed(2));
+        }
+        descontoEmReais = descontoValor;
+        console.log('DESCONTO EM REAIS SALVAR2: ', descontoEmReais)
+        $('#descontoEmReais').val(descontoEmReais);
+        descontoAnteriorEmReais = descontoValor;
+        valorComDesconto = totalProdutos - descontoAnteriorEmReais;
+    } else {
+        descontoAnteriorEmReais = 0;
+        valorComDesconto = totalProdutos;
     }
+    console.log('2totalProdutos: ', totalProdutos, 'descontoValor: ', descontoValor)
+    $('#valorTotalNota').val(totalProdutos.toFixed(2));
+    $('#valorTotalComDesconto').val(valorComDesconto.toFixed(2));
+}
+
 
     // Evento para selecionar forma de pagamento
     $('.btn-pagamento-group button').click(function () {
