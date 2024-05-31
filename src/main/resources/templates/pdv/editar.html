@@ -7,8 +7,9 @@
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Editar PDV</h1>
     <p class="mb-4">
-        Aqui você pode editar um ponto de venda existente.
+        Aqui você pode editar os detalhes do ponto de venda existente.
     </p>
+    <input type="text" id="pdvId" name="pdvId">
 
     <!-- Two columns layout -->
     <div class="row">
@@ -16,7 +17,9 @@
         <div class="col-md-8">
             <!-- Product insertion and list -->
             <div class="card shadow mb-4" style="padding: 30px;">
-                <form method="POST" action="#" onsubmit="return confirm('Confirma ação')">
+                <!-- Product insertion form -->
+                <form method="POST" action="@{'/pdv/' + ${pdv?.id} + '/atualizar'}"
+                    onsubmit="return confirm('Confirma ação')">
                     <div class="form-group" style="position: relative;">
                         <label>Inserir Produto</label>
                         <input type="text" id="inputBusca" placeholder="Buscar produto" class="form-control">
@@ -30,7 +33,7 @@
                             <tr>
                                 <th>Produto</th>
                                 <th>Valor Unitário</th>
-                                <th>Quantidade</th>
+                                <th class="col-qtd">Quantidade</th>
                                 <th>Valor Total</th>
                                 <th>Ações</th>
                             </tr>
@@ -48,14 +51,13 @@
             <!-- Customer data, payment methods, total, print and delete buttons -->
             <div class="card shadow mb-4" style="padding: 30px;">
                 <h5>Dados do Cliente</h5>
-                <form method="POST" action="@{'/pdv/' + ${pdv?.id} + '/atualizar'}" onsubmit="return confirm('Confirma ação')">
-                    <div th:text="${pdv?.id}"></div>
+                <form id="form" method="POST" action="@{'/pdv/' + ${pdv?.id} + '/atualizar'}"
+                    onsubmit="return confirm('Confirma ação')">
                     <div class="form-group">
                         <select class="form-control" id="clienteId" name="clienteId" onchange="carregarVeiculos()">
                             <option value="">Selecione um cliente</option>
                             <option th:each="cliente : ${clientes}" th:value="${cliente.id}" th:text="${cliente.nome}"
-                                th:selected="${pdv.cliente.id} == ${cliente.id}">
-                            </option>
+                                th:selected="${cliente.id == pdv.cliente.id}"></option>
                         </select>
                     </div>
                     <div class="d-flex align-items-center">
@@ -63,54 +65,72 @@
                             <label for="veiculo">Veículo</label>
                             <select class="form-control" id="veiculo" name="veiculo">
                                 <option value="">Placa</option>
+                                <option th:each="veiculo : ${veiculos}" th:value="${veiculo.id}" th:text="${veiculo.placa}"
+                                    th:selected="${pdv.veiculo != null && pdv.veiculo == veiculo.placa}">
+                                </option>
                             </select>
                         </div>
-                        <div class="mr-3">
+                        <div>
                             <label for="km">Km</label><br>
-                            <input type="text" id="km" name="km" class="form-control"> <!--  th:value="${pdv.km}" -->
+                            <input type="text" id="km" name="km" class="form-control"
+                                th:value="${pdv.km != null ? pdv.km : ''}">
                         </div>
                     </div>
 
                     <hr>
                     <h5>Formas de Pagamento</h5>
-                    <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center"
+                    <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center btn-pagamento-group"
                         role="group">
-                        <button type="button" class="btn btn-secondary btn-block mr-1">Dinheiro</button>
+                        <input type="hidden" id="formaPagamento" name="formaPagamento">
+                        <button type="button" class="btn btn-secondary btn-block mr-1"
+                            onclick="selecionarFormaPagamento('Dinheiro')">Dinheiro</button>
                         <button type="button" class="btn btn-secondary btn-block mr-1" data-toggle="collapse"
                             href="#cartaoOpcoes" aria-expanded="false" aria-controls="cartaoOpcoes">Cartão</button>
-                        <button type="button" class="btn btn-secondary btn-block mr-1">Pix</button>
+                        <button type="button" class="btn btn-secondary btn-block mr-1"
+                            onclick="selecionarFormaPagamento('Pix')">Pix</button>
                     </div>
                     <div class="collapse mb-4" id="cartaoOpcoes">
-                        <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center">
-                            <button type="button" class="btn btn-secondary btn-block mr-1">Débito</button>
-                            <button type="button" class="btn btn-secondary btn-block mr-1">Crédito</button>
+                        <div
+                            class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center btn-pagamento-group">
+                            <button type="button" class="btn btn-secondary btn-block mr-1"
+                                onclick="selecionarFormaPagamento('Débito')">Débito</button>
+                            <button type="button" class="btn btn-secondary btn-block mr-1"
+                                onclick="selecionarFormaPagamento('Crédito')">Crédito</button>
                             <div class="dropdown">
                                 <button class="btn btn-secondary btn-block mr-1 dropdown-toggle" type="button"
                                     id="dropdownParcelas" data-toggle="dropdown" aria-haspopup="true"
                                     aria-expanded="false">Parcelas</button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownParcelas">
-                                    <a class="dropdown-item" href="#">1x</a>
-                                    <a class="dropdown-item" href="#">2x</a>
-                                    <a class="dropdown-item" href="#">3x</a>
+                                    <a class="dropdown-item" href="#" onclick="selecionarFormaPagamento('1x')">1x</a>
+                                    <a class="dropdown-item" href="#" onclick="selecionarFormaPagamento('2x')">2x</a>
+                                    <a class="dropdown-item" href="#" onclick="selecionarFormaPagamento('3x')">3x</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <hr>
                     <h5>Desconto</h5>
-                    <div class="btn-group mb-4" role="group">
+                    <div class="btn-group mb-4 btn-desconto-group" role="group">
                         <button type="button" class="btn btn-secondary">R$</button>
                         <button type="button" class="btn btn-secondary" style="margin-right: 35px;">%</button>
-                        <input type="text" id="desconto" name="desconto"
-                            class="form-control"><!-- th:value="${pdv.desconto}" -->
+                        <input type="text" id="desconto" name="desconto" class="form-control">
+                        <input type="hidden" id="descontoEmReais" name="descontoEmReais" class="form-control invisivel">
                     </div>
                     <h5>Total da Nota</h5>
                     <div>
                         <div class="position-relative">
                             <input type="text" id="valorTotalNota" name="valorTotalNota" class="form-control"
-                                style="padding-left: 30px; text-align: right;" placeholder="0,00"
-                                readonly><!-- th:value="${pdv.valorTotalNota}" -->
+                                style="padding-left: 30px; text-align: right;" placeholder="0,00" readonly>
                             <label for="valorTotalNota" class="position-absolute"
+                                style="left: 10px; top: 50%; transform: translateY(-50%);">R$</label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="position-relative">
+                            <input type="text" id="valorTotalComDesconto" name="valorTotalComDesconto"
+                                class="form-control" style="padding-left: 30px; text-align: right;" placeholder="0,00"
+                                readonly>
+                            <label for="valorTotalComDesconto" class="position-absolute"
                                 style="left: 10px; top: 50%; transform: translateY(-50%);">R$</label>
                         </div>
                     </div>
@@ -120,8 +140,10 @@
                             <button type="button" class="btn btn-danger mr-2">Excluir</button>
                             <button type="button" class="btn btn-success">Imprimir</button>
                         </div>
+                        <input type="hidden" id="produtosJson" name="produtosJson">
                         <button type="submit" id="btnSalvar"
                             class="btn btn-primary btn-lg btn-block mb-2">Salvar</button>
+                        <button type="button" onclick="verificarProdutosAdicionados()">Verificar Produtos</button>
                     </div>
                 </form>
             </div>
@@ -129,14 +151,44 @@
     </div>
 </div>
 
-<script src="/js/inserirEmostrar.js"></script>
-<script src="/js/exibirProdutos.js"></script>
 <script src="/js/pdv/dropdownPlacas.js"></script>
+<script src="/js/pdv/editarPreco.js"></script>
+<script src="/js/pdv/salvarProdutos.js"></script>
+<script src="/js/pdv/dropFiltroInserir.js"></script>
+<script src="/js/pdv/descontoPdv.js"></script>
+
+<script>
+    function selecionarFormaPagamento(forma) {
+        var inputFormaPagamento = document.getElementById('formaPagamento');
+        inputFormaPagamento.value = forma;
+    }
+</script>
 
 <style>
     .required-field::after {
         content: " *";
         color: red;
     }
+
+    input[type="number"].quantidade {
+        border: none;
+        outline: none;
+        width: 50px;
+    }
+
+    .table th.col-qtd,
+    .table td.col-qtd {
+        max-width: 70px;
+        white-space: normal;
+        word-break: break-all;
+        word-wrap: break-word;
+    }
+
+    .invisivel {
+        position: absolute;
+        opacity: 0;
+        z-index: -1;
+    }
 </style>
+
 <div th:replace="~{compartilhado/baixo}"></div>
