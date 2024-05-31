@@ -1,6 +1,9 @@
 package site.SpringWeb.modelos;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +37,8 @@ public class PDV {
     @Column(name = "forma_pagamento", length = 100, nullable = true)
     private String formaPagamento;
 
-    @OneToMany(mappedBy = "pdv", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pdv", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<PDVVendas> vendas;
 
     // Getters e Setters

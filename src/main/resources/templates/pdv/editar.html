@@ -9,7 +9,8 @@
     <p class="mb-4">
         Aqui você pode editar os detalhes do ponto de venda existente.
     </p>
-    <input type="text" id="pdvId" name="pdvId">
+    <input type="text" id="pdvId" name="pdvId" th:value="${pdv?.id}">
+
 
     <!-- Two columns layout -->
     <div class="row">
@@ -162,6 +163,62 @@
         var inputFormaPagamento = document.getElementById('formaPagamento');
         inputFormaPagamento.value = forma;
     }
+
+    $(document).ready(function() {
+    var pdvId = $("#pdvId").val();
+
+    if (!pdvId) {
+        console.error("pdvId não está definido.");
+        return;
+    }
+
+    function fetchVendas(pdvId) {
+        $.ajax({
+            url: '/pdv/' + pdvId + '/vendas',
+            method: 'GET',
+            success: function(vendas) {
+                var tbody = $('#tabelaProdutosPDVVendas tbody');
+                tbody.empty();
+                
+                vendas.forEach(function(venda) {
+                    var row = $('<tr>');
+                    row.append($('<td>').text(venda.produto));
+                    row.append($('<td>').text(venda.valorUnitario));
+                    row.append($('<td>').text(venda.quantidade));
+                    row.append($('<td>').text(venda.total));
+                    row.append($('<td>').html('<button class="btn btn-danger btn-sm">Remover</button>'));
+                    tbody.append(row);
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao buscar as vendas:', error);
+            }
+        });
+    }
+
+    if (pdvId) {
+        fetchVendas(pdvId);
+    }
+
+    $("#btnSalvar").click(function() {
+        var clienteId = $("#clienteId").val();
+        var pdvId = $("#pdvId").val();
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/pdv/criar",
+            data: JSON.stringify({ clienteId: clienteId, pdvId: pdvId }),
+            dataType: 'json',
+            success: function(response) {
+                console.log("PDV salvo com sucesso!");
+            },
+            error: function(xhr, status, error) {
+                console.error("Erro ao salvar PDV:", error);
+            }
+        });
+    });
+});
 </script>
 
 <style>

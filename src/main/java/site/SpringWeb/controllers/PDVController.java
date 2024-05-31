@@ -103,6 +103,18 @@ public class PDVController {
      * }
      */
 
+    /* @GetMapping("/{pdvId}/vendas")
+    public ResponseEntity<List<PDVVendas>> listarVendasPorPdv(@PathVariable int pdvId) {
+        List<PDVVendas> vendas = pdvVendasService.listarVendasPorPdv(pdvId);
+        return ResponseEntity.ok(vendas);
+    } */
+
+    @GetMapping("/{pdvId}/vendas")
+    public ResponseEntity<List<PDVVendas>> listarVendasPorPdv(@PathVariable int pdvId) {
+        List<PDVVendas> vendas = pdvVendasService.listarVendasPorPdv(pdvId);
+        return ResponseEntity.ok(vendas);
+    }
+
     @PostMapping("/criar")
     public String criarPDV(
             @RequestParam("clienteId") int clienteId,

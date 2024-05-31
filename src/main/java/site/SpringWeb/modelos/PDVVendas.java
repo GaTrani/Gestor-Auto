@@ -2,6 +2,8 @@ package site.SpringWeb.modelos;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "pdv_vendas")
 public class PDVVendas {
@@ -11,8 +13,9 @@ public class PDVVendas {
     @Column(name = "id")
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_pdv", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pdv_id")
+    @JsonBackReference
     private PDV pdv;
 
     @Column(name = "id_produto")
