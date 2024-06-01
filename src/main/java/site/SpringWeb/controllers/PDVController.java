@@ -5,9 +5,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,6 @@ import site.SpringWeb.repositorio.PDVVendasRepo;
 import site.SpringWeb.servicos.ClienteService;
 import site.SpringWeb.servicos.PDVService;
 import site.SpringWeb.servicos.PDVVendasService;
-//import site.SpringWeb.servicos.PDVVendasService;
 import site.SpringWeb.servicos.ProdutoService;
 
 @Controller
@@ -89,25 +89,6 @@ public class PDVController {
     public List<Produto> exibirListaProduto() {
         return produtoService.listarProdutos();
     }
-
-    /*
-     * @PostMapping("/criar")
-     * public String criar(@RequestParam("clienteId") int clienteId, Model model) {
-     * Cliente cliente = clienteService.buscarPorId2(clienteId).orElseThrow(() ->
-     * new IllegalArgumentException("Cliente não encontrado"));
-     * PDV pdv = new PDV();
-     * pdv.setCliente(cliente);
-     * pdvRepo.save(pdv);
-     * model.addAttribute("pdvId", pdv.getId());
-     * return "redirect:/pdv";
-     * }
-     */
-
-    /* @GetMapping("/{pdvId}/vendas")
-    public ResponseEntity<List<PDVVendas>> listarVendasPorPdv(@PathVariable int pdvId) {
-        List<PDVVendas> vendas = pdvVendasService.listarVendasPorPdv(pdvId);
-        return ResponseEntity.ok(vendas);
-    } */
 
     @GetMapping("/detalhes/{pdvId}")
     public ResponseEntity<PDV> obterPdv(@PathVariable int pdvId) {
@@ -197,55 +178,6 @@ public class PDVController {
         return "redirect:/pdv";
     }
 
-    /*
-     * @PostMapping("/adicionar-produtos-pdv-vendas")
-     * public String adicionarProdutosAoPDV(Model model, @RequestParam("clienteId")
-     * int clienteId) {
-     * // Adicione esta linha para imprimir uma mensagem ao acessar a rota
-     * System.out.
-     * println("Rota /adicionar-produtos-pdv-vendas foi acessada com sucesso.");
-     * 
-     * // Agora você pode adicionar o restante da lógica conforme necessário
-     * 
-     * try {
-     * // Recuperar o último PDV criado
-     * Integer ultimoId = pdvRepo.obterUltimoId();
-     * PDV pdv = pdvRepo.findById(ultimoId)
-     * .orElseThrow(() -> new IllegalArgumentException("PDV não encontrado"));
-     * 
-     * // Lista fixa de produtos
-     * String[] produtos = { "produto1", "produto2", "produto3" };
-     * 
-     * // Salvar cada produto na tabela pdv_vendas
-     * for (String produto : produtos) {
-     * PDVVendas venda = new PDVVendas();
-     * venda.setPdv(pdv);
-     * venda.setProduto(produto);
-     * venda.setQuantidade(1);
-     * venda.setValorUnitario(11.0);
-     * venda.setTotal(11.0);
-     * pdvVendasRepo.save(venda);
-     * }
-     * 
-     * // Redirecionar para a página de PDV
-     * return "redirect:/pdv";
-     * } catch (Exception e) {
-     * // Em caso de erro, redirecionar para a página de PDV com uma mensagem de
-     * erro
-     * return "redirect:/pdv?error=" + e.getMessage();
-     * }
-     * }
-     */
-
-    /*
-     * @GetMapping("/{id}")
-     * public String buscarPdv(@PathVariable int id, Model model) {
-     * Optional<PDV> pdv = pdvRepo.findById(id);
-     * pdv.ifPresent(value -> model.addAttribute("pdv", value));
-     * return pdv.map(pdv1 -> "pdv/editar").orElse("redirect:/pdv");
-     * }
-     */
-
     @GetMapping("/{id}")
     public String buscarPdv(@PathVariable int id, Model model) {
         Optional<PDV> pdv = pdvRepo.findById(id);
@@ -259,22 +191,17 @@ public class PDVController {
         }
     }
 
-    /*
-     * @PostMapping("/{id}/atualizar")
-     * public String atualizar(@PathVariable int id, PDV pdv) {
-     * if (!pdvRepo.existsById(id)) {
-     * return "redirect:/pdv";
-     * }
-     * pdv.setId(id); // Certifique-se de que o ID do PDV é configurado corretamente
-     * pdvRepo.save(pdv);
-     * return "redirect:/pdv";
-     * }
-     */
+    @PostMapping("/{id}/atualizar")
 
-    @PostMapping("/pdv/{id}/atualizar")
-    public String atualizar(@PathVariable int id, @ModelAttribute PDV pdv, @RequestParam("clienteId") int clienteId,
-            @RequestParam("km") int km) {
+    public String atualizar(
+            @PathVariable int id,
+            @ModelAttribute PDV pdv,
+            @RequestParam("clienteId") int clienteId,
+            @RequestParam("km") int km,
+            @RequestParam("produtosJson") String produtosJson) {
+
         System.out.println("entrou no atualizar");
+
         if (!pdvRepo.existsById(id)) {
             return "redirect:/pdv";
         }
@@ -286,9 +213,55 @@ public class PDVController {
 
             // Atualizar os campos do PDV existente
             pdvExistente.setCliente(clienteService.buscarPorId(clienteId).orElse(null));
-            pdvExistente.setKm(1000);
+            pdvExistente.setKm(km);
 
-            // Salvar as alterações
+            // Converte a string JSON de produtos em uma lista de objetos Produto
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<Produto> produtosAtualizados;
+            try {
+                produtosAtualizados = objectMapper.readValue(produtosJson, new TypeReference<List<Produto>>() {
+                });
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                return "redirect:/pdv"; // Redirecionar em caso de erro na conversão do JSON
+            }
+
+            // Buscar produtos existentes no PDV
+            List<PDVVendas> vendasExistentes = pdvVendasService.listarVendasPorPdv(id);
+            Map<Integer, PDVVendas> vendasExistentesMap = vendasExistentes.stream()
+                    .collect(Collectors.toMap(PDVVendas::getIdProduto, venda -> venda));
+
+            // Atualizar ou adicionar produtos
+            for (Produto produtoAtualizado : produtosAtualizados) {
+                PDVVendas vendaExistente = vendasExistentesMap.get(produtoAtualizado.getId());
+                if (vendaExistente != null) {
+                    // Produto existe, verificar se há mudanças
+                    if (vendaExistente.getQuantidade() != produtoAtualizado.getQuantidade()
+                            || vendaExistente.getValorUnitario() != produtoAtualizado.getPrecoVenda()) {
+                        vendaExistente.setQuantidade(produtoAtualizado.getQuantidade());
+                        vendaExistente.setValorUnitario(produtoAtualizado.getPrecoVenda());
+                        vendaExistente.setTotal(produtoAtualizado.getQuantidade() * produtoAtualizado.getPrecoVenda());
+                        pdvVendasService.salvarPDVVendas(vendaExistente);
+                    }
+                    vendasExistentesMap.remove(produtoAtualizado.getId());
+                } else {
+                    // Produto não existe, criar novo
+                    PDVVendas novaVenda = new PDVVendas();
+                    novaVenda.setPdv(pdvExistente);
+                    novaVenda.setIdProduto(produtoAtualizado.getId());
+                    novaVenda.setQuantidade(produtoAtualizado.getQuantidade());
+                    novaVenda.setValorUnitario(produtoAtualizado.getPrecoVenda());
+                    novaVenda.setTotal(produtoAtualizado.getQuantidade() * produtoAtualizado.getPrecoVenda());
+                    pdvVendasService.salvarPDVVendas(novaVenda);
+                }
+            }
+
+            // Remover produtos que não estão na lista de produtos atualizados
+            for (PDVVendas vendaExistente : vendasExistentesMap.values()) {
+                pdvVendasService.removerVenda(vendaExistente.getId());
+            }
+
+            // Salvar o PDV atualizado
             pdvRepo.save(pdvExistente);
         }
 
@@ -300,50 +273,6 @@ public class PDVController {
         pdvRepo.deleteById(id);
         return "redirect:/pdv";
     }
-
-    /*
-     * @PostMapping("/adicionar-produto-parametros")
-     * 
-     * @ResponseBody
-     * public String adicionarProdutoAoPDVComParametros(@RequestParam("id_pdv") int
-     * idPdv,
-     * 
-     * @RequestParam("produto") String produto) {
-     * try {
-     * PDV pdv = pdvRepo.findById(idPdv)
-     * .orElseThrow(() -> new IllegalArgumentException("ID do PDV inválido: " +
-     * idPdv));
-     * 
-     * PDVVendas venda = new PDVVendas();
-     * venda.setPdv(pdv);
-     * venda.setProduto(produto);
-     * 
-     * pdvVendasRepo.save(venda);
-     * return "Produto adicionado ao PDV com sucesso";
-     * } catch (Exception e) {
-     * return "Erro ao adicionar produto ao PDV: " + e.getMessage();
-     * }
-     * }
-     * 
-     * @PostMapping("/adicionar-produto-body")
-     * 
-     * @ResponseBody
-     * public String adicionarProdutoAoPDVComBody(@RequestBody PDVVendas request) {
-     * try {
-     * PDV pdv = pdvRepo.findById(request.getPdv().getId())
-     * .orElseThrow(() -> new IllegalArgumentException("PDV não encontrado"));
-     * 
-     * PDVVendas venda = new PDVVendas();
-     * venda.setPdv(pdv);
-     * venda.setProduto(request.getProduto());
-     * 
-     * pdvVendasRepo.save(venda);
-     * return "Produto adicionado ao PDV com sucesso";
-     * } catch (Exception e) {
-     * return "Erro ao adicionar produto ao PDV: " + e.getMessage();
-     * }
-     * }
-     */
 
     @GetMapping("/ultimo-id")
     @ResponseBody
