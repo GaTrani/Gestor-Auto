@@ -66,7 +66,8 @@
                             <label for="veiculo">Veículo</label>
                             <select class="form-control" id="veiculo" name="veiculo">
                                 <option value="">Placa</option>
-                                <option th:each="veiculo : ${veiculos}" th:value="${veiculo.id}" th:text="${veiculo.placa}"
+                                <option th:each="veiculo : ${veiculos}" th:value="${veiculo.id}"
+                                    th:text="${veiculo.placa}"
                                     th:selected="${pdv.veiculo != null && pdv.veiculo == veiculo.placa}">
                                 </option>
                             </select>
@@ -114,14 +115,16 @@
                     <div class="btn-group mb-4 btn-desconto-group" role="group">
                         <button type="button" class="btn btn-secondary">R$</button>
                         <button type="button" class="btn btn-secondary" style="margin-right: 35px;">%</button>
-                        <input type="text" id="desconto" name="desconto" class="form-control">
+                        <input type="text" id="desconto" name="desconto" class="form-control"
+                            th:value="${pdv?.desconto}">
                         <input type="hidden" id="descontoEmReais" name="descontoEmReais" class="form-control invisivel">
                     </div>
                     <h5>Total da Nota</h5>
                     <div>
                         <div class="position-relative">
                             <input type="text" id="valorTotalNota" name="valorTotalNota" class="form-control"
-                                style="padding-left: 30px; text-align: right;" placeholder="0,00" readonly>
+                                style="padding-left: 30px; text-align: right;" placeholder="0,00" readonly
+                                th:value="${pdv?.total}">
                             <label for="valorTotalNota" class="position-absolute"
                                 style="left: 10px; top: 50%; transform: translateY(-50%);">R$</label>
                         </div>
@@ -135,6 +138,7 @@
                                 style="left: 10px; top: 50%; transform: translateY(-50%);">R$</label>
                         </div>
                     </div>
+
                     <hr>
                     <div class="text-right">
                         <div class="d-flex justify-content-between mb-2">
@@ -164,61 +168,7 @@
         inputFormaPagamento.value = forma;
     }
 
-    $(document).ready(function() {
-    var pdvId = $("#pdvId").val();
-
-    if (!pdvId) {
-        console.error("pdvId não está definido.");
-        return;
-    }
-
-    function fetchVendas(pdvId) {
-        $.ajax({
-            url: '/pdv/' + pdvId + '/vendas',
-            method: 'GET',
-            success: function(vendas) {
-                var tbody = $('#tabelaProdutosPDVVendas tbody');
-                tbody.empty();
-                
-                vendas.forEach(function(venda) {
-                    var row = $('<tr>');
-                    row.append($('<td>').text(venda.produto));
-                    row.append($('<td>').text(venda.valorUnitario));
-                    row.append($('<td>').text(venda.quantidade));
-                    row.append($('<td>').text(venda.total));
-                    row.append($('<td>').html('<button class="btn btn-danger btn-sm">Remover</button>'));
-                    tbody.append(row);
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error('Erro ao buscar as vendas:', error);
-            }
-        });
-    }
-
-    if (pdvId) {
-        fetchVendas(pdvId);
-    }
-
-    $("#btnSalvar").click(function() {
-        var clienteId = $("#clienteId").val();
-        var pdvId = $("#pdvId").val();
-
-        $.ajax({
-            type: "POST",
-            contentType: "application/json",
-            url: "/pdv/criar",
-            data: JSON.stringify({ clienteId: clienteId, pdvId: pdvId }),
-            dataType: 'json',
-            success: function(response) {
-                console.log("PDV salvo com sucesso!");
-            },
-            error: function(xhr, status, error) {
-                console.error("Erro ao salvar PDV:", error);
-            }
-        });
-    });
-});
+    
 </script>
 
 <style>

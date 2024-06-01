@@ -21,4 +21,8 @@ public class PDVVendasService {
         List<PDVVendas> vendas = pdvVendasRepo.findByPdvId(pdvId);
         return vendas != null ? vendas : new ArrayList<>();
     }
+
+    public void removerVenda(int vendaId) {
+        pdvVendasRepo.deleteById(vendaId);
+    }
 }

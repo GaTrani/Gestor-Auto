@@ -35,4 +35,8 @@ public class PDVService {
     public void save(PDV pdv) {
         pdvRepository.save(pdv);
     }
+
+    public PDV obterPdvPorId(int pdvId) {
+        return pdvRepository.findById(pdvId).orElse(null);
+    }
 }

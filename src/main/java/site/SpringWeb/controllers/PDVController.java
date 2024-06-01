@@ -109,6 +109,18 @@ public class PDVController {
         return ResponseEntity.ok(vendas);
     } */
 
+    @GetMapping("/detalhes/{pdvId}")
+    public ResponseEntity<PDV> obterPdv(@PathVariable int pdvId) {
+        PDV pdv = pdvService.obterPdvPorId(pdvId);
+        return ResponseEntity.ok(pdv);
+    }
+
+    @DeleteMapping("/vendas/{vendaId}")
+    public ResponseEntity<Void> removerVenda(@PathVariable int vendaId) {
+        pdvVendasService.removerVenda(vendaId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{pdvId}/vendas")
     public ResponseEntity<List<PDVVendas>> listarVendasPorPdv(@PathVariable int pdvId) {
         List<PDVVendas> vendas = pdvVendasService.listarVendasPorPdv(pdvId);

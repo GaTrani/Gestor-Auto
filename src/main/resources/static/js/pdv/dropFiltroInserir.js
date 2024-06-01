@@ -43,7 +43,7 @@ function atualizarTabelaProdutos() {
                 </td>
                 <td>${produto.precoVenda !== null ? (produto.precoVenda * produto.quantidade).toFixed(2) : 'N/A'}</td>
                 <td>
-                    <a href="#" class="apagar-produto" data-index="${index}">
+                    <a href="#" class="apagar-produto" data-index="${index}" data-venda-id="${produto.id || ''}">
                         <i class="fas fa-trash-alt d-flex align-items-center justify-content-center" style="color: #E74A3B"></i>
                     </a>
                 </td>
@@ -73,6 +73,22 @@ function atualizarTabelaProdutos() {
     $('.apagar-produto').click(function (event) {
         event.preventDefault();
         var indiceProduto = $(this).data('index');
+        var vendaId = $(this).data('venda-id');
+
+        // Se o produto tem um vendaId, remove-o do servidor
+        if (vendaId) {
+            $.ajax({
+                url: '/pdv/vendas/' + vendaId,
+                method: 'DELETE',
+                success: function () {
+                    console.log('Venda removida com sucesso!');
+                },
+                error: function (xhr, status, error) {
+                    console.error('Erro ao remover a venda:', error);
+                }
+            });
+        }
+
         // Remover o produto da lista
         produtosAdicionados.splice(indiceProduto, 1);
         // Atualizar a tabela de produtos
@@ -242,3 +258,91 @@ $('#form').on('submit', function (event) {
 
 // Chamada inicial para carregar os produtos do banco de dados
 carregarProdutosDoBanco();
+
+
+$(document).ready(function () {
+    var pdvId = $("#pdvId").val();
+
+    if (pdvId) {
+        fetchPdv(pdvId);
+        fetchVendas(pdvId);
+    }
+
+    function fetchPdv(pdvId) {
+        $.ajax({
+            url: '/detalhes/' + pdvId,
+            method: 'GET',
+            success: function (pdv) {
+                $("#desconto").val(pdv.desconto);
+                $("#valorTotalNota").val(pdv.valorTotalNota);
+                $("#valorTotalComDesconto").val(pdv.valorTotalComDesconto);
+                // Adicione mais campos se necessário
+            },
+            error: function (xhr, status, error) {
+                console.error('Erro ao buscar o PDV:', error);
+            }
+        });
+    }
+
+    function fetchVendas(pdvId) {
+        $.ajax({
+            url: '/pdv/' + pdvId + '/vendas',
+            method: 'GET',
+            success: function (vendas) {
+                var tbody = $('#tabelaProdutosPDVVendas tbody');
+                tbody.empty();
+                produtosAdicionados = []; // Limpar a lista de produtos adicionados
+                vendas.forEach(function (venda) {
+                    var novoProduto = {
+                        id: venda.idProduto,
+                        produto: venda.nomeProduto,
+                        precoVenda: venda.valorUnitario,
+                        quantidade: venda.quantidade
+                    };
+                    produtosAdicionados.push(novoProduto); // Adicionar cada venda à lista de produtos adicionados
+                });
+                atualizarTabelaProdutos();
+            },
+            error: function (xhr, status, error) {
+                console.error('Erro ao buscar as vendas:', error);
+            }
+        });
+    }
+
+    function removerVenda(vendaId) {
+        $.ajax({
+            url: '/pdv/vendas/' + vendaId,
+            method: 'DELETE',
+            success: function () {
+                console.log('Venda removida com sucesso!');
+                fetchVendas(pdvId);  // Atualizar a lista de vendas após remoção
+            },
+            error: function (xhr, status, error) {
+                console.error('Erro ao remover a venda:', error);
+            }
+        });
+    }
+
+    if (pdvId) {
+        fetchVendas(pdvId);
+    }
+
+    $("#btnSalvar").click(function () {
+        var clienteId = $("#clienteId").val();
+        var pdvId = $("#pdvId").val();
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/pdv/criar",
+            data: JSON.stringify({ clienteId: clienteId, pdvId: pdvId }),
+            dataType: 'json',
+            success: function (response) {
+                console.log("PDV salvo com sucesso!");
+            },
+            error: function (xhr, status, error) {
+                console.error("Erro ao salvar PDV:", error);
+            }
+        });
+    });
+})
