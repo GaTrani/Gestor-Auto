@@ -10,6 +10,9 @@
         Aqui você pode editar os detalhes do ponto de venda existente.
     </p>
     <input type="text" id="pdvId" name="pdvId" th:value="${pdv?.id}">
+    <input type="hidden" id="clienteId" name="clienteId" th:value="${pdv?.cliente?.id}">
+    <input type="hidden" id="veiculo2" name="veiculo2" th:value="${pdv?.veiculo}">
+    <input type="hidden" id="km" name="km" th:value="${pdv?.km}">
 
 
     <!-- Two columns layout -->
@@ -55,8 +58,9 @@
                 <form id="form" method="POST" action="@{'/pdv/' + ${pdv?.id} + '/atualizar'}"
                     onsubmit="return confirm('Confirma ação')">
                     <div class="form-group">
-                        <select class="form-control" id="clienteId" name="clienteId" onchange="carregarVeiculos()">
-                            <option value="">Selecione um cliente</option>
+                        <label for="clienteId">Cliente</label>
+                        <select class="form-control" id="clienteId" name="clienteId" disabled>
+                            <option value="" selected>Selecione um cliente</option>
                             <option th:each="cliente : ${clientes}" th:value="${cliente.id}" th:text="${cliente.nome}"
                                 th:selected="${cliente.id == pdv.cliente.id}"></option>
                         </select>
@@ -66,8 +70,7 @@
                             <label for="veiculo">Veículo</label>
                             <select class="form-control" id="veiculo" name="veiculo">
                                 <option value="">Placa</option>
-                                <option th:each="veiculo : ${veiculos}" th:value="${veiculo.id}"
-                                    th:text="${veiculo.placa}"
+                                <option th:each="veiculo : ${veiculos}" th:value="${veiculo.id}" th:text="${veiculo.placa}"
                                     th:selected="${pdv.veiculo != null && pdv.veiculo == veiculo.placa}">
                                 </option>
                             </select>
@@ -78,7 +81,6 @@
                                 th:value="${pdv.km != null ? pdv.km : ''}">
                         </div>
                     </div>
-
                     <hr>
                     <h5>Formas de Pagamento</h5>
                     <div class="btn-group btn-group-toggle mb-4 d-flex justify-content-between align-items-center btn-pagamento-group"
@@ -113,10 +115,9 @@
                     <hr>
                     <h5>Desconto</h5>
                     <div class="btn-group mb-4 btn-desconto-group" role="group">
-                        <button type="button" class="btn btn-secondary">R$</button>
-                        <button type="button" class="btn btn-secondary" style="margin-right: 35px;">%</button>
-                        <input type="text" id="desconto" name="desconto" class="form-control"
-                            th:value="${pdv?.desconto}">
+                        <button type="button" id="btnDescontoReais" class="btn btn-secondary">R$</button>
+                        <button type="button" id="btnDescontoPercentual" class="btn btn-secondary" style="margin-right: 35px;">%</button>
+                        <input type="text" id="desconto" name="desconto" class="form-control" th:value="${pdv?.desconto}">
                         <input type="hidden" id="descontoEmReais" name="descontoEmReais" class="form-control invisivel">
                     </div>
                     <h5>Total da Nota</h5>
@@ -146,7 +147,7 @@
                             <button type="button" class="btn btn-success">Imprimir</button>
                         </div>
                         <input type="hidden" id="produtosJson" name="produtosJson">
-                        <button type="submit" id="btnSalvar"
+                        <button type="submit" id="btnAtualizar"
                             class="btn btn-primary btn-lg btn-block mb-2">Salvar</button>
                         <button type="button" onclick="verificarProdutosAdicionados()">Verificar Produtos</button>
                     </div>
@@ -159,8 +160,13 @@
 <script src="/js/pdv/dropdownPlacas.js"></script>
 <script src="/js/pdv/editarPreco.js"></script>
 <script src="/js/pdv/salvarProdutos.js"></script>
-<script src="/js/pdv/dropFiltroInserir.js"></script>
+<!-- <script src="/js/pdv/dropFiltroInserir.js"></script> -->
 <script src="/js/pdv/descontoPdv.js"></script>
+
+<!-- Tentativa de separar codigos dropFiltroInserir.js -->
+<script src="/js/pdv/controleDesconto.js"></script>
+<script src="/js/pdv/produtos.js"></script>
+<script src="/js/pdv/dropdown.js"></script>
 
 <script>
     function selecionarFormaPagamento(forma) {
@@ -168,7 +174,7 @@
         inputFormaPagamento.value = forma;
     }
 
-    
+
 </script>
 
 <style>

@@ -103,10 +103,11 @@
                     <hr>
                     <h5>Desconto</h5>
                     <div class="btn-group mb-4 btn-desconto-group" role="group">
-                        <button type="button" class="btn btn-secondary">R$</button>
-                        <button type="button" class="btn btn-secondary" style="margin-right: 35px;">%</button>
-                        <input type="text" id="desconto" name="desconto" class="form-control">
+                        <button type="button" id="btnDescontoReais" class="btn btn-secondary">R$</button>
+                        <button type="button" id="btnDescontoPercentual" class="btn btn-secondary" style="margin-right: 35px;">%</button>
+                        <input type="text" id="desconto" name="desconto" class="form-control" disabled>
                         <input type="hidden" id="descontoEmReais" name="descontoEmReais" class="form-control">
+                        <input type="hidden" id="descontoPercentual" name="descontoPercentual" class="form-control">
                     </div>
                     <h5>Total da Nota</h5>
                     <div>
@@ -153,9 +154,12 @@
 <script src="/js/pdv/salvarProdutos.js"></script>
 <!-- <script src="/js/pdv/exibirEFiltrarProdutos.js"></script>
 <script src="/js/pdv/inserirEMostrarProdutos.js"></script> -->
-<script src="/js/pdv/dropFiltroInserir.js"></script>
+<!-- <script src="/js/pdv/dropFiltroInserir.js"></script> -->
 <script src="/js/pdv/descontoPdv.js"></script>
 
+<script src="/js/pdv/controleDesconto.js"></script>
+<script src="/js/pdv/produtos.js"></script>
+<script src="/js/pdv/dropdown.js"></script>
 
 <script>
     function selecionarFormaPagamento(forma) {

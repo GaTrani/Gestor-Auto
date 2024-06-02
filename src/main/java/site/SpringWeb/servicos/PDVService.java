@@ -3,7 +3,7 @@ package site.SpringWeb.servicos;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-
+import java.util.Optional;
 import site.SpringWeb.modelos.PDV;
 import site.SpringWeb.repositorio.PDVRepo;
 
@@ -38,5 +38,18 @@ public class PDVService {
 
     public PDV obterPdvPorId(int pdvId) {
         return pdvRepository.findById(pdvId).orElse(null);
+    }
+
+    public PDV buscarPDVPorId(int idPdv) {
+        Optional<PDV> pdvOptional = pdvRepository.findById(idPdv);
+        if (pdvOptional.isPresent()) {
+            return pdvOptional.get();
+        } else {
+            throw new RuntimeException("PDV não encontrado com o ID: " + idPdv);
+        }
+    }
+
+    public void atualizarPDV(PDV pdv) {
+        pdvRepository.save(pdv);
     }
 }

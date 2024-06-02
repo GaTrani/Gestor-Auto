@@ -25,4 +25,9 @@ public class PDVVendasService {
     public void removerVenda(int vendaId) {
         pdvVendasRepo.deleteById(vendaId);
     }
+
+    public void removerPDVVendasPorPdvId(int idPdv) {
+        List<PDVVendas> vendas = pdvVendasRepo.findByPdvId(idPdv);
+        pdvVendasRepo.deleteAll(vendas);
+    }
 }

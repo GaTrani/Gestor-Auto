@@ -167,6 +167,7 @@ public class PDVController {
             PDVVendas pdvVenda = new PDVVendas();
             pdvVenda.setPdv(pdv); // Associe o PDV ao registro de venda
             pdvVenda.setIdProduto(produto.getId()); // Defina o ID do produto
+            pdvVenda.setProduto(produto.getProduto());
             pdvVenda.setQuantidade(produto.getQuantidade());
             pdvVenda.setValorUnitario(produto.getPrecoVenda());
             pdvVenda.setTotal(produto.getQuantidade() * produto.getPrecoVenda());
@@ -191,78 +192,70 @@ public class PDVController {
         }
     }
 
-    @PostMapping("/{id}/atualizar")
-
-    public String atualizar(
-            @PathVariable int id,
-            @ModelAttribute PDV pdv,
+    @PostMapping("/{idPdv}/atualizar")
+    public String atualizarPDV(
+            @PathVariable("idPdv") int idPdv,
             @RequestParam("clienteId") int clienteId,
+            @RequestParam("veiculo") String veiculo,
             @RequestParam("km") int km,
+            @RequestParam("formaPagamento") String formaPagamento,
+            @RequestParam("descontoEmReais") double descontoEmReais,
             @RequestParam("produtosJson") String produtosJson) {
 
-        System.out.println("entrou no atualizar");
-
-        if (!pdvRepo.existsById(id)) {
-            return "redirect:/pdv";
+        // Converte a string JSON de produtos em uma lista de objetos Produto
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Produto> produtosAdicionados = new ArrayList<>();
+        try {
+            produtosAdicionados = objectMapper.readValue(produtosJson, new TypeReference<List<Produto>>() {
+            });
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            // Lidar com a exceção apropriadamente (ex: redirecionar para uma página de erro)
         }
 
-        // Buscar o PDV existente
-        Optional<PDV> pdvExistenteOptional = pdvRepo.findById(id);
-        if (pdvExistenteOptional.isPresent()) {
-            PDV pdvExistente = pdvExistenteOptional.get();
+        // Exibir a lista de produtos no console para verificação
+        for (Produto produto : produtosAdicionados) {
+            System.out.println("Produto ID: " + produto.getId() +
+                    ", Produto: " + produto.getProduto() +
+                    ", Quantidade: " + produto.getQuantidade() +
+                    ", unitario: " + produto.getPrecoVenda() + ", total: "
+                    + produto.getQuantidade() * produto.getPrecoVenda());
+        }
 
-            // Atualizar os campos do PDV existente
-            pdvExistente.setCliente(clienteService.buscarPorId(clienteId).orElse(null));
-            pdvExistente.setKm(km);
+        // Obter o objeto PDV existente
+        PDV pdv = pdvService.buscarPDVPorId(idPdv);
+        Cliente cliente = new Cliente();
+        cliente.setId(clienteId);
+        pdv.setCliente(cliente);
+        pdv.setVeiculo(veiculo);
+        pdv.setKm(km);
+        pdv.setFormaPagamento(formaPagamento);
+        pdv.setDesconto(descontoEmReais);
 
-            // Converte a string JSON de produtos em uma lista de objetos Produto
-            ObjectMapper objectMapper = new ObjectMapper();
-            List<Produto> produtosAtualizados;
-            try {
-                produtosAtualizados = objectMapper.readValue(produtosJson, new TypeReference<List<Produto>>() {
-                });
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-                return "redirect:/pdv"; // Redirecionar em caso de erro na conversão do JSON
-            }
+        // Calcular o total dos produtos
+        double totalProdutos = 0;
+        for (Produto produto : produtosAdicionados) {
+            totalProdutos += produto.getQuantidade() * produto.getPrecoVenda();
+        }
 
-            // Buscar produtos existentes no PDV
-            List<PDVVendas> vendasExistentes = pdvVendasService.listarVendasPorPdv(id);
-            Map<Integer, PDVVendas> vendasExistentesMap = vendasExistentes.stream()
-                    .collect(Collectors.toMap(PDVVendas::getIdProduto, venda -> venda));
+        // Definir o total no objeto PDV
+        pdv.setTotal(totalProdutos);
 
-            // Atualizar ou adicionar produtos
-            for (Produto produtoAtualizado : produtosAtualizados) {
-                PDVVendas vendaExistente = vendasExistentesMap.get(produtoAtualizado.getId());
-                if (vendaExistente != null) {
-                    // Produto existe, verificar se há mudanças
-                    if (vendaExistente.getQuantidade() != produtoAtualizado.getQuantidade()
-                            || vendaExistente.getValorUnitario() != produtoAtualizado.getPrecoVenda()) {
-                        vendaExistente.setQuantidade(produtoAtualizado.getQuantidade());
-                        vendaExistente.setValorUnitario(produtoAtualizado.getPrecoVenda());
-                        vendaExistente.setTotal(produtoAtualizado.getQuantidade() * produtoAtualizado.getPrecoVenda());
-                        pdvVendasService.salvarPDVVendas(vendaExistente);
-                    }
-                    vendasExistentesMap.remove(produtoAtualizado.getId());
-                } else {
-                    // Produto não existe, criar novo
-                    PDVVendas novaVenda = new PDVVendas();
-                    novaVenda.setPdv(pdvExistente);
-                    novaVenda.setIdProduto(produtoAtualizado.getId());
-                    novaVenda.setQuantidade(produtoAtualizado.getQuantidade());
-                    novaVenda.setValorUnitario(produtoAtualizado.getPrecoVenda());
-                    novaVenda.setTotal(produtoAtualizado.getQuantidade() * produtoAtualizado.getPrecoVenda());
-                    pdvVendasService.salvarPDVVendas(novaVenda);
-                }
-            }
+        // Atualize o PDV
+        pdvService.atualizarPDV(pdv);
 
-            // Remover produtos que não estão na lista de produtos atualizados
-            for (PDVVendas vendaExistente : vendasExistentesMap.values()) {
-                pdvVendasService.removerVenda(vendaExistente.getId());
-            }
+        // Atualize os registros na tabela pdv_vendas
+        pdvVendasService.removerPDVVendasPorPdvId(idPdv);
+        for (Produto produto : produtosAdicionados) {
+            PDVVendas pdvVenda = new PDVVendas();
+            pdvVenda.setPdv(pdv); // Associe o PDV ao registro de venda
+            pdvVenda.setIdProduto(produto.getId()); // Defina o ID do produto
+            pdvVenda.setQuantidade(produto.getQuantidade());
+            pdvVenda.setValorUnitario(produto.getPrecoVenda());
+            pdvVenda.setTotal(produto.getQuantidade() * produto.getPrecoVenda());
 
-            // Salvar o PDV atualizado
-            pdvRepo.save(pdvExistente);
+            // Salve o registro de venda
+            pdvVendasService.salvarPDVVendas(pdvVenda);
         }
 
         return "redirect:/pdv";
